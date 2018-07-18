@@ -1,40 +1,51 @@
 function [output, outputarray] = ESRAnalysesFIT2(varargin)
-%% performs normalization and spin-counting of ESR signal
-% ESR signal is normalised to a MWFQ of 9.6 GHz and according to measuremnt
-% conditions.
-% The toal ESR intensity and spin suszeptebility are determined by fitting
-% the ESR resonance to a Pseudo-Voigt function and subsequent analytical
-% double integration. Assuming a Curie-Weiss law, we calculate the number
-% of spins in the sample.
-% If required, a backgournd signal can be subtracted before performing the
-% analyses.
+%ESRANALYESFIT2 performs normalization and spin-counting of an ESR signal by
+%fitting it to two Voigt functions.
+%   The ESR signal is normalised according to measurement conditions. If
+%   required, a background signal can be subtracted before performing the
+%   analyses.
 %
-% INPUT:
-% Path              -   path to file with ESR data
-% (x,y,Pars)        -   spectrum data
-% (", var0)         -   starting fit parameters
+%   The total ESR intensity and spin susceptibility are determined by fitting
+%   the ESR resonance to two Pseudo-Voigt functions and subsequent analytical
+%   double integration. The number of spins in the sample is then calculated 
+%   by assuming that the sample follows a Curie-Weiss law. This assumption is
+%   valid when T >> E/2. X-Band EPR typically operates around B = 350 mT while
+%   a field of up to 0.5 T corresponds to E/2 = 28.9 ueV. This still remains
+%   far lower than the corresponding thermal energy of 450 ueV at 5 K. 
 %
-% OUTPUT:
-% x_norm, y_norm    -   vectors contaning normalised magnetic and ESR signal
-%                       data, respectively
-% y_base            -   polynomial baseline corrected normalised ESR signal
-% NSPin             -   calculated number of spins assuming a Curie-Weiss
-%                       suszeptebility
-% Chi               -   spin suszeptebility from double integrated intensity
+%   INPUT(S):
+%   ESRAnalysesFIT2()           - prompts user for spectrum file
+%   ...FIT('Path')              - path to file with ESR data
+%   ...FIT('PathSIG','PathBG')  - path to signal, path to background
+%   ...FIT(x,y,Pars)            - field, signal, and spectral params
+%   ...FIT(x,y,Pars,var0)       - field, signal, spectral params, and
+%                                 starting fit parameters
 %
-% Dependencies:
-% SubtractBackground.m
-% NormaliseSpectrum.m
-% MarkerCalib.m
-% gfactor_determination.m
-% SpinCounting.m
-% num2clip.m
-% PseudoVoigtFit.m
-% getSamplePosition.m
+%   OUTPUT(S):
+%   output                      - output structure containing the
+%                                 normalized spectra, measurement conditions,
+%                                 fitting parameters with errors, and the
+%                                 calculated number of spins and
+%                                 susceptibility
+%   outputarray                 - array containing the fitting parameters
+%                                 and errors for easy copying
+%
+%   DEPENDENCIES:
+%   SubtractBackground.m
+%   NormaliseSpectrum.m
+%   MarkerCalib.m
+%   gfactor_determination.m
+%   SpinCounting.m
+%   num2clip.m
+%   PseudoVoigtFit.m
+%   getSamplePosition.m
+%
 
-% MODIFICATION(S):
-% 18-Jun-18
-% Ian Jacobs: added the ability to specify initial fit parameters (var0)
+%   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
+%   $Date: 2018/07/05 12:58 $    $Revision: 1.1 $
+%
+%   Revision: Ian Jacobs <ij255@cam.ac.uk>
+%   $Date: 2018/07/18. Added argument for initial fit parameters (var0)
 
 %% load and normalise spectrum, subtract a background spectrum if requested
 close all
@@ -107,8 +118,6 @@ if ~exist('var0')
     var0 = [Ipp*0.005 B0 T2 Hpp*0.1 Ipp*0.005 B0 T2 Hpp*0.1];
 end
 
-%print guess parameters
-var0
 
 % function to minimize: sum of squared errors
 fitfunc = @(var) abs(var(1))*ESRVoigtSimulation(x, var(2), 1e-20, abs(var(3)), Bmw, abs(var(4)), 1, Pars.B0MA*1e4)' + abs(var(5))*ESRVoigtSimulation(x, var(6), 1e-20, abs(var(7)), Bmw, abs(var(8)), 1, Pars.B0MA*1e4)';
@@ -116,7 +125,7 @@ sumofsquares = @(var) sum(sum( abs(fitfunc(var) - y).^2  ));
 
 % Fit model to data with fminsearch (Nelder Mead algorithm, much better
 % convergance than Levenberg Marquard or trust Region)
-opt = optimset('TolFun',1e-12,'TolX',1e-12,'PlotFcns',@optimplotfval, 'MaxFunEvals', 1e6, 'MaxIter', 1e6);
+opt = optimset('TolFun',1e-9,'TolX',1e-9,'PlotFcns',@optimplotfval, 'MaxFunEvals', 1e9, 'MaxIter', 1e9);
 [ft_rslt, sumofsquares_error] = fminsearch(sumofsquares, var0, opt);
 
 yFit = fitfunc(ft_rslt);
@@ -161,8 +170,8 @@ Bp2p = FWHMLorentz*1e4/sqrt(3);
 dBp2p = dFWHMLorentz*1e4/sqrt(3);
 
 % save data to output array
-outputarray = {T, Pars.GFactor, B0 Brms, Bp2p, dBp2p, Chi, dChi, NSpin, dNSpin, SNR};
-outputnames = {'T','gfactor', 'B0', 'Brms', 'Bp2p', 'dBp2p', 'Chi','dChi' ,'NSpin','dNSpin','SNR'};
+outputarray = {T, Pars.GFactor, Brms, Bp2p, dBp2p, sum(Chi), sum(dChi), sum(NSpin), sum(dNSpin), SNR};
+outputnames = {'T','gfactor', 'Brms', 'Bp2p', 'dBp2p', 'Chi','dChi' ,'NSpin','dNSpin','SNR'};
 
 for k=1:length(outputarray)
     output.(outputnames{k}) = outputarray(k);
