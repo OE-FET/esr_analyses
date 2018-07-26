@@ -173,13 +173,14 @@ Xt = X'; Yt = Y';
 f1 = figure( 'Name', '3D Voigt Fit' );
 figure(f1);
 hold off;
-scatter3(Xt(:), Yt(:), Z(:),'.k');
+scatter3(Xt(:)./10, Yt(:)*10^6, Z(:),'.k');
 hold on;
-surf(XPlot, YPlot, zFit','FaceAlpha', 0.5, 'EdgeColor','none');
+surf(XPlot./10, YPlot*10^6, zFit','FaceAlpha', 0.5, 'EdgeColor','none');
 legend('Data', 'Fit','Location','northeast')
-xlabel('Magnetic Field [G]')
-ylabel('Microwave Magnetic Field [T]')
+xlabel('Magnetic field [mT]')
+ylabel('Microwave field [µT]')
 zlabel('ESR signal [a.u.]')
+axis tight
 
 f2 = figure( 'Name', '3D Voigt Fit, x-section' );
 figure(f2);

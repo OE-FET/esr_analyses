@@ -122,10 +122,10 @@ Z       = y;
 %%                          Perform Voigt fit
 %%=========================================================================
 
-if ~exist('var0')
+if ~exist('var0','var')
     var0 = [Ipp*3.5e-05 B0 T1 T2 Hpp*0.1 Ipp*3.5e-05 B0 T1 T2 Hpp*0.1]; % vector with starting points [A, T2, Brms]
 end
-var0
+disp(var0)
 
 % function to minimize: sum of squared errors
 fitfunc = @(var) abs(var(1))*ESRVoigtSimulation(X , var(2), abs(var(3)), abs(var(4)), Y, abs(var(5)), 1, Pars.B0MA*1e4) + abs(var(6))*ESRVoigtSimulation(X , var(7), abs(var(8)), abs(var(9)), Y, abs(var(10)), 1, Pars.B0MA*1e4);
