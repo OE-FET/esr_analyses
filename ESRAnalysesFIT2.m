@@ -105,16 +105,15 @@ position_correction = MWmean(Pars);
 
 Bmw = position_correction * c * sqrt(Pars.MWPW*1e3) * sqrt(Pars.QValue/Qref) * 1E-4; % in Tesla
 
-% get starting points for fit
-fit1 = PseudoVoigtFit(x, y);
+if ~exist('var0','var')
+    % get starting points for fit
+    fit1 = PseudoVoigtFit(x, y);
 
-Ipp = abs(fit1.a); % peak to peak amplitude in Gauss
-Hpp = fit1.w; % peak to peak line width in Gauss
-T2 = 2/sqrt(3) * 1/(gmratio * Hpp*1E-4); % starting point for fit, sec
-T1 = 1e-20; % starting point for fit, sec
-B0 = fit1.x0; % resonance center in Gauss
-
-if ~exist('var0')
+    Ipp = abs(fit1.a); % peak to peak amplitude in Gauss
+    Hpp = fit1.w; % peak to peak line width in Gauss
+    T2 = 2/sqrt(3) * 1/(gmratio * Hpp*1E-4); % starting point for fit, sec
+    T1 = 1e-20; % starting point for fit, sec
+    B0 = fit1.x0; % resonance center in Gauss
     var0 = [Ipp*0.005 B0 T2 Hpp*0.1 Ipp*0.005 B0 T2 Hpp*0.1];
 end
 

@@ -17,7 +17,7 @@ function [argout] = PowerSatAnalysesVoigtFIT2(varargin)
 %                                         background data
 % ...(x,y,pars)                         - magnetic field, intensity,
 %                                         parameters
-% ...(",var0)                           - starting fit parameters
+% ...(...,'init', var0)                 - list with starting points for fit
 %
 % OUTPUT(S):
 % argout - structure containing all output data
@@ -39,7 +39,15 @@ function [argout] = PowerSatAnalysesVoigtFIT2(varargin)
 
 %%                              Read data 
 %%=========================================================================
-switch nargin
+
+try
+    [var0, varargin] = getVarargin(varargin, 'init');
+    n = nargin - 2;
+catch
+    n = nargin;
+end
+
+switch n
 case 0
     str = input('Would you like to subtract a background signal? y/[n]: ', 's');
     if strcmpi(str, 'y') == 1
@@ -60,13 +68,6 @@ case 3
     Pars = varargin{3};
     
     [x, y, Pars] = NormaliseSpectrum(x, y, Pars);
-    
-case 4
-    x    = varargin{1};
-    y    = varargin{2};
-    Pars = varargin{3};
-    var0 = varargin{4};
-    [x, y, Pars] = NormaliseSpectrum(x, y, Pars);    
 end
 
 %%                         Calculate MW fields
@@ -103,32 +104,36 @@ Bmw     = f_mean * cCryo * sqrt(Pmw) * sqrt(QValue/Qref) * 1E-4; % in Tesla
 %%                      Get starting points for fit
 %%=========================================================================
 
-% get initial parameters for fit
-mid  = round(length(Bmw)/2);
-fit1 = PseudoVoigtFit(x, y(:, end));
+if ~exist('var0','var')
+    % get initial parameters for fit
+    mid  = round(length(Bmw)/2);
+    fit1 = PseudoVoigtFit(x, y(:, mid));
 
-Ipp  = abs(fit1.a);                        % peak to peak amplitude (Gauss)
-Hpp  = fit1.w;                             % peak to peak line width (Gauss)
+    Ipp  = abs(fit1.a);                        % peak to peak amplitude (Gauss)
+    Hpp  = fit1.w;                             % peak to peak line width (Gauss)
 
-T2   = 2/sqrt(3) * 1/(gmratio * Hpp*1E-4); % starting point for fit, sec
-T1   = 10*T2;                              % starting point for fit, sec
-B0   = fit1.x0;                            % resonance center in Gauss
+    T2   = 2/sqrt(3) * 1/(gmratio * Hpp*1E-4); % T2 starting point, sec
+    T1   = 10*T2;                              % T1 starting point, sec
+    B0   = fit1.x0;                            % resonance center in Gauss
+
+    % starting points for fit:
+    %       Area        B0 T1 T2 Brms    Area        B0 T1 T2 Brms
+    var0 = [Ipp*3.5e-05 B0 T1 T2 Hpp*0.1 Ipp*3.5e-05 B0 T1 T2 Hpp*0.1];
+end
+
+%%                          Perform Voigt fit
+%%=========================================================================
 
 % grid data for fitting algorithm
 [X, Y]  = meshgrid(x, Bmw);
 Z       = y; 
 
-
-%%                          Perform Voigt fit
-%%=========================================================================
-
-if ~exist('var0','var')
-    var0 = [Ipp*3.5e-05 B0 T1 T2 Hpp*0.1 Ipp*3.5e-05 B0 T1 T2 Hpp*0.1]; % vector with starting points [A, T2, Brms]
-end
-disp(var0)
-
 % function to minimize: sum of squared errors
-fitfunc = @(var) abs(var(1))*ESRVoigtSimulation(X , var(2), abs(var(3)), abs(var(4)), Y, abs(var(5)), 1, Pars.B0MA*1e4) + abs(var(6))*ESRVoigtSimulation(X , var(7), abs(var(8)), abs(var(9)), Y, abs(var(10)), 1, Pars.B0MA*1e4);
+fitfunc1 = @(var) abs(var(1))*ESRVoigtSimulation(X , var(2), abs(var(3)), abs(var(4)), Y, abs(var(5)), 1, Pars.B0MA*1e4);
+fitfunc2 = @(var) abs(var(6))*ESRVoigtSimulation(X , var(7), abs(var(8)), abs(var(9)), Y, abs(var(10)), 1, Pars.B0MA*1e4);
+
+fitfunc = @(var) fitfunc1(var) + fitfunc2(var);
+
 sumofsquares = @(var) sum(sum( abs(fitfunc(var) - Z).^2  ));
 
 % Fit model to data with fminsearch (Nelder Mead algorithm, much better
@@ -184,6 +189,8 @@ hold off;
 StackPlot(x,y,'yoffset',offset,'style','.k');
 hold on;
 StackPlot(x,fitfunc(ft_rslt),'yoffset',offset,'style','-r');
+StackPlot(x,fitfunc1(ft_rslt),'yoffset',offset,'style','--g');
+StackPlot(x,fitfunc2(ft_rslt),'yoffset',offset,'style','--b');
 legend('Data');
 
 %%                      Susceptibility Calculation
@@ -208,7 +215,9 @@ argout.T        = str2double(strtrim(regexprep(Pars.Temperature,'K','')));
 
 argout.x        = x;
 argout.y        = y;
-argout.yFit     = zFit;
+argout.yFit     = fitfunc(ft_rslt);
+argout.yFit1    = fitfunc1(ft_rslt);
+argout.yFit3    = fitfunc2(ft_rslt);
 argout.Pars     = Pars;
 
 argout.A        = A;

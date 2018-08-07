@@ -30,5 +30,5 @@ for i = 1:length(fileNames)
         end
     end
             
-    outputMatrix(i,:) = [argout.T, 100/argout.T, argout.gfactor, argout.Brms, argout.Bp2p, argout.Chi, argout.dChi, argout.NSpin, argout.dNSpin, argout.T1, argout.dT1, argout.T2, argout.dT2];
+    outputMatrix(i,:) = [argout.T, argout.gfactor, argout.Brms, argout.Bp2p, argout.Chi, argout.dChi, argout.NSpin, argout.dNSpin, argout.T1, argout.dT1, argout.T2, argout.dT2];
 end

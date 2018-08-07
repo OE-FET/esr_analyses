@@ -14,18 +14,11 @@ function [fitresult, gof] = LorentzFit(x, y, varargin)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
 
-SP = ParsVarargin(varargin);
-[~,Nmin]=min(y);[Max,Nmax]=max(y);
-try
-    Gamma = SP.Gamma;
-catch
-    Gamma = x(Nmin)-x(Nmax);
-end
-try
-    B0 = SP.B0;
-catch
-    B0=x(Nmax) + Gamma/2;
-end
+[~,Nmin]=min(y); [Max,Nmax]=max(y);
+
+
+try; g = getVarargin(varargin, 'Gamma'); catch; Gamma = x(Nmin)-x(Nmax); end
+try; B0 = getVarargin(varargin, 'B0'); catch; B0=x(Nmax) + Gamma/2; end
 
 [xData, yData] = prepareCurveData( x, y );
 
