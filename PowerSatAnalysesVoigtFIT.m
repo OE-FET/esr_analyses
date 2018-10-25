@@ -113,7 +113,7 @@ Bmw     = f_mean * cCryo * sqrt(Pmw) * sqrt(QValue/Qref) * 1E-4; % in Tesla
 
 % get initial parameters for fit
 mid  = round(length(Bmw)/2);
-fit1 = PseudoVoigtFit(x, y(:, 9));
+fit1 = PseudoVoigtFit(x, y(:, mid));
 
 Ipp  = abs(fit1.a);                        % peak to peak amplitude (Gauss)
 Hpp  = fit1.w;                             % peak to peak line width (Gauss)
