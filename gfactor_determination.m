@@ -42,14 +42,14 @@ end
 
 %% Resonance center from maximum of 1st integral as first guess
 % integrate spectrum
-[~,Int1] = DoubleIntNUM(x,y,'n');
+[~, Int1] = DoubleIntNUM(x, y, 'n');
 % find resonance peak at maximum
-[~,II]=max(Int1,[],1);
+[~, II] = max(Int1,[],1);
 B_res=x(II);
 
 %% g-factor from zero crossing, higher accuracy
 % look at 0.4 Gauss interval around B_sample
-dim=size(y);
+dim = size(y);
 pm = 0.4;
 Interval= [B_res-pm, B_res+pm];
 

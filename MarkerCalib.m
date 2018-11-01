@@ -84,7 +84,7 @@ disp(['B_offset = ',num2str(B_offset),'G']);
 xnew = x + B_offset;
 disp('Offset corrected.');
 
-% plot spectrum with marker location for visial confirmation
+% plot spectrum with marker location for visual confirmation
 hold off; plot(xnew,y,'b');
 hold on; plot(x,y,'b--');
 plot(B_target,0,'o');plot(B_marker,0,'o');
