@@ -1,9 +1,12 @@
-function [fitresult] = saturationCurveFit(Bmw, IntI, g)
+function [fitresult] = SaturationCurveFit(Bmw, IntI, g)
 
 %% Power saturation fit
 %
 % Fits power saturation of double integrated intensity to determine T1 * T2
-% with euqation: A*x/(gmratio*sqrt(1+gmratio^2*x^2*T1*T2)).
+% with euqation:
+%
+% A*x/(gmratio*sqrt(1+gmratio^2*x^2*T1*T2)).
+%
 % A Markov chain Monte Carlo method is used for fitting.
 %
 % INPUT: 
