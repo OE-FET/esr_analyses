@@ -44,11 +44,11 @@ data_measurement_time = datetime([Pars.DATE ' ' Pars.TIME],'InputFormat', 'MM/dd
 
 % read QValue for the measurement temperature from text file 
 
-fileQValues = tdfread(filePathQValues);
+fileQValues = readtable(filePathQValues);
 
 qValues = fileQValues.QValue;
-qValueTemps = fileQValues.Temperature_0x5BK0x5D;
-qValuesTimes = fileQValues.Time_stamp;
+qValueTemps = fileQValues.Temperature_K_;
+qValuesTimes = fileQValues.TimeStamp;
 
 % get all QValues for measurement temperature
 qValueSlice = qValues(qValueTemps == T,:);
@@ -59,7 +59,7 @@ if isempty(qValueSlice)
 end
 
 % get the time differences between measurement time and QValue time stamp
-time_diff = data_measurement_time - datetime(timeStampSlice);
+time_diff = data_measurement_time - timeStampSlice;
 
 % select the Q-Value measurement preceeding the ESR measurement
 qValueSlice = qValueSlice(time_diff > 0); % get only preceeding Q-Values
