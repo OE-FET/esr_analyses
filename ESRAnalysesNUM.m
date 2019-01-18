@@ -66,7 +66,7 @@ end
 % if a marker is used for g-factor calibration, normalise x-axis according
 % to marker position
 % this function does nothing if no marker signal is detected
-[x,y,Pars]=MarkerCalib(x,y,Pars);
+% [x,y,Pars]=MarkerCalib(x,y,Pars);
 sample_g=gfactor_determination(x,y,Pars);
 
 % try to load sample temperature from parameter file
@@ -90,7 +90,7 @@ dChi = dNSpin*Chi/NSpin;
 
 % save data to output array
 outputarray={T, 100/T, sample_g, Chi, dChi, NSpin, dNSpin};
-outputnames={'T','InverseT','g', 'Chi','dChi' ,'NSpin','dNSpin'};
+outputnames={'T', 'InverseT', 'g', 'Chi', 'dChi', 'NSpin', 'dNSpin'};
 
 for k=1:length(outputarray)
     output.(outputnames{k})=outputarray(k);
