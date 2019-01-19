@@ -14,9 +14,9 @@ function [output] = ESRAnalysesNUM(varargin)
 %
 %   INPUT(S):
 %   ESRAnalysesNUM()            - prompts user for spectrum file
-%   ...FIT('Path')              - path to file with ESR data
-%   ...FIT('PathSIG','PathBG')  - path to signal, path to background
-%   ...FIT(x,y,Pars)            - field, signal, and spectral params
+%   ...NUM('Path')              - path to file with ESR data
+%   ...NUM('PathSIG','PathBG')  - path to signal, path to background
+%   ...NUM(x,y,Pars)            - field, signal, and spectral params
 %
 %   OUTPUT(S):
 %   output                      - output structure containing the
