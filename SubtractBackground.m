@@ -28,7 +28,7 @@ function [xSub, ySub, ParsS] = SubtractBackground(varargin)
 %%
 global Path
 
-%load files, prompt user if no file paths are given
+% load files, prompt user if no file paths are given
 switch nargin
     case 0
         [SName, SPath] = uigetfile([Path, '*.DTA'],'Select signal data');
@@ -55,7 +55,11 @@ end
 [xS, yS, ParsS] = NormaliseSpectrum(xS, yS, ParsS);
 [xB, yB, ParsB] = NormaliseSpectrum(xB, yB, ParsB);
 
-yB = yB * ParsS.QValue/ParsB.QValue * ParsS.B0MA/ParsB.B0MA;
+% rescale for Q-value, modulation amplitude and mw power
+% WARNIG: All parameters affect both the signal amplitude and shape.
+% Therefore, be caucious when subtracting a backround signal with 
+% significantly different parameters.
+yB = yB * ParsS.QValue/ParsB.QValue * ParsS.B0MA/ParsB.B0MA * sqrt(ParsS.MWPW)/sqrt(ParsB.MWPW);
 
 
 %% Compare experimental conditions
@@ -97,6 +101,7 @@ yoffset = max(max(yS))*0.5;
 StackPlot(xB + B_offset, yB, 'yoffset', yoffset, 'style', 'r');
 % plot signal
 hold on; StackPlot(xS, yS, 'yoffset', yoffset, 'style', 'b'); hold off;
+legend('background', 'signal')
 
 % plot signal minus background
 subplot(2, 1, 2)

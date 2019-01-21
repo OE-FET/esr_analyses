@@ -12,6 +12,10 @@ end
 
 [fileName, Path] = uigetfile([Path, '*.DSC'], 'Please select ESR data files.', 'MultiSelect', 'on');
 
+if ischar(fileName)
+    fileName = {fileName};
+end 
+
 for i = 1:length(fileName)
     filePath = [Path fileName{i}];
     try

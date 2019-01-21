@@ -21,6 +21,9 @@ if isfield(Pars, 'Temperature')
 else
     [startIndex, endIndex] = regexp(Path2Data, '[0-9]+K');
     T = str2double( Path2Data(startIndex:endIndex-1) );
+    if isnan(T)
+        T = 298;
+    end
     Pars.Temperature = [num2str(T), ' K'];
 end
 

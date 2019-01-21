@@ -11,10 +11,12 @@ function nDiff = comparePars(Pars1, Pars2)
 %% determine parameters to be ignored in comparision
 % in case of a power dependant measurement, ignore MWPW paramaters
 
+ParCheckIgnore = {'TITL', 'TIME', 'DATE', 'MWFQ', 'FrequencyMon', ...
+         'Flyback', 'XMIN', 'XWID', 'XMAX', 'StaticFieldMon', ...
+         'NbScansAcc', 'NbScansToDo'};
+
 if strcmp(Pars1.YTYP, 'IGD') == 1
-    ParCheckIgnore = {'TITL', 'TIME', 'MWFQ', 'FrequencyMon', 'Flyback', 'Power', 'PowerAtten', 'MWPW'};
-else
-    ParCheckIgnore = {'TITL', 'TIME', 'MWFQ', 'FrequencyMon', 'Flyback'};
+    ParCheckIgnore = [ParCheckIgnore, {'Power', 'PowerAtten', 'MWPW'}];
 end
 
 ParsNames1 = fieldnames(Pars1);
