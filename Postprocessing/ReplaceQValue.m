@@ -77,7 +77,7 @@ A = regexp( fileread(Path2Par), '\n', 'split');
 [~,d] = size(A);
 
 % find QValue entry or create new entry
-if isfield(Pars,'QValue')
+if isfield(Pars, 'QValue')
     for i = 1:d
         pos = strfind(A{i}, num2str(Pars.QValue));
         if pos > 0
