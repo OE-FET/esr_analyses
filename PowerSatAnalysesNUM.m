@@ -115,7 +115,7 @@ argout.yNorm = yNorm;
 %% Fit and plot results
 
 try
-fitresult = saturationCurveFit(argout.MicrowaveB(1:end),...
+fitresult = SaturationCurveFit(argout.MicrowaveB(1:end),...
     abs(argout.DoubleIntegrated(1:end)), argout.gValue);
 catch
     disp('Fit could not be performed.');

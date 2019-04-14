@@ -13,7 +13,7 @@ function nDiff = comparePars(Pars1, Pars2)
 
 ParCheckIgnore = {'TITL', 'TIME', 'DATE', 'MWFQ', 'FrequencyMon', ...
          'Flyback', 'XMIN', 'XWID', 'XMAX', 'StaticFieldMon', ...
-         'NbScansAcc', 'NbScansToDo'};
+         'NbScansAcc', 'NbScansToDo', 'OPER'};
 
 if strcmp(Pars1.YTYP, 'IGD') == 1
     ParCheckIgnore = [ParCheckIgnore, {'Power', 'PowerAtten', 'MWPW'}];
