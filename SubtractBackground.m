@@ -92,16 +92,16 @@ elseif offsetInterval == 0
 end
 
 %% plot results
-hold off;
 figure(1);
-
 subplot(2, 1, 1);
+hold on
 yoffset = max(max(yS))*0.5;
 % plot background
-StackPlot(xB + B_offset, yB, 'yoffset', yoffset, 'style', 'r');
+sp1 = StackPlot(xB + B_offset, yB, 'yoffset', yoffset, 'style', 'r');
 % plot signal
-hold on; StackPlot(xS, yS, 'yoffset', yoffset, 'style', 'b'); hold off;
-legend('background', 'signal')
+sp2 = StackPlot(xS, yS, 'yoffset', yoffset, 'style', 'b'); 
+hold off;
+legend([sp1(1) sp2(1)],{'background', 'signal'})
 
 % plot signal minus background
 subplot(2, 1, 2)
