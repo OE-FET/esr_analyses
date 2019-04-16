@@ -1,4 +1,4 @@
-function [fhandle, phandle] = StackPlot(x, y, varargin)
+function [phandle] = StackPlot(x, y, varargin)
 %STACKPLOT Plots data as stack plots
 %
 % 	SYNTAX:
