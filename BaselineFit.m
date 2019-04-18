@@ -38,7 +38,7 @@ ok = false;
 % re-promt for user input until user confirms good baseline correction
 while ~ok
     % plot spectrum
-    bffig = StackPlot(x, real(y));
+    StackPlot(x, real(y));
 
     % set title of plot
     title('Baseline Fit - Select area of spectrum');
@@ -89,7 +89,7 @@ while ~ok
     % plot for visual confirmation
     hold on;
     yL = get(gca,'YLim');
-    [~, phandle] = StackPlot(x, real(yfit), 'yoffset', 0.5*max(max(y)));    
+    phandle = StackPlot(x, real(yfit), 'yoffset', 0.5*max(max(y)));    
     set(phandle, 'Color', 'blue');
     ylim(gca, yL);
     for i = 1:2
@@ -99,7 +99,7 @@ while ~ok
     hold off;
 
     %% promt user for confirmation of fit
-    set(bffig,'Name','Baseline Fit - Verify baseline')
+    set(gcf,'Name','Baseline Fit - Verify baseline')
     answer = input('  Do you to redo fit and reselect baseline points?[N] ','s');
     if isempty(answer),     answer = 'n';   end
     if strcmpi(answer,'y')
@@ -109,9 +109,7 @@ while ~ok
     end
 end
 % close figure if it exists
-if any(findobj('Type','figure')==bffig)
-    close(bffig),                   
-end
+close(gcf)
 % subtact baseline 
 ycorr = y - yfit;
 % reshape spectrum to original form
