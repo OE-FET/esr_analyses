@@ -55,12 +55,33 @@ end
 [xS, yS, ParsS] = NormaliseSpectrum(xS, yS, ParsS);
 [xB, yB, ParsB] = NormaliseSpectrum(xB, yB, ParsB);
 
-% rescale for Q-value, modulation amplitude and mw power
+% rescale background for Q-value, modulation amplitude and mw power
 % WARNIG: All parameters affect both the signal amplitude and shape.
 % Therefore, be caucious when subtracting a backround signal with 
 % significantly different parameters.
-yB = yB * ParsS.QValue/ParsB.QValue * ParsS.B0MA/ParsB.B0MA * sqrt(ParsS.MWPW)/sqrt(ParsB.MWPW);
+Q_ratio = ParsS.QValue/ParsB.QValue;
+B0MA_ratio = ParsS.B0MA/ParsB.B0MA;
+Bmw_ratio = sqrt(ParsS.MWPW)/sqrt(ParsB.MWPW);
 
+if Q_ratio > 1.2 || Q_ratio < 0.8
+    disp(['Warning: Q-values differ by more than 20%.' newline ...
+          'The Q-value may impact the signal shape and' newline ...
+          'may prevent a proper background subtraction.']);
+end
+
+if Bmw_ratio > 1.2 || Bmw_ratio < 0.8
+    disp(['Warning: MW fields differ by more than 20%.' newline ...
+          'The MW field may impact the signal shape and' newline ...
+          'may prevent a proper background subtraction.']);
+end
+
+if B0MA_ratio > 1.2 || B0MA_ratio < 0.8
+    disp(['Warning: modulation amplitudes differ by more than 20%.' newline ...
+          'The modulation amplitude may impact the signal shape and' newline ...
+          'may prevent a proper background subtraction.']);
+end
+
+yB = yB * Q_ratio * B0MA_ratio * Bmw_ratio;
 
 %% Compare experimental conditions
 nDiff = comparePars(ParsS, ParsB);
