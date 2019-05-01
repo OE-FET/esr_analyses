@@ -75,24 +75,24 @@ yMod = yMod( 1:n ); % truncate data (reverse zero padding)
 yMod = ( 1i ) ^ Harmonic * yMod;  % swap real and imaginary parts depending on harmonic
 
 if isRowVector
-yMod = yMod';
+    yMod = yMod';
 end 
 
 yModInPhase = real( yMod ); % get in-phase data from real part
 
 % plot if output variable is specified
 if ( Display )
-subplot( 3, 1, 1 );
-plot( x, y );
-title( 'Original spectrum' );
-subplot( 3, 1, [ 2, 3 ] );
-plot( x, yModInPhase );
-xlabel( 'magnetic field [G]' );
-title( sprintf( 'Modulated spectrum, harmonic %d, modulation amplitude %g G', Harmonic, ModAmpl ) );
+    subplot(3, 1, 1);
+    plot(x, y);
+    title( 'Original spectrum');
+    subplot(3, 1, [ 2, 3 ]);
+    plot( x, yModInPhase );
+    xlabel('Magnetic field [G]');
+    title(sprintf( 'Modulated spectrum, harmonic %d, modulation amplitude %g G', Harmonic, ModAmpl));
 end 
 
 if ( nargout == 1 )
-varargout = { yModInPhase };
+    varargout = { yModInPhase };
 end 
 
 return 

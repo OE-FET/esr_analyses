@@ -1,6 +1,6 @@
 function [output, outputarray] = ESRAnalysesFIT(varargin)
 %ESRANALYESFIT performs normalization and spin-counting of an ESR signal by
-%fitting it to a Pseudo-Voigt function.
+%fitting it to a Voigt function.
 %   The ESR signal is normalised according to measurement conditions. If
 %   required, a background signal can be subtracted before performing the
 %   analyses.

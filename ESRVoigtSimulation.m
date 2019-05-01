@@ -1,5 +1,5 @@
 function [yn, y0, xpd, ypd_n] = ESRVoigtSimulation( x, B0, T1, T2, Bmw, Brms, n, modAmp)
-%ESRVOIGTIMULATION simulates the n-th harmonic detection of a Lorentzian
+%ESRVOIGTIMULATION simulates the n-th harmonic detection of a Voigtian
 %resonance with x-axis modulation.  
 %   Simulates the n-th harmonic detection of a Voigtian ESR resonance line.
 %
