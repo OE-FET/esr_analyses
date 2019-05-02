@@ -28,8 +28,8 @@ function [g_sample, B_res]= gfactor_determination(x, y, Pars, plotting)
 %
 %
 %   DEPENDENCIES:
-%   StackPlot.m
-%   DoubleIntNUM.m
+%   stackplot.m
+%   double_int_num.m
 %   b2g.m
 %
 
@@ -42,7 +42,7 @@ end
 
 %% Resonance center from maximum of 1st integral as first guess
 % integrate spectrum
-[~, Int1] = DoubleIntNUM(x, y, 'n');
+[~, Int1] = double_int_num(x, y, 'n');
 % find resonance peak at maximum
 [~, II] = max(Int1,[],1);
 B_res=x(II);
@@ -82,11 +82,11 @@ end
 % plot the result
 if plotting=='y'
     yoffset = 0.5*max(max(y));
-    hold off; StackPlot(x,y,'yoffset',yoffset);hold on;
+    hold off; stackplot(x,y,'yoffset',yoffset);hold on;
     xL=xlim;yL=ylim;
-    h1=StackPlot(B_res',zeros(length(B_res),1)','yoffset',yoffset);
+    h1=stackplot(B_res',zeros(length(B_res),1)','yoffset',yoffset);
     set(h1,'Marker','o','Color','r');
-    h2=StackPlot(x,zeros(size(y)),'yoffset',yoffset);
+    h2=stackplot(x,zeros(size(y)),'yoffset',yoffset);
     set(h2,'Color','k','LineWidth',1);
     xlim(gca,xL);ylim(gca,yL);
     hold off;

@@ -1,10 +1,10 @@
-function [argout] = PowerSatAnalysesLorentzFIT(varargin)
-%POWERSATANALYSESLORENTYFIT Fitting and analyses of CW-ESR power saturation
-%measurements
-%   [argout] = POWERSATANALYSESLORENTYFIT(varargin) Calculates power saturation
-%   curves of integrated intensity and maximum
-%   intensity. This programm fits the ESR signal with a Lorentzian derivative
-%   and then performs analytical integration.
+function [argout] = PowerSatAnalysesLorentzFit(varargin)
+%POWERSATANALYSESLORENTYFIT Analyses of CW-ESR power saturation measurements
+%
+%   [argout] = POWERSATANALYSESLORENTYFIT(varargin) Calculates power 
+%   saturation curves of integrated intensity and maximum
+%   intensity. This programm fits the ESR signal with a Lorentzian 
+%   derivative and then performs analytical integration.
 %
 %   Advantage: Long tails of the resonance peak are not negletcted.
 %   Disadvantage: Resonance curve has to be a Lorentzian.
@@ -14,9 +14,9 @@ function [argout] = PowerSatAnalysesLorentzFIT(varargin)
 %   INPUT(S):
 %   POWERSATANALYSESLORENTYFIT()          - opens gui to select data
 %   ...('signal_path')                    - path to signal data
-%   ...('signal_path','bg_path')          - path to signal data, path to
+%   ...('signal_path', 'bg_path')          - path to signal data, path to
 %                                           background data
-%   ...(x,y,pars)                         - magnetic field, intensity,
+%   ...(x, y, pars)                         - magnetic field, intensity,
 %                                           parameters
 %
 %   OUTPUT(S):
@@ -24,12 +24,12 @@ function [argout] = PowerSatAnalysesLorentzFIT(varargin)
 %
 %   DEPENDENCIES:
 %   BrukerRead.m
-%   NormaliseSpectrum.m
-%   SubtractBackground.m
+%   normalise_spectrum.m
+%   subtract_background.m
 %   ESRLorentzSimulation.m
 %   gfactor_determination.m
-%   MWmean.m
-%   getSamplePosition.m
+%   mw_mean.m
+%   get_sample_position.m
 %   Natural Constants
 %
 
@@ -42,23 +42,23 @@ switch nargin
 case 0
     str = input('Would you like to subtract a background signal? y/[n]: ', 's');
     if strcmpi(str, 'y') == 1
-        [x, y, Pars] = SubtractBackground;
+        [x, y, pars] = subtract_background();
     else
-        [x, y, Pars] = NormaliseSpectrum;
+        [x, y, pars] = BrukerRead();
+        [x, y, pars] = normalise_spectrum(x, y, pars);
     end
 case 1
-    Path = varargin{1};
-    [x, y, Pars] = NormaliseSpectrum(Path);
+    [x, y, pars] = BrukerRead(varargin{1});
+    [x, y, pars] = normalise_spectrum(x, y, pars);
 case 2
     PathSIG = varargin{1};
     PathBG  = varargin{2};
-    [x, y, Pars] = SubtractBackground(PathSIG, PathBG);
+    [x, y, pars] = subtract_background(PathSIG, PathBG);
 case 3
     x    = varargin{1};
     y    = varargin{2};
-    Pars = varargin{3};
-    
-    [x, y, Pars] = NormaliseSpectrum(x, y, Pars);
+    pars = varargin{3};
+    [x, y, pars] = normalise_spectrum(x, y, pars);
 end
 
 %%                         Calculate MW fields
@@ -66,29 +66,29 @@ end
 
 % Get Q value
 try
-    QValue = Pars.QValue;
+    QValue = pars.QValue;
 catch
     QValue = input('Please give cavity QValue:');
-    Pars.QValue = QValue;
+    pars.QValue = QValue;
 end
 
-if strcmp(Pars.YTYP, 'IGD')==1
-    Pmw = Pars.z_axis * 1E-3; % MW Power in W
+if strcmp(pars.YTYP, 'IGD')==1
+    Pmw = pars.z_axis * 1E-3; % MW Power in W
 else
     error('The specified file is not a 2D data file.');
 end
 
 % get measurement temperature
-if isfield(Pars, 'Temperature')==0
+if isfield(pars, 'Temperature')==0
     T = input('Please give measurement temperature in K [default = 298 K]:');
     if isempty(T)
         T = 298;
     end
-    Pars.Temperature = sprintf('%.1f K', T);
+    pars.Temperature = sprintf('%.1f K', T);
 end
 
 % ask for height and length of sample if not in Pars
-Pars    = getSamplePosition(Pars);
+pars    = get_sample_position(pars);
 
 % convert MWPW to magnetic field strength in Tesla
 % use Qref = 7500 and c = 2.0 for Nagoya files
@@ -96,24 +96,24 @@ Qref    = 8355;
 c       = 2.2;      % without cryostat mounted
 cCryo   = 2.2*1.3;  % with crystat, calibrated with gMarker
 
-f_mean  = MWmean(Pars);
+f_mean  = mw_mean(pars);
 Bmw     = f_mean * cCryo * sqrt(Pmw) * sqrt(QValue/Qref) * 1E-4; % in Tesla
 
 % normalise for measurement conditions
-[x, y] = NormaliseSpectrum(x, y, Pars);
+[x, y] = normalise_spectrum(x, y, pars);
 
 %%                      Get starting points for fit
 %%=========================================================================
 
 % get initial parameters for fit
-fit1 = PseudoVoigtFit(x, y(:,end));
+fit1 = pseudo_voigt_fit(x, y(:,end));
 
 Ipp = abs(fit1.a); % peak to peak amplitude
 Hpp = fit1.w; % peak to peak line width
 T2 = 2/sqrt(3) * 1/(gmratio * Hpp*1E-4);
 T1 = 2*T2;
 B0 = fit1.x0; % resonance center in Gauss
-modAmp = Pars.B0MA; % p2p modulation amplitude in Tesla
+modAmp = pars.B0MA; % p2p modulation amplitude in Tesla
 
 %%                          Perform Lorentz fit
 %%=========================================================================
@@ -123,13 +123,13 @@ var0 = [Ipp*1e6 T1 T2]; % vector with starting points
 [X, Y] = meshgrid(x, Bmw); Z = y; % grid data for fitting algorithm
 
 % function to minimize: sum of squared errors
-fitfunc = @(var) var(1)*ESRLorentzSimulation(X,B0,var(2),var(3),Y,1,modAmp);
+fitfunc = @(var) var(1)*ESRLorentzSimulation(X, B0, var(2), var(3), Y, 1, modAmp);
 sumofsquares = @(var) sum(sum( (fitfunc(var) - Z).^2) );
 
 % Fit model to data with fminsearch (Nelder Mead algorithm, much better
 % convergance than Levenberg Marquard or trust Region)
-% opt = optimset('TolFun',1e-7,'TolX',1e-7,'PlotFcns',@optimplotfval);
-opt = optimset('TolFun',1e-7,'TolX',1e-7);
+% opt = optimset('TolFun', 1e-7, 'TolX', 1e-7, 'PlotFcns', @optimplotfval);
+opt = optimset('TolFun', 1e-7, 'TolX', 1e-7);
 [ft_rslt, sumofsquares_error] = fminsearch(sumofsquares, var0, opt);
 
 A = abs(ft_rslt(1));
@@ -137,7 +137,7 @@ T1 = abs(ft_rslt(2));
 T2 = abs(ft_rslt(3));
 
 % get best fit curve
-zFit = ft_rslt(1)*ESRLorentzSimulation(X,B0,ft_rslt(2),ft_rslt(3),Y,1,modAmp);
+zFit = ft_rslt(1) * ESRLorentzSimulation(X, B0, ft_rslt(2), ft_rslt(3), Y, 1, modAmp);
 
 % get peak 2 peak linewidth
 zFit1 = zFit(:,1);
@@ -155,39 +155,39 @@ Xt = X'; Yt = Y';
 
 figure(3);
 hold off;
-scatter3(Xt(:), Yt(:), Z(:),'.k');
+scatter3(Xt(:), Yt(:), Z(:), '.k');
 hold on;
-surf(X, Y, zFit','FaceAlpha', 0.5, 'EdgeColor','none');
-legend('Data', 'Fit','Location','northeast')
+surf(X, Y, zFit', 'FaceAlpha', 0.5, 'EdgeColor', 'none');
+legend('Data', 'Fit', 'Location', 'northeast')
 
 figure(4);
 offset = max(max(y))*0.8;
 hold off;
-StackPlot(x,y,'yoffset',offset,'style','.k');
+stackplot(x, y, 'yoffset', offset, 'style', '.k');
 hold on;
-StackPlot(x,zFit,'yoffset',offset,'style','-r');
+stackplot(x, zFit, 'yoffset', offset, 'style', '-r');
 legend('Data');
 
 
 %% Susceptebility Calculation
 s = 1246.572123192064; % scaling factor for pseudo modulation
 LorentzArea = A* Bmw * pi ./( T2*gmratio*sqrt(1 + Bmw.^2*T1*T2*gmratio^2) );
-FittedAreas = s * Pars.B0MA * 1e4 * LorentzArea;
-Pars.GFactor = b2g(B0*1e-4, Pars.MWFQ);
+FittedAreas = s * pars.B0MA * 1e4 * LorentzArea;
+pars.GFactor = b2g(B0*1e-4, pars.MWFQ);
 
-[Chi, dChi] = SusceptebilityCalc(FittedAreas, Pars);
-[NSpin, dNSpin] = SpinCounting(FittedAreas, Pars);
+[Chi, dChi] = susceptebility_calc(FittedAreas, pars);
+[NSpin, dNSpin] = spincounting(FittedAreas, pars);
 
 %% Output
 
 % determine g-value
-g = b2g(B0*1e-4, Pars.MWFQ);
+g = b2g(B0*1e-4, pars.MWFQ);
 
 % create output structure
 argout.x = x;
 argout.y = y;
 argout.yFit = zFit;
-argout.Pars = Pars;
+argout.Pars = pars;
 
 argout.A = A;
 argout.T1 = T1;

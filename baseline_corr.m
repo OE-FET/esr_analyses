@@ -1,17 +1,18 @@
-function [ycorr, yfit] = BaselineFit(y)
-%BASELINEFIT Performs a baseline fit on the input data
-%   [ycorr, yfit] = BASELINEFIT(y) performs a baseline fit on the input data.
-%   The baseline regions can be be selected through a GUI, and the baseline is
-%   fitted as a spline through the smoothed data. Adjust the number points 
-%   to smooth over according to the noise in the data.
+function [ycorr, yfit] = baseline_corr(y)
+%BASELINE_CORR Performs a baseline correction on the input data.
 %
-%   OUTPUT:
+%   [ycorr, yfit] = baseline_corr(y) performs a baseline fit on the input 
+%   data. The baseline region can be be selected through a GUI, and the 
+%   baseline is fitted as a spline through the smoothed data. Adjust the 
+%   number points to smooth over according to the noise in the data.
+%
+%   OUTPUT(S):
 %   ycorr - baseline corrected spectrum
 %   yfit - fitted baseline
 %
 %   DEPENDENCIES:
-%   StackPlot.m
-%   PointInput.m
+%   stackplot.m
+%   point_input_gui.m
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
@@ -38,17 +39,17 @@ ok = false;
 % re-promt for user input until user confirms good baseline correction
 while ~ok
     % plot spectrum
-    StackPlot(x, real(y));
+    stackplot(x, real(y));
     fhandle = gcf;
 
     % set title of plot
     title('Baseline Fit - Select area of spectrum');
     % promt user for input of baseline areas
-    fprintf(['\n Now select the area of the spectrum,',...
-        '\n by indicating points with the curser.',...
+    fprintf(['\n Now select the area of the spectrum,', ...
+        '\n by indicating points with the curser.', ...
         '\n Press Enter key when done.\n'])
     % open GUI for input, accept only 2 points
-    [a, b] = PointInput(2);                                 %#ok
+    [a, b] = point_input_gui(2);                                 %#ok
     % round to integer values
     bounds = round(a.');
     bounds = sort(bounds);
@@ -77,18 +78,18 @@ while ~ok
     pss(pss > lst) = lst;
     yavg = zeros([npts, newdimy(2)]);
     for n = 1:npts
-        yavg(n,:) = mean(y(pss(n,1):pss(n,2),:),1);
+        yavg(n,:) = mean(y(pss(n,1):pss(n,2),:), 1);
     end
     %% perform baseline fit
     yfit = interp1(pts, yavg, x, method);
-    if size(yfit, 1)==1
+    if size(yfit, 1) == 1
         yfit = shiftdim(yfit, 1);    % make yfit a column if it is a row vector
     end
     
     % plot for visual confirmation
     hold on;
-    yL = get(gca,'YLim');
-    phandle = StackPlot(x, real(yfit), 'yoffset', 0.5*max(max(y)));    
+    yL = get(gca, 'YLim');
+    phandle = stackplot(x, real(yfit), 'yoffset', 0.5*max(max(y)));    
     set(phandle, 'Color', 'blue');
     ylim(gca, yL);
     for i = 1:2
@@ -97,21 +98,25 @@ while ~ok
     hold off;
 
     %% promt user for confirmation of fit
-    set(fhandle,'Name','Baseline Fit - Verify baseline')
-    answer = input('  Do you to redo fit and reselect baseline points?[N] ','s');
-    if isempty(answer),     answer = 'n';   end
-    if strcmpi(answer,'y')
+    set(fhandle, 'Name', 'Baseline Fit - Verify baseline')
+    answer = input('  Do you to redo fit and reselect baseline points?[N] ', 's');
+    if isempty(answer)
+        answer = 'n';
+    end
+    if strcmpi(answer, 'y')
         ok = false;
     else
         ok = true;
     end
 end
 % close figure if not already done by user
-if any(findobj('Type','figure')==fhandle)
-    close(bffig)                   
+if any(findobj('Type', 'figure') == fhandle)
+    close(fhandle)                   
 end
 % subtact baseline 
 ycorr = y - yfit;
 % reshape spectrum to original form
-ycorr = reshape(ycorr,dim);
-yfit = reshape(yfit,dim);
+ycorr = reshape(ycorr, dim);
+yfit = reshape(yfit, dim);
+
+end

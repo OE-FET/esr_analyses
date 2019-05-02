@@ -5,7 +5,7 @@ function [w] = complexErrorFunction(x,y)
 %   using the algorithm developed by Dr. F. Schreier and kindly presented
 %   in Fortran. The function was rewriten to MATLAB by Dr. N. Cherkasov
 %   For more details on algorithm see the publication:
-%   F. Schreier: Optimized Implementations of Rational Approximations for the Voigt ane Complex Error Function. 
+%   F. Schreier: Optimized Implementations of Rational Approximations for the voigt ane Complex Error Function. 
 %   J. Quant. Spectrosc. & Radiat. Transfer, 112(6), 10101025, doi 10.1016/j.jqsrt.2010.12.010, 2011. 
 %
 %   Briefly, the algorithm is compiled from two:

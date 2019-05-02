@@ -1,32 +1,26 @@
-function [ Nspin ] = Chi2Nspin( varargin)
-%NSPIN2CHI Convert the Curie susceptebility to anumber of spins. 
-%   [ Chi ] = Chi2Nspin( Nspin, T, S )
-% 	T and S are optional arguments. If not given, the user is promted to
-% 	input the temperature and S = 1/2 is used.
+function [n_spin] = chi2nspin(chi, T, S)
+%CHI2NSPIN Convert the Curie susceptebility to a number of spins.
+%   [n_spin] = chi2nspin(chi)
+%   [n_spin] = chi2nspin(chi, T)
+%   [n_spin] = chi2nspin(chi, T, S)
+%
+%   INPUT(S):
+%   chi - magnetc susceptibility in SI units
+%   T - temperature in Kelvin (default: T = 298)
+%   S - electron spin (default: S = 1/2)
+%
+% 	OUTPUT(S):
+%   n_spin - number of spins per cubic meters
 %
 % 	Dependencies:
 % 	natural constants
+%
 
 %% input analyses
-if nargin <1
-    error('Please give the number of spins as input argument.')
-elseif nargin < 2
-    Chi = varargin{1};
-    T = input('Please give the sample temperature in K:');
-    S = 1/2;
-elseif nargin < 3
-    Chi = varargin{1};
-    T = varargin{2};
-    S = 1/2;
-elseif nargin < 4
-    Chi = varargin{1};
-    T = varargin{2};
-    S = varargin{3};
-else 
-    error('Too many arguments given.')
-end
+if nargin < 3; S=1/2; end
+if nargin < 2; T=298; end
 
 %% Susceptebility calculation
-Nspin =  Chi * ( mu0 * S*(S+1)*gfree^2*bmagn^2 / (3 * boltzm *T)  )^(-1);
+n_spin =  chi * ( mu0 * S*(S+1)*gfree^2*bmagn^2 / (3 * boltzm *T)  )^(-1);
 
 end

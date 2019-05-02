@@ -11,12 +11,12 @@ function FF = fadf(z)
 %
 % REFERENCES
 % [1] S. M. Abrarov and B. M. Quine, Efficient algorithmic implementation
-%     of the Voigt/complex error function based on exponential series
+%     of the voigt/complex error function based on exponential series
 %     approximation, Appl. Math. Comput., 218 (2011) 1894-1902.
 %     http://doi.org/10.1016/j.amc.2011.06.072
 %
 % [2] S. M. Abrarov and B. M. Quine, On the Fourier expansion method
-%     for highly accurate computation of the Voigt/complex error function
+%     for highly accurate computation of the voigt/complex error function
 %     in a rapid algorithm, arXiv:1205.1768v1 (2012).
 %     http://arxiv.org/abs/1205.1768
 %

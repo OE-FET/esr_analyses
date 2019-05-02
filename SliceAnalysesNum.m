@@ -1,4 +1,4 @@
-function [output] = ESRAnalysesNUM(varargin)
+function [output] = SliceAnalysesNum(varargin)
 %ESRANALYESNUM performs normalization and spin-counting of an ESR signal by
 %numercial double integration.
 %   The ESR signal is normalised according to measurement conditions. If
@@ -26,13 +26,13 @@ function [output] = ESRAnalysesNUM(varargin)
 %                                 susceptibility
 %
 %   DEPENDENCIES:
-%   SubtractBackground.m
-%   NormaliseSpectrum.m
-%   MarkerCalib.m
+%   subtract_background.m
+%   normalise_spectrum.m
+%   gmarker_calib.m
 %   gfactor_determination.m
-%   SpinCounting.m
+%   spincounting.m
 %   num2clip.m
-%   getSamplePosition.m
+%   get_sample_position.m
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
@@ -45,20 +45,20 @@ switch nargin
     case 3
         x = varargin{1}; y = varargin{2}; Pars = varargin{3};
     case  2
-        [x,y,Pars]=SubtractBackground(varargin{1},  varargin{2});
+        [x,y,Pars]=subtract_background(varargin{1},  varargin{2});
     case 1
         str = input('Would you like to subtract a background signal? y/[n]','s');
         if strcmp(str,'y')
-            [x,y,Pars]=SubtractBackground(varargin{1});
+            [x,y,Pars]=subtract_background(varargin{1});
         else
-            [x,y,Pars]=NormaliseSpectrum(varargin{1});
+            [x,y,Pars]=normalise_spectrum(varargin{1});
         end
     case 0
         str = input('Would you like to subtract a background signal? y/[n]','s');
         if strcmp(str,'y')
-        [x,y,Pars]=SubtractBackground;
+        [x,y,Pars]=subtract_background;
         else
-        [x,y,Pars]=NormaliseSpectrum;
+        [x,y,Pars]=normalise_spectrum;
         end
 end
         
@@ -66,7 +66,7 @@ end
 % if a marker is used for g-factor calibration, normalise x-axis according
 % to marker position
 % this function does nothing if no marker signal is detected
-% [x,y,Pars]=MarkerCalib(x,y,Pars);
+% [x,y,Pars]=gmarker_calib(x,y,Pars);
 sample_g=gfactor_determination(x,y,Pars);
 
 % try to load sample temperature from parameter file
@@ -79,7 +79,7 @@ catch
 end
 
 % count the number of spins, accounting for MW field distribution in cavity
-[NSpin, dNSpin, Data] = SpinCounting(x,y,Pars);
+[NSpin, dNSpin, Data] = spincounting(x,y,Pars);
 
 % calculate suscepebility
 S = 1/2; mu0 = 4*pi*10^(-7);

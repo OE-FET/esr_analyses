@@ -1,27 +1,27 @@
-function [fitresult] = SaturationCurveFit(Bmw, IntI, g)
+function [fitresult] = saturation_area_fit(Bmw, DoubleIntI, g)
 
 %% Power saturation fit
 %
-% Fits power saturation of double integrated intensity to determine T1 * T2
+% Fits power saturation of double integrated intensity to determine T1*T2
 % with euqation:
 %
 % A*x/(gmratio*sqrt(1+gmratio^2*x^2*T1*T2)).
 %
 % A Markov chain Monte Carlo method is used for fitting.
 %
-% INPUT: 
+% INPUT(S): 
 % Bmw - microwave magnetic field in Tesla
-% IntI - double integrated ESR signal
+% DoubleIntI - double integrated ESR signal
 % g - optional: average (isotropic) g-value of sample. If not given, the
-% free electron g-value is used.
+%   free electron g-value is used.
 %
-% OUPUT:
+% OUPUT(S):
 % fitresult - structure containing all fitting parameters
 % gof - parameters giving quality of fit
 %
 %%
 
-x = Bmw; y = IntI;
+x = Bmw; y = DoubleIntI;
 
 % calculate gyromagnetic ratio used for the fit
 gm = gmratio;
@@ -30,8 +30,8 @@ if nargin==3
 end
 
 % determine starting values
-A0 = mean(1.1*IntI*gm./Bmw);
-T0 = mean( (A0^2*Bmw(end).^2 - IntI(end).^2*gm^2)./(Bmw(end).^2.*IntI(end).^2*gm^4) );
+A0 = mean(1.1*DoubleIntI*gm./Bmw);
+T0 = mean( (A0^2*Bmw(end).^2 - DoubleIntI(end).^2*gm^2)./(Bmw(end).^2.*DoubleIntI(end).^2*gm^4) );
 
 var0 = [A0, T0];
 
@@ -69,4 +69,3 @@ fitresult.dA = dA;
 fitresult.T1T2 = T1T2;
 fitresult.dT1T2 = dT1T2;
 end
-

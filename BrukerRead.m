@@ -1,6 +1,6 @@
 function varargout = BrukerRead(varargin)
-%BRUKERREAD Open Bruker BE3ST files (.DTA / .DSC or .spc/.par) into the
-%MATLAB workspace.
+%BRUKERREAD Load Bruker BE3ST files (.DTA / .DSC or .spc/.par).
+%
 %   BRUKERREAD()
 %   BRUKERREAD('/path/to/file')
 %   [x, y] = BRUKERREAD(...)

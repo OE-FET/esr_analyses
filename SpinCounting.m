@@ -1,10 +1,11 @@
-function [NSpin, dNSpin, Data] = SpinCounting(varargin)
-%SPINCOUNTING Performs spin-counting from epr spectrum
+function [NSpin, dNSpin, Data] = spincounting(varargin)
+%SPINCOUNTING Performs spin-counting from an EPR spectrum
 %   SYNTAX:
-%   [NSpin,dNSpin,Data] = SPINCOUNTING(x, y, Pars)
-%   [NSpin,dNSpin,Data] = SPINCOUNTING(Path2File)
-%   [NSpin,dNSpin,Data] = SPINCOUNTING()
-%   [NSpin,dNSpin,Data] = SPINCOUNTING(DoubleInt, Pars)
+%   [NSpin,dNSpin,Data] = spincounting(x, y, Pars)
+%   [NSpin,dNSpin,Data] = spincounting(Path2File)
+%   [NSpin,dNSpin,Data] = spincounting()
+%   [NSpin,dNSpin,Data] = spincounting(DoubleInt, Pars)
+%   [NSpin,dNSpin,Data] = spincounting(..., 'baseline', 'y')
 %
 %   OUTPUT:
 %   NSpin - number of spins
@@ -15,9 +16,9 @@ function [NSpin, dNSpin, Data] = SpinCounting(varargin)
 %   Data.Pars - experiment parameters
 %
 %   DEPENDENCIES:
-%   NormaliseSpectrum.m
-%   MWmean.m
-%   DoubleIntNUM.m
+%   normalise_spectrum.m
+%   mw_mean.m
+%   double_int_num.m
 %   Natural Constants
 %
 
@@ -26,23 +27,28 @@ function [NSpin, dNSpin, Data] = SpinCounting(varargin)
 
 %% INPUT PROCESSING
 
-narginchk(0, 4);
+narginchk(0, 6);
 
-baseline = 'y';
+try
+    baseline = get_varargin(varargin, 'baseline');
+    n_args = nargin - 2;
+catch
+    baseline = 'y';
+    n_args = nargin;
+end
 
-switch nargin
+switch n_args
     case 0
-        [x, y, Pars] = NormaliseSpectrum;
+        [x, y, Pars] = BrukerRead;
+        [x, y, Pars] = normalise_spectrum(x, y, Pars);
+    case 1
+        [x, y, Pars] = BrukerRead(varargin{1});
+        [x, y, Pars] = normalise_spectrum(x, y, Pars);
     case 2
         DoubleInt    = varargin{1};
         Pars         = varargin{2};
-    case 1
-        [x, y, Pars] = NormaliseSpectrum(varargin{1});
     case 3
-        [x, y, Pars] = NormaliseSpectrum(varargin{1}, varargin{2}, varargin{3});
-    case 4
-        [x, y, Pars] = NormaliseSpectrum(varargin{1},varargin{2},varargin{3});
-        baseline     = varargin{4};
+        [x, y, Pars] = normalise_spectrum(varargin{1}, varargin{2}, varargin{3});
 end
 
 % check if file is a sliced 2D spectrum. If yes, use MW power from slice
@@ -53,7 +59,7 @@ end
 
 %% account for MW field distribution in cavity
 try
-    position_correction = MWmean(Pars);
+    position_correction = mw_mean(Pars);
 catch
     fprintf(['MW field distribution in the cavity could not be read from the ' ...
         'DSC file.\nProceeding without correcting for the position of the '...
@@ -89,7 +95,7 @@ end
 
 % integrate the ESR spectrum twice
 if nargin ~=2
-    [DoubleInt, SingleInt, yCorr] = DoubleIntNUM(x, y, baseline);
+    [DoubleInt, SingleInt, yCorr] = double_int_num(x, y, baseline);
 end
 
 S=1/2;

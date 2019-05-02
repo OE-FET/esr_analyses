@@ -1,4 +1,4 @@
-function [yn] = ESRLorentzSimulation(x, B0, T1, T2, Bmw, n, modAmp)
+function [yn] = ESRLorentzSimulation(x, B0, T1, T2, Bmw, n, ModAmp)
 %ESRLORENTZSIMULATION simulates the n-th harmonic detection of a Lorentzian
 %resonance with x-axis modulation.   
 %   Simulates the n-th harmonic detection of a Lonretzian ESR resonance line:
@@ -12,14 +12,14 @@ function [yn] = ESRLorentzSimulation(x, B0, T1, T2, Bmw, n, modAmp)
 %   T1 - spin lattice relaxation time [sec]
 %   T2 - spin coherence time [sec]
 %   Bmw - vector with microwave magnetic field amplitudes [Tesla]
-%   modAmp - field modulation amplitude [Tesla]
+%   ModAmp - field modulation amplitude [Gauss]
 %   n - n-th harmonic detection
 %
 %   OUTPUT:
 %   yn - simulated n-th harmonic spectrum
 %
 %   DEPENDENCIES:
-%   fieldModSim.m
+%   field_mod_sim.m
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
@@ -36,8 +36,8 @@ len2 = round(length(x1)/2);
 xpd = padarray(x, [0, len2]);
 
 dx = median(diff(x1));
-xpd(:,1:len2) = ones(size(x,1),1) * linspace(min(x1)-len2*dx,min(x1)-dx,len2);
-xpd(:,len2+length(x1)+1:end) = ones(size(x,1),1) * linspace(max(x1)+dx,max(x1)+dx*len2,len2);
+xpd(:,1:len2) = ones(size(x,1), 1) * linspace(min(x1)-len2*dx, min(x1)-dx, len2);
+xpd(:,len2+length(x1)+1:end) = ones(size(x,1),1) * linspace(max(x1)+dx, max(x1)+dx*len2, len2);
 
 [~, Bmw] = meshgrid(xpd(1,:), Bmw(:,1));
 
@@ -50,7 +50,7 @@ ypd_n = zeros(size(xpd));
 
 % Calculate field modulated signal
 for i=1:size(ypd_0, 1)
-    ypd_n(i,:) = fieldModSim(xpd1, ypd_0(i,:), modAmp, n);
+    ypd_n(i,:) = field_mod_sim(xpd1, ypd_0(i,:), ModAmp, n);
 end
 
 % truncate edges

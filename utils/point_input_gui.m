@@ -1,27 +1,26 @@
-function [out1,out2,out3] = PointInput(arg1)
-%GINPUT Graphical input from mouse.
+function [out1,out2,out3] = point_input_gui(arg1)
+%POINT_INPUT_GUI Graphical input from mouse.
 %   [X,Y] = GINPUT(N) gets N points from the current axes and returns
 %   the X- and Y-coordinates in length N vectors X and Y.  The cursor
 %   can be positioned using a mouse.  Data points are entered by pressing
 %   a mouse button or any key on the keyboard except carriage return,
 %   which terminates the input before N points are entered.
 %
-%   [X,Y] = GINPUT gathers an unlimited number of points until the
+%   [X,Y] = POINT_INPUT_GUI gathers an unlimited number of points until the
 %   return key is pressed.
 %
-%   [X,Y,BUTTON] = GINPUT(N) returns a third result, BUTTON, that
+%   [X,Y,BUTTON] = POINT_INPUT_GUI(N) returns a third result, BUTTON, that
 %   contains a vector of integers specifying which mouse button was
 %   used (1,2,3 from left) or ASCII numbers if a key on the keyboard
 %   was used.
 %
 %   Examples:
-%       [x,y] = PointInput;
+%       [x,y] = point_input_gui;
 %
-%       [x,y] = PointInput(5);
+%       [x,y] = point_input_gui(5);
 %
-%       [x, y, button] = PointInput(1);
+%       [x, y, button] = point_input_gui(1);
 %
-%   See also GTEXT, WAITFORBUTTONPRESS.
 
 %   Copyright 1984-2015 The MathWorks, Inc.
 %   modified by SAM SCHOTT, 26/05/2016
@@ -29,7 +28,7 @@ function [out1,out2,out3] = PointInput(arg1)
 out1 = []; out2 = []; out3 = []; y = [];
 
 if ~matlab.ui.internal.isFigureShowEnabled
-    error(message('MATLAB:hg:NoDisplayNoFigureSupport', 'PointInput'))
+    error(message('MATLAB:hg:NoDisplayNoFigureSupport', 'point_input_gui'))
 end
     
     % Check Inputs
@@ -40,12 +39,12 @@ end
         how_many = arg1;
         b = [];
         if  ~isPositiveScalarIntegerNumber(how_many) 
-            error(message('MATLAB:PointInput:NeedPositiveInt'))
+            error(message('MATLAB:point_input_gui:NeedPositiveInt'))
         end
         if how_many == 0
             % If input argument is equal to zero points,
             % give a warning and return empty for the outputs.            
-            warning (message('MATLAB:PointInput:InputArgumentZero'));
+            warning (message('MATLAB:point_input_gui:InputArgumentZero'));
         end
     end
     
@@ -76,20 +75,20 @@ end
         if(waserr == 1)
             if(ishghandle(fig))
                 cleanup(c);
-                error(message('MATLAB:PointInput:Interrupted'));
+                error(message('MATLAB:point_input_gui:Interrupted'));
             else
                 cleanup(c);
-                error(message('MATLAB:PointInput:FigureDeletionPause'));
+                error(message('MATLAB:point_input_gui:FigureDeletionPause'));
             end
         end
-        % g467403 - PointInput failed to discern clicks/keypresses on the figure it was
+        % g467403 - point_input_gui failed to discern clicks/keypresses on the figure it was
         % registered to operate on and any other open figures whose handle
         % visibility were set to off
         figchildren = allchild(0);
         if ~isempty(figchildren)
             ptr_fig = figchildren(1);
         else
-            error(message('MATLAB:PointInput:FigureUnavailable'));
+            error(message('MATLAB:point_input_gui:FigureUnavailable'));
         end
         %         old code -> ptr_fig = get(0,'CurrentFigure'); Fails when the
         %         clicked figure has handlevisibility set to callback
@@ -108,7 +107,7 @@ end
                 elseif strcmp(button,'alt')
                     button = 3;
                 else
-                    error(message('MATLAB:PointInput:InvalidSelection'))
+                    error(message('MATLAB:point_input_gui:InvalidSelection'))
                 end
             end
             axes_handle = gca;
@@ -182,7 +181,7 @@ end
 drawnow;
 if(waserr == 1)
     set(h,'Accelerator','C');                          % Set back the accelerator if it errored out.
-    error(message('MATLAB:PointInput:Interrupted'));
+    error(message('MATLAB:point_input_gui:Interrupted'));
 end
 
 if nargout>0, key = keydown; end

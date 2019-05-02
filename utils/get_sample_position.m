@@ -1,4 +1,4 @@
-function Pars = getSamplePosition(Pars)
+function Pars = get_sample_position(Pars)
 
 % ask for height and length of sample if not in Pars
 

@@ -1,12 +1,11 @@
-function [ position_correction ] = MWmean( Pars )
-%% MWmean
-% Accounts for non-uniform MW field distribution in cavity by calculating
-% effective "f_mean" depending on the vertical position and length of
-% sample in cavity. The field distribution is calculated from the
+function [position_correction] = mw_mean(Pars)
+%MW_MEAN Accounts for non-uniform MW field distribution in cavity by 
+% calculating effective "f_mean" depending on the vertical position and 
+% length of sample in cavity. The field distribution is calculated from the
 % polynomian coefficients saved in the .DSC file by Xepr.
 %
 % DEPENDENCIES:
-% getSamplePosition.m
+% get_sample_position.m
 %
 
 %%
@@ -31,7 +30,7 @@ ResCenter = str2double(strtrim(regexprep(Pars.ResCenter, 'mm', '')));
 ResLength = str2double(strtrim(regexprep(Pars.ResLength, 'mm', '')));
 
 % ask for height and length of sample if not in Pars
-Pars = getSamplePosition(Pars);
+Pars = get_sample_position(Pars);
 
 % check is sample length is smaller than the cavity size
 % if length > ResLength, promt user to enter new value 3 times, then abort

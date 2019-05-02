@@ -1,6 +1,6 @@
-function [IArea,Int1,yCorr,Int2] = DoubleIntNUM(x,y,baseline)
-%DOUBLEINTNUM Numerical double integration of ESR signal
-%   [IArea,Int1,yCorr,Int2] = DOUBLEINTNUM(x,y,baseline) performs a numerical
+function [IArea,Int1,yCorr,Int2] = double_int_num(x,y,baseline)
+%double_int_num Numerical double integration of ESR signal
+%   [IArea,Int1,yCorr,Int2] = double_int_num(x,y,baseline) performs a numerical
 %   double integration of a given derivative ESR signal. It offers base-line
 %   corrections of both the derivative and integrated signal.
 %
@@ -17,8 +17,8 @@ function [IArea,Int1,yCorr,Int2] = DoubleIntNUM(x,y,baseline)
 %   yCorr - polynomial base line corrected ESR signalintensity
 %
 %   DEPENDENCIES:
-%   StackPlot.m
-%   BaselineFit.m
+%   stackplot.m
+%   baseline_corr.m
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
@@ -33,7 +33,7 @@ end
 if isequal(baseline,'y')   
     % plot spectrum itself
     hold off;
-    StackPlot(x,y);
+    stackplot(x,y);
 
     str = input('Would you like to smooth the spectrum y/[n]?','s');
 
@@ -57,11 +57,11 @@ yCorr = y;
 % perform baseline correction upon request
 if isequal(baseline,'y')
     % plot result from first integration
-    StackPlot(x,Int1);
+    stackplot(x,Int1);
     str = input('Would you like to perform a polynomial base line correction y/[n]?','s');
     if strcmp(str,'y') == 1
         % calculate baseline
-        Int1 = BaselineFit(Int1);
+        Int1 = baseline_corr(Int1);
         % differentiate baseline corrected first integral
         yCorr = diff(Int1)/(x(2)-x(1));
         % add lost data point to derivative
@@ -77,7 +77,7 @@ end
 
 % plot result for visual check
 if strcmp(baseline, 'y') == 1
-    StackPlot(x, Int2);
+    stackplot(x, Int2);
     pause(0.2);
 end
 

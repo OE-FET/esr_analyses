@@ -1,4 +1,4 @@
-function [xNorm,yNorm,Pars] = NormaliseSpectrum(varargin)
+function [x_norm, y_norm, pars] = normalise_spectrum(x, y, pars)
 %NORMALISESPECTRUM Normlizes a Bruker EPR spectrum for aquisiation
 %parameters
 % 	ESR data is normalised for receiver gain, number of scans (Ns = 1),
@@ -7,10 +7,8 @@ function [xNorm,yNorm,Pars] = NormaliseSpectrum(varargin)
 % 	flagged as normlised by setting Pars.Norm = 'True'.
 %
 % 	INPUT(S):
-% 	NORMALISESPECTRUM()           - prompts user for path input via GUI
-% 	NORMALISESPECTRUM(Path)       - loads data from specified path
-% 	NORMALISESPECTRUM(x,y,Pars)   - uses given data in (x,y) and experimental
-%                                 conditions from Pars
+% 	NORMALISESPECTRUM(x, y, Pars)   - uses given data in (x, y) and 
+%                                   experimental conditions from Pars
 %
 % 	OUTPUT(S): 
 % 	x_norm                        - B field [gauss] 
@@ -23,29 +21,16 @@ function [xNorm,yNorm,Pars] = NormaliseSpectrum(varargin)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
 
-%% Input analyses
-% load file
-narginchk(0,3);
-switch nargin
-    case 0
-        [x,y,Pars] = BrukerRead;
-    case 1
-        [x,y,Pars] = BrukerRead(varargin{1});
-    case 3
-        x=varargin{1};y=varargin{2};Pars=varargin{3};
-    otherwise
-        error('Inputting only two arguments is not accepted.');
-end
-
-%% normalise y-axis
-yNorm = y;
-if strcmp(Pars.SctNorm,'False') == 1 % check if y-axis already has been normalised
+y_norm = y;
+if strcmp(pars.SctNorm, 'False') == 1 % check if y-axis already has been normalised
     %--------------------------------------------------------------------
-    yNorm = 4.0134*y/(20*10^(Pars.RCAG/20)*Pars.AVGS*Pars.SPTP*1000);
+    y_norm = 4.0134*y/(20*10^(pars.RCAG/20)*pars.AVGS*pars.SPTP*1000);
     %--------------------------------------------------------------------
 end
 
-xNorm=x;
+x_norm=x;
+
 % Flag spectrum as normalised to prevent second normalization
-Pars.SctNorm = 'True';
+pars.SctNorm = 'True';
+
 end

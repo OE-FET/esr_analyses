@@ -1,6 +1,6 @@
-function nDiff = comparePars(Pars1, Pars2)
-%COMPAREPARS Compares experimental conditions ffom two ESR measurements
-%   nDiff = COMPAREPARS(Pars1, Pars2) compares the measurement parameters
+function n_diff = compare_pars(pars1, pars2)
+%COMPARE_PARS Compares experimental conditions ffom two ESR measurements
+%   nDiff = COMPARE_PARS(Pars1, Pars2) compares the measurement parameters
 %   Pars1 and Pars2 from two different ESR data sets and outputs the number
 %   of different parameters.
 %
@@ -15,12 +15,12 @@ ParCheckIgnore = {'TITL', 'TIME', 'DATE', 'MWFQ', 'FrequencyMon', ...
          'Flyback', 'XMIN', 'XWID', 'XMAX', 'StaticFieldMon', ...
          'NbScansAcc', 'NbScansToDo', 'OPER'};
 
-if strcmp(Pars1.YTYP, 'IGD') == 1
+if strcmp(pars1.YTYP, 'IGD') == 1
     ParCheckIgnore = [ParCheckIgnore, {'Power', 'PowerAtten', 'MWPW'}];
 end
 
-ParsNames1 = fieldnames(Pars1);
-ParsNames2 = fieldnames(Pars2);
+ParsNames1 = fieldnames(pars1);
+ParsNames2 = fieldnames(pars2);
 
 N = min(length(ParsNames1), length(ParsNames2));
 
@@ -28,16 +28,16 @@ comp = zeros(N, 1);
 
 for i = 1:N
     if isequal(ParsNames1(i), ParsNames2(i)) && ~StrInList(ParsNames1(i), ParCheckIgnore)
-        comp(i) = isequal(Pars1.(ParsNames1{i}), Pars2.(ParsNames2{i})) - 1;
+        comp(i) = isequal(pars1.(ParsNames1{i}), pars2.(ParsNames2{i})) - 1;
     end
 end
 
-nDiff = find(comp);
-if nDiff>0
+n_diff = find(comp);
+if n_diff>0
     fprintf(2, 'The following parameters are different:\n');
 end
-for i = nDiff'
-    disp([ParsNames1(i), Pars1.(ParsNames1{i}), 'vs', Pars2.(ParsNames2{i})]);
+for i = n_diff'
+    disp([ParsNames1(i), pars1.(ParsNames1{i}), 'vs', pars2.(ParsNames2{i})]);
 end
 
 end

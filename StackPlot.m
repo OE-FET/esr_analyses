@@ -1,9 +1,9 @@
-function [phandle] = StackPlot(x, y, varargin)
-%STACKPLOT Plots data as stack plots
+function [phandle] = stackplot(x, y, varargin)
+%STACKPLOT Plots data as in stacked plots.
 %
 % 	SYNTAX:
-% 	STACKPLOT(x, y)
-% 	STACKPLOT(x, y, 'xoffset', xoffset, 'yoffset', yoffset, 'style', stylestring)
+% 	stackplot(x, y)
+% 	stackplot(x, y, 'xoffset', xoffset, 'yoffset', yoffset, 'style', stylestring)
 %
 % 	Where yoffset is the degree to which plots are separated if more than
 % 	one plot is plotted onto one graph. Default is 0.5 times the spectrum hieght.
@@ -15,10 +15,10 @@ function [phandle] = StackPlot(x, y, varargin)
 % 	is used.
 %
 % 	OUTPUT(S):
-%   fhandle - figure handle
+%   phandle - plot handles
 %
 % 	EXAMPLE: 
-%   StackPlot(x, y, 'yoffset', 1.2, 'xoffset', 5)
+%   stackplot(x, y, 'yoffset', 1.2, 'xoffset', 5)
 %   Plots y against x with each spectrum (y) being moved up 1.2
 %   and across by 5 Gauss
 %
@@ -28,30 +28,9 @@ function [phandle] = StackPlot(x, y, varargin)
 
 %% Input Analyses
 
-for i=1:(nargin-2)
-    if strcmp(varargin{i}, 'xoffset') == 1
-        xoffset=varargin{i+1};
-    end
-end
-
-for i=1:(nargin-2)
-    if strcmp(varargin{i}, 'yoffset') == 1
-        yoffset = varargin{i+1};
-    end
-end
-
-for i=1:(nargin-2)
-    if strcmp(varargin{i}, 'style') == 1
-        style = varargin{i+1};
-    end
-end
-
-if exist('xoffset', 'var') == 0
-	xoffset = 0;
-end
-if exist('yoffset', 'var') == 0
-	yoffset = max(max(y))*0.5;
-end
+xoffset = get_varargin(varargin, 'xoffset', 0);
+yoffset = get_varargin(varargin, 'yoffset', max(max(y))*0.5);
+style = get_varargin(varargin, 'style', '');
 
 %% The actual programm 
 dimx = size(x);
@@ -76,16 +55,12 @@ else
     yNew = y;
 end
 
-fhandle = gcf;
-try
-    phandle = plot(xNew, yNew, style);
-catch
-    phandle = plot(xNew, yNew);
-end
+phandle = plot(xNew, yNew, style);
 
 xlabel('Magnetic field (Gauss)');
 ylabel('ESR signal (arb. units)');
 set(gcf, 'color', 'white');
+grid on;
 
 ymin = min(min(yNew)) - abs(0.5*max(max(y)));
 ymax = max(max(yNew)) + abs(0.5*max(max(y)));

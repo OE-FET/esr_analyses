@@ -1,4 +1,4 @@
-function [yn, y0, xpd, ypd_n] = ESRVoigtSimulation( x, B0, T1, T2, Bmw, Brms, n, modAmp)
+function yn = ESRVoigtSimulation(x, B0, T1, T2, Bmw, Brms, n, ModAmp)
 %ESRVOIGTIMULATION simulates the n-th harmonic detection of a Voigtian
 %resonance with x-axis modulation.  
 %   Simulates the n-th harmonic detection of a Voigtian ESR resonance line.
@@ -9,15 +9,15 @@ function [yn, y0, xpd, ypd_n] = ESRVoigtSimulation( x, B0, T1, T2, Bmw, Brms, n,
 %   T1 - spin lattice relaxation time [sec]
 %   T2 - spin coherence time [sec]
 %   Bmw - vector with microwave magnetic field amplitudes [Tesla]
-%   modAmp - field modulation amplitude [Tesla]
+%   ModAmp - field modulation amplitude [Gauss]
 %   n - n-th harmonic detection
 %
 %   OUTPUT:
 %   yn - simulated n-th harmonic spectrum
 %
 %   DEPENDENCIES:
-%   fieldModSim.m
-%   Voigt.m
+%   field_mod_sim.m
+%   voigt.m
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
@@ -27,7 +27,7 @@ function [yn, y0, xpd, ypd_n] = ESRVoigtSimulation( x, B0, T1, T2, Bmw, Brms, n,
 x = x*1e-4;
 B0 = B0*1e-4;
 Brms = Brms*1e-4;
-modAmp = modAmp*1e-4;
+ModAmp = ModAmp*1e-4;
 
 % extend x-range
 xstart = round(-0.2*length(x));
@@ -39,7 +39,7 @@ else
 end
 
 
-%% Calculate ESR Voigt signal (centered around zero)
+%% Calculate ESR voigt signal (centered around zero)
 
 ypd_0 = zeros(size(xpd))';
 ypd_n = zeros(size(xpd))';
@@ -51,15 +51,13 @@ for i=1:size(ypd_0,2)
     FWHMLorentz = 2/(gmratio*T2) * sqrt(1 + gmratio^2*Bmw1(i).^2*T1*T2);
 
     FWHMGauss = 2*sqrt(2*log(2))*Brms;
+    FWHMGauss = max(FWHMGauss, 1e-8);  % need finite value for voigt function
 
-    ypd_0(:,i) = Bmw1(i)/FWHMLorentz * Voigt(xpd1, B0, FWHMGauss, FWHMLorentz, 0);
-    ypd_n(:,i) = fieldModSim(xpd1, ypd_0(:,i), modAmp, n);
+    ypd_0(:,i) = Bmw1(i)/FWHMLorentz * voigtian(xpd1, B0, FWHMGauss, FWHMLorentz);
+    ypd_n(:,i) = field_mod_sim(xpd1, ypd_0(:,i), ModAmp, n);
 end
 
 % truncate edges
-y0 = reshape(ypd_0(ismember(xpd, x)'), fliplr(size(x)));
 yn = reshape(ypd_n(ismember(xpd, x)'), fliplr(size(x)));
-
-xpd = 1E4*xpd(1,:)';
 
 end

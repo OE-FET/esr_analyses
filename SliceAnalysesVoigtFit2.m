@@ -1,12 +1,12 @@
-function [output, outputarray] = ESRAnalysesFIT2(varargin)
+function [output, outputarray] = SliceAnalysesVoigtFit2(varargin)
 %ESRANALYESFIT2 performs normalization and spin-counting of an ESR signal by
-%fitting it to two Voigt functions.
+%fitting it to two voigt functions.
 %   The ESR signal is normalised according to measurement conditions. If
 %   required, a background signal can be subtracted before performing the
 %   analyses.
 %
 %   The total ESR intensity and spin susceptibility are determined by fitting
-%   the ESR resonance to two Pseudo-Voigt functions and subsequent analytical
+%   the ESR resonance to two Pseudo-voigt functions and subsequent analytical
 %   double integration. The number of spins in the sample is then calculated 
 %   by assuming that the sample follows a Curie-Weiss law. This assumption is
 %   valid when T >> E/2. X-Band EPR typically operates around B = 350 mT while
@@ -31,14 +31,14 @@ function [output, outputarray] = ESRAnalysesFIT2(varargin)
 %                                 and errors for easy copying
 %
 %   DEPENDENCIES:
-%   SubtractBackground.m
-%   NormaliseSpectrum.m
-%   MarkerCalib.m
+%   subtract_background.m
+%   normalise_spectrum.m
+%   gmarker_calib.m
 %   gfactor_determination.m
-%   SpinCounting.m
+%   spincounting.m
 %   num2clip.m
-%   PseudoVoigtFit.m
-%   getSamplePosition.m
+%   pseudo_voigt_fit.m
+%   get_sample_position.m
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
@@ -54,36 +54,36 @@ switch nargin
     case 0
         str = input('Would you like to subtract a background signal? y/[n]','s');
         if strcmp(str,'y')==1
-        [x, y, Pars] = SubtractBackground;
+        [x, y, Pars] = subtract_background;
         else
-        [x, y, Pars] = NormaliseSpectrum;
+        [x, y, Pars] = normalise_spectrum;
         end
     case 1
         Path = varargin{1};
         str = input('Would you like to subtract a background signal? y/[n]','s');
         if strcmp(str,'y') == 1
-            [x, y, Pars] = SubtractBackground(Path);
+            [x, y, Pars] = subtract_background(Path);
         else
-            [x, y, Pars] = NormaliseSpectrum(Path);
+            [x, y, Pars] = normalise_spectrum(Path);
         end
         
     case 2
         PathSIG = varargin{1};
         PathBG = varargin{2};
-        [x, y, Pars] = SubtractBackground(PathSIG, PathBG);
+        [x, y, Pars] = subtract_background(PathSIG, PathBG);
     case 3
         x = varargin{1}; y = varargin{2}; Pars = varargin{3};
-        [x, y, Pars] = NormaliseSpectrum(x, y, Pars);
+        [x, y, Pars] = normalise_spectrum(x, y, Pars);
     case 4
         x = varargin{1}; y = varargin{2}; Pars = varargin{3};
         var0 = varargin{4};
-        [x, y, Pars] = NormaliseSpectrum(x, y, Pars);
+        [x, y, Pars] = normalise_spectrum(x, y, Pars);
 end
 
 % if a marker is used for g-factor calibration, normalise x-axis according
 % to marker position
 % this function does nothing if no marker signal is detected
-[x, y, Pars] = MarkerCalib(x, y, Pars);
+[x, y, Pars] = gmarker_calib(x, y, Pars);
 
 % try to load sample temperature from parameter file
 % prompt user for entry if not found
@@ -94,32 +94,33 @@ catch
     Pars.Temperature = [num2str(T), ' K'];
 end
 
-Pars = getSamplePosition(Pars);
+Pars = get_sample_position(Pars);
 
 % convert MWPW to magnetic field strength in Tesla
 % use Qref = 7500 and c = 2.0 for Nagoya files
 Qref = 8355;
 c = 2.2;
 
-position_correction = MWmean(Pars);
+position_correction = mw_mean(Pars);
 
 Bmw = position_correction * c * sqrt(Pars.MWPW*1e3) * sqrt(Pars.QValue/Qref) * 1E-4; % in Tesla
 
-if ~exist('var0','var')
-    % get starting points for fit
-    fit1 = PseudoVoigtFit(x, y);
-
-    Ipp = abs(fit1.a); % peak to peak amplitude in Gauss
-    Hpp = fit1.w; % peak to peak line width in Gauss
-    T2 = 2/sqrt(3) * 1/(gmratio * Hpp*1E-4); % starting point for fit, sec
+if ~exist('var0', 'var')
+    % Get starting points for fit 
+    fit1 = pseudo_voigt_fit(x, y, 'deriv', 1);
+    Area = abs(fit1.a); % area under curve
+    FWHM_lorentz = fit1.FWHM_lorentz; % peak to peak line width in Gauss
+    FWHM_gauss = fit1.FWHM_gauss; % Gaussian linewidth in Gauss
     T1 = 1e-20; % starting point for fit, sec
+    T2 = 1/(gmratio * FWHM_lorentz*1E-4); % starting point for fit, sec
     B0 = fit1.x0; % resonance center in Gauss
-    var0 = [Ipp*0.005 B0 T2 Hpp*0.1 Ipp*0.005 B0 T2 Hpp*0.1];
+    var0 = [Area/2 B0 T2  FWHM_gauss Area/2 B0 T2 FWHM_gauss];
 end
 
 
 % function to minimize: sum of squared errors
-fitfunc = @(var) abs(var(1))*ESRVoigtSimulation(x, var(2), 1e-20, abs(var(3)), Bmw, abs(var(4)), 1, Pars.B0MA*1e4)' + abs(var(5))*ESRVoigtSimulation(x, var(6), 1e-20, abs(var(7)), Bmw, abs(var(8)), 1, Pars.B0MA*1e4)';
+fitfunc = @(var) abs(var(1))*ESRVoigtSimulation(x, var(2), T1, abs(var(3)), Bmw, abs(var(4)), 1, Pars.B0MA*1e4)' ...
+    + abs(var(5))*ESRVoigtSimulation(x, var(6), T1, abs(var(7)), Bmw, abs(var(8)), 1, Pars.B0MA*1e4)';
 sumofsquares = @(var) sum(sum( abs(fitfunc(var) - y).^2  ));
 
 % Fit model to data with fminsearch (Nelder Mead algorithm, much better
@@ -155,8 +156,8 @@ for i=1:length(var0)/4
     dArea(:,i) = s * Pars.B0MA * 1e4 * Bmw./FWHMLorentz(i) .* dA(i);
     Pars.GFactor = b2g(B0(i)*1e-4, Pars.MWFQ);
 
-    [Chi(i), dChi(i)] = SusceptebilityCalc(FittedArea(:,i), Pars);
-    [NSpin(i), dNSpin(i)] = SpinCounting(FittedArea(:,i), Pars);
+    [Chi(i), dChi(i)] = susceptebility_calc(FittedArea(:,i), Pars);
+    [NSpin(i), dNSpin(i)] = spincounting(FittedArea(:,i), Pars);
 end
 
 % and error margin
@@ -169,8 +170,8 @@ Bp2p = FWHMLorentz*1e4/sqrt(3);
 dBp2p = dFWHMLorentz*1e4/sqrt(3);
 
 % save data to output array
-outputarray = {T, Pars.GFactor, Brms, Bp2p, dBp2p, sum(Chi), sum(dChi), sum(NSpin), sum(dNSpin), SNR};
-outputnames = {'T','gfactor', 'Brms', 'Bp2p', 'dBp2p', 'Chi','dChi' ,'NSpin','dNSpin','SNR'};
+outputarray = {T, Pars.GFactor, Brms, dBrms, Bp2p, dBp2p, sum(Chi), sum(dChi), sum(NSpin), sum(dNSpin), SNR};
+outputnames = {'T','gfactor', 'Brms', 'dBrms', 'Bp2p', 'dBp2p', 'Chi','dChi' ,'NSpin','dNSpin','SNR'};
 
 for k=1:length(outputarray)
     output.(outputnames{k}) = outputarray(k);
@@ -181,10 +182,15 @@ output.y=y;
 
 output.T2 = T2;
 
-close all
-
-plot(x,y,'.');
-hold on
-plot(x, yFit);
+%Plot data and fit curve
+figure; hold on
+plot(x, y, '.', 'DisplayName', 'Experiment');
+plot(x, yFit, 'DisplayName', 'Fit');
+xlabel('Magnetic field [G]')
+ylabel('ESR signal [a.u.]')
+legend('show')
+xlim([x(1), x(end)]);
+grid on;
+hold off
 
 end
