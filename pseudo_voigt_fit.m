@@ -37,7 +37,8 @@ for i = 1:size(y, 2)
     %% Fit:
 
     % Set up fittype and options.
-    ft = fittype(@(a, x0, FWHM_gauss, FWHM_lorentz, x) a*pseudo_voigt(x, x0, FWHM_gauss, FWHM_lorentz, 'deriv', deriv), ...
+    ft = fittype(@(a, x0, FWHM_gauss, FWHM_lorentz, x) a*pseudo_voigt(...
+        x, x0, FWHM_gauss, FWHM_lorentz, 'deriv', deriv), ...
         'independent', 'x',  'dependent', 'y');
     opts = fitoptions('Method', 'NonlinearLeastSquares');
     opts.Display = 'Off';
@@ -56,12 +57,14 @@ for i = 1:size(y, 2)
     figure(f1);
     subplot(2, 1, 1);
     plot(xData, yData, '.', x, yfit, '-');
-    legend('Experimental (normalised)', 'Voigt Fit', 'Location', 'SouthWest' );
+    legend('Experiment', 'Pseudo-Voigt fit', 'Location', 'SouthWest');
+    axis tight; grid on;
 
     % Plot residuals.
     subplot(2, 1, 2);
     h = plot(xData, yData-yfit, '.', xData, zeros(1, length(x)), '-');
     legend(h, 'Residuals', 'Zero Line', 'Location', 'NorthEast');
+    axis tight; grid on;
 
     display(fitresult{i});
 

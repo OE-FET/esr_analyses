@@ -57,8 +57,6 @@ end
 
 phandle = plot(xNew, yNew, style);
 
-xlabel('Magnetic field (Gauss)');
-ylabel('ESR signal (arb. units)');
 set(gcf, 'color', 'white');
 grid on;
 

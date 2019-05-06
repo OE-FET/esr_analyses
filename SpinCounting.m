@@ -1,24 +1,25 @@
-function [NSpin, dNSpin, Data] = spincounting(varargin)
-%SPINCOUNTING Performs spin-counting from an EPR spectrum
-%   SYNTAX:
-%   [NSpin,dNSpin,Data] = spincounting(x, y, Pars)
-%   [NSpin,dNSpin,Data] = spincounting(Path2File)
-%   [NSpin,dNSpin,Data] = spincounting()
-%   [NSpin,dNSpin,Data] = spincounting(DoubleInt, Pars)
-%   [NSpin,dNSpin,Data] = spincounting(..., 'baseline', 'y')
+function [NSpin] = spincounting(doubleIntArea, pars, S)
+%SPINCOUNTING Spin-counting from the integrated EPR intensity.
+%   
+%   Determines the absolute number of spins in a sample from the
+%   double-integrated intensity of a 1st harmonic cw-EPR spectrum assuming 
+%   a Curie susceptibility. This assumption is valid for independent spins
+%   when T >> ?E/2. X-Band EPR typically operates around B = 350 mT while
+%   a field of up to 0.5 T corresponds to ?E/2 = 28.9 ueV. This still 
+%   remains far lower than the corresponding thermal energy of 450 µeV at
+%   5 K. 
 %
-%   OUTPUT:
+%   If the input argument S is not given, S = 1/2 is used.
+%
+%   SYNTAX:
+%   [NSpin] = spincounting(doubleIntArea, pars)
+%   [NSpin] = spincounting(doubleIntArea, pars, S)
+%
+%   OUTPUT(S):
 %   NSpin - number of spins
-%   dNSpin - estimated error
-%   Data.xNorm - x-axis data
-%   Data.yCorr - baseline corrected ESR spectrum
-%   Data.Int1 - integrated ESR spectrum
-%   Data.Pars - experiment parameters
 %
 %   DEPENDENCIES:
-%   normalise_spectrum.m
 %   mw_mean.m
-%   double_int_num.m
 %   Natural Constants
 %
 
@@ -26,113 +27,58 @@ function [NSpin, dNSpin, Data] = spincounting(varargin)
 %   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
 
 %% INPUT PROCESSING
+if nargin < 3; S = 1/2; end
 
-narginchk(0, 6);
-
-try
-    baseline = get_varargin(varargin, 'baseline');
-    n_args = nargin - 2;
-catch
-    baseline = 'y';
-    n_args = nargin;
-end
-
-switch n_args
-    case 0
-        [x, y, Pars] = BrukerRead;
-        [x, y, Pars] = normalise_spectrum(x, y, Pars);
-    case 1
-        [x, y, Pars] = BrukerRead(varargin{1});
-        [x, y, Pars] = normalise_spectrum(x, y, Pars);
-    case 2
-        DoubleInt    = varargin{1};
-        Pars         = varargin{2};
-    case 3
-        [x, y, Pars] = normalise_spectrum(varargin{1}, varargin{2}, varargin{3});
-end
-
-% check if file is a sliced 2D spectrum. If yes, use MW power from slice
-if isfield(Pars, 'PROCESS') && strcmp(Pars.PROCESS, '''prSlice''')
-    array = strsplit(Pars.Microwave);
-    Pars.MWPW = str2double(array{end})*1e-3;
-end
-
-%% account for MW field distribution in cavity
-try
-    position_correction = mw_mean(Pars);
-catch
-    fprintf(['MW field distribution in the cavity could not be read from the ' ...
-        'DSC file.\nProceeding without correcting for the position of the '...
-            'sample in the cavity.\n \n']);
-    position_correction=1;
-end
-
-%% Calculate number of Spins
-
-% Newer Bruker spectrometers save the cavity conversion factor in the DSC
-% file. Try to read it out, otherwise prompt user for input. 
-if isfield(Pars,'ConvFact')==0
-    Pars.ConvFact = input('Please input the cavity specific conversion factor (from spin counting calibration):\n[default = 9.2710e-09]\n');
-    if isempty(Pars.ConvFact)
-        Pars.ConvFact = 9.2710e-09;
+% get cavity calibration factor from pars or prompt for input
+if ~isfield(pars, 'ConvFact')
+    pars.ConvFact = input(['Please input the cavity specific ' ...
+        'conversion factor (from spin counting calibration):\n' ...
+        '[default = 9.2710e-09]\n']);
+    if isempty(pars.ConvFact)
+        pars.ConvFact = 9.2710e-09;
     end
 end
 
-% Get sample temperature from parameter file or promt user for input
-if isfield(Pars, 'Temperature')==0
-    T = input('Please give measurement temperature in K:\n[default = 298 K]\n');
-    if isempty(T)
-        T = 298;
-    end
+% get QValue from pars or promt user for input
+if ~isfield(pars, 'QValue')
+    pars.QValue = input('Please give the cavity Q-value: ');
+end
+
+
+% get measurement temperature
+if isfield(pars, 'Temperature')
+    T = str2double(strtrim(regexprep(pars.Temperature,'K','')));
 else
-    T = str2double(strtrim(regexprep(Pars.Temperature,'K','')));
+    T = input('Please give measurement temperature in K [default = 298 K]: ');
+    if isempty(T); T = 298; end
 end
 
-% get QValue from parameter file or promt user for input
-if isfield(Pars, 'QValue')==0
-    Pars.QValue=input('Please give cavity Q-value: ');
+%% CALCULATE NSPIN
+try
+    position_correction = mw_mean(pars);
+catch
+    fprintf(['MW field distribution in the cavity could not be read ' ...
+        'from the DSC file.\nProceeding without correcting for the '...
+        'position of the sample in the cavity.\n \n']);
+    position_correction = 1;
 end
 
-% integrate the ESR spectrum twice
-if nargin ~=2
-    [DoubleInt, SingleInt, yCorr] = double_int_num(x, y, baseline);
-end
-
-S=1/2;
-
-boltzman_factor = planck*Pars.MWFQ / (boltzm*T);
-
-% Get MW powers
-if strcmp(Pars.YTYP, 'IGD')==1
-    Pmw = Pars.z_axis/1000; % MW Power in W
+% get MW power(s)
+if strcmp(pars.YTYP, 'IGD')
+    Pmw = pars.z_axis/1000; % MW Power in W
 else
-    Pmw = Pars.MWPW;
+    Pmw = pars.MWPW;
 end
 
-% calculate the number of spins in the sample
-% make sure to adjust the calibration factor k for every cavity
+% cavity and MW bridge calibration factors
+k = 200/(pars.BridgeCalib * pars.ConvFact);
 
-% Cavity and Bridge calibration factor
-k = 200/(Pars.BridgeCalib * Pars.ConvFact);
+% boltzmann factor
+boltzman_factor = planck*pars.MWFQ / (boltzm*T);
 
-NSpin = k * DoubleInt ./ (Pars.QValue * sqrt(Pmw) * Pars.B0MA * S*(S+1) * ...
-    boltzman_factor * position_correction);
-
-% estimate the error
-dI = 0.04*DoubleInt;
-dQ = 0.03*Pars.QValue;
-
-dNSpin = dI.*NSpin./DoubleInt + dQ*NSpin/Pars.QValue;
-
-% create ouput data structure
-if nargin ~= 2
-    Data.x          = x;
-    Data.yCorr      = yCorr;
-    Data.SingleInt  = SingleInt;
-    Data.DoubleInt  = DoubleInt;
-    Data.Pars       = Pars;
-else
-    Data = {};
-end
+% -------------------------------------------------------------------------
+NSpin = k * doubleIntArea ./ (pars.QValue * sqrt(Pmw) * pars.B0MA * ...
+     S*(S+1) * boltzman_factor * position_correction);
+% -------------------------------------------------------------------------
 
 end

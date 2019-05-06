@@ -1,18 +1,22 @@
-function yn = ESRVoigtSimulation(x, B0, T1, T2, Bmw, Brms, n, ModAmp)
+function yn = ESRVoigtSimulation(x, B0, T1, T2, Brms, Bmw, modAmp, n)
 %ESRVOIGTIMULATION simulates the n-th harmonic detection of a Voigtian
-%resonance with x-axis modulation.  
+% resonance with x-axis modulation. 
+%
 %   Simulates the n-th harmonic detection of a Voigtian ESR resonance line.
+%   If no modulation amplitude and harmonic are given, the ESR absorption
+%   signal without field modulation is returned.
 %
-%   INPUT:
-%   x - vector with external magnetic fields [Gauss]
-%   B0 - resonance center [Gauss]
-%   T1 - spin lattice relaxation time [sec]
-%   T2 - spin coherence time [sec]
-%   Bmw - vector with microwave magnetic field amplitudes [Tesla]
-%   ModAmp - field modulation amplitude [Gauss]
-%   n - n-th harmonic detection
+%   INPUT(S):
+%   x       - vector with external magnetic fields [Gauss]
+%   B0      - resonance center [Gauss]
+%   T1      - spin lattice relaxation time [sec]
+%   T2      - spin coherence time [sec]
+%   Brms    - Root-mean-square of ihomogeneous (Gaussian) fields [Gauss]
+%   Bmw     - vector with microwave magnetic field amplitudes [Tesla]
+%   modAmp  - field modulation amplitude [Gauss]
+%   n       - n-th harmonic detection
 %
-%   OUTPUT:
+%   OUTPUT(S):
 %   yn - simulated n-th harmonic spectrum
 %
 %   DEPENDENCIES:
@@ -27,37 +31,33 @@ function yn = ESRVoigtSimulation(x, B0, T1, T2, Bmw, Brms, n, ModAmp)
 x = x*1e-4;
 B0 = B0*1e-4;
 Brms = Brms*1e-4;
-ModAmp = ModAmp*1e-4;
-
-% extend x-range
-xstart = round(-0.2*length(x));
-xstop = round(1.2*length(x));
-if size(x,2)==1
-    xpd = interp1(x', xstart:xstop, 'linear', 'extrap');
-else
-    xpd = interp1(x', xstart:xstop, 'linear', 'extrap')';
-end
-
+if nargin > 6; modAmp = modAmp*1e-4; end
 
 %% Calculate ESR voigt signal (centered around zero)
-
-ypd_0 = zeros(size(xpd))';
-ypd_n = zeros(size(xpd))';
-xpd1 = xpd(1,:);
+x1 = x(1,:);
+y0 = zeros(size(x))';
+if nargin > 6; yn = zeros(size(x))'; end
 Bmw1 = Bmw(:,1);
 
-for i=1:size(ypd_0,2)
-
-    FWHMLorentz = 2/(gmratio*T2) * sqrt(1 + gmratio^2*Bmw1(i).^2*T1*T2);
-
+if Brms == 0
+    FWHMGauss = 1e-12; % need a finite value
+else
     FWHMGauss = 2*sqrt(2*log(2))*Brms;
-    FWHMGauss = max(FWHMGauss, 1e-8);  % need finite value for voigt function
-
-    ypd_0(:,i) = Bmw1(i)/FWHMLorentz * voigtian(xpd1, B0, FWHMGauss, FWHMLorentz);
-    ypd_n(:,i) = field_mod_sim(xpd1, ypd_0(:,i), ModAmp, n);
 end
 
-% truncate edges
-yn = reshape(ypd_n(ismember(xpd, x)'), fliplr(size(x)));
+for i=1:size(y0, 2)
+
+    saturation_factor = sqrt(1 + gmratio^2*Bmw1(i).^2*T1*T2);
+    FWHMLorentz = 2/(gmratio*T2) * saturation_factor;
+    area_scaling = Bmw1(i) / saturation_factor;
+
+    y0(:,i) = area_scaling * voigtian(x1, B0, FWHMGauss, FWHMLorentz);
+
+    if nargin > 6
+        yn(:,i) = field_mod_sim(x1, y0(:,i), modAmp, n);
+    else
+        yn = y0;
+    end
+end
 
 end

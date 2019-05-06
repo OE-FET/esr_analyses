@@ -26,17 +26,19 @@ function [y] = lorentzian(x, x0, FWHM, varargin)
 
 n = get_varargin(varargin, 'deriv', 0);
 
-hwhm = FWHM/2;  % HWHM
+HWHM = FWHM/2;
 x = x - x0;
 
 if n == 0
-    y = hwhm./(pi*(x.^2 + hwhm^2));
+    y = HWHM./(pi*(x.^2 + HWHM^2));
 elseif n == 1
-    y = -2*x*hwhm ./(pi*(x.^2 + hwhm^2).^2);
-else
+    y = -2*x*HWHM ./(pi*(x.^2 + HWHM^2).^2);
+elseif n > 1
     syms L(x_data);
-    L(x_data) = hwhm./(pi*(x_data.^2 + hwhm^2));
+    L(x_data) = HWHM./(pi*(x_data.^2 + HWHM^2));
     dL(x_data) = diff(L(x_data), x_data, n);
     l = @(x) double(dL(x));
     y = l(x);
+end
+
 end

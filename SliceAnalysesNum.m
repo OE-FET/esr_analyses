@@ -1,16 +1,13 @@
-function [output] = SliceAnalysesNum(varargin)
+function [argout] = SliceAnalysesNum(varargin)
 %ESRANALYESNUM performs normalization and spin-counting of an ESR signal by
 %numercial double integration.
+%
 %   The ESR signal is normalised according to measurement conditions. If
 %   required, a background signal can be subtracted before performing the
 %   analyses.
 %
 %   The total ESR intensity and spin susceptibility are determined by
-%   numerical double-integration. The number of spins is then calculated 
-%   by assuming that the sample follows a Curie-Weiss law. This assumption is
-%   valid when T >> E/2. X-Band EPR typically operates around B = 350 mT while
-%   a field of up to 0.5 T corresponds to E/2 = 28.9 ueV. This still remains
-%   far lower than the corresponding thermal energy of 450 ueV at 5 K. 
+%   numerical double-integration. 
 %
 %   INPUT(S):
 %   ESRAnalysesNUM()            - prompts user for spectrum file
@@ -19,89 +16,36 @@ function [output] = SliceAnalysesNum(varargin)
 %   ...NUM(x,y,Pars)            - field, signal, and spectral params
 %
 %   OUTPUT(S):
-%   output                      - output structure containing the
-%                                 normalized spectra, measurement conditions,
-%                                 fitting parameters with errors, and the
-%                                 calculated number of spins and
+%   argout                      - output structure containing (x, y, pars)
+%                                 and the calculated number of spins and
 %                                 susceptibility
-%
-%   DEPENDENCIES:
-%   subtract_background.m
-%   normalise_spectrum.m
-%   gmarker_calib.m
-%   gfactor_determination.m
-%   spincounting.m
-%   num2clip.m
-%   get_sample_position.m
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2018/07/05 12:58 $    $Revision: 1.1 $
 
-% load and normalise spectrum, subtract a background spectrum if requested
 close all
 
-switch nargin
-    case 3
-        x = varargin{1}; y = varargin{2}; Pars = varargin{3};
-    case  2
-        [x,y,Pars]=subtract_background(varargin{1},  varargin{2});
-    case 1
-        str = input('Would you like to subtract a background signal? y/[n]','s');
-        if strcmp(str,'y')
-            [x,y,Pars]=subtract_background(varargin{1});
-        else
-            [x,y,Pars]=normalise_spectrum(varargin{1});
-        end
-    case 0
-        str = input('Would you like to subtract a background signal? y/[n]','s');
-        if strcmp(str,'y')
-        [x,y,Pars]=subtract_background;
-        else
-        [x,y,Pars]=normalise_spectrum;
-        end
-end
-        
+[x, y, pars] = load_spectrum_dialog(varargin);
 
-% if a marker is used for g-factor calibration, normalise x-axis according
-% to marker position
-% this function does nothing if no marker signal is detected
-% [x,y,Pars]=gmarker_calib(x,y,Pars);
-sample_g=gfactor_determination(x,y,Pars);
+%%                         Perform numercial analyses
+%%=========================================================================
 
-% try to load sample temperature from parameter file
-% prompt user for entry if not found
-try
-    T = str2double(strtrim(regexprep(Pars.Temperature,'K','')));
-catch
-    T = input('Please give the measurement temperature in Kelvin:');
-    Pars.Temperature = [num2str(T), ' K'];
-end
+pars.GFactor = gfactor_determination(x, y, pars, 'plot', 'y');
 
-% count the number of spins, accounting for MW field distribution in cavity
-[NSpin, dNSpin, Data] = spincounting(x,y,Pars);
+doubleIntArea = double_int_num(x, y, 'baseline', 'y');
 
-% calculate suscepebility
-S = 1/2; mu0 = 4*pi*10^(-7);
-Chi = NSpin .* (mu0 * S*(S+1) * sample_g.^2 * bmagn^2)/(3*boltzm*T );
+Chi = susceptebility_calc(doubleIntArea, pars);
+NSpin = spincounting(doubleIntArea, pars);
 
-% and error margin
-dChi = dNSpin*Chi/NSpin;
+%%                                Output
+%%=========================================================================
 
-% save data to output array
-outputarray={T, 100/T, sample_g, Chi, dChi, NSpin, dNSpin};
-outputnames={'T', 'InverseT', 'g', 'Chi', 'dChi', 'NSpin', 'dNSpin'};
+argout.x        = x;
+argout.y        = y;
+argout.pars     = pars;
 
-for k=1:length(outputarray)
-    output.(outputnames{k})=outputarray(k);
-end
-
-% save output array to base workspace
-assignin('base', 'outputarray', outputarray);
-% save output array to clipboard
-copy(outputarray);
-
-output.xNorm=x;
-output.yNorm=Data.yCorr;
+argout.Chi      = Chi;
+argout.NSpin    = NSpin;
 
 end

@@ -58,12 +58,14 @@ for i = 1:size(y, 2)
     figure(f1);
     subplot(2, 1, 1);
     plot(xData, yData, '.', x, yfit, '-');
-    legend('Experimental (normalised)', 'Voigt Fit', 'Location', 'SouthWest' );
+    legend('Experiment', 'Lorentz Fit', 'Location', 'SouthWest');
+    axis tight; grid on;
 
     % Plot residuals.
     subplot(2, 1, 2);
     h = plot(xData, yData-yfit, '.', xData, zeros(1, length(x)), '-');
     legend(h, 'Residuals', 'Zero Line', 'Location', 'NorthEast');
+    axis tight; grid on;
 
     display(fitresult{i});
 

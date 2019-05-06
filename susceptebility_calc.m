@@ -1,20 +1,23 @@
-function [Chi, dChi] = susceptebility_calc(DoubleIntArea, Pars)
-%SUSCEPTEBILITY_CALC calculates the magnetic susceptebility from given 
-% integrated area of an EPR spectrum and measurement parameters
+function [Chi] = susceptebility_calc(doubleIntArea, pars)
+%SUSCEPTEBILITY_CALC Susceptebility calculation from the integrated EPR
+%intensity.
+%
+%   Determines the magnetic susceptibility times unit volume from the
+%   double-integrated intensity of a 1st harmonic cw-EPR spectrum.
 %
 %   SYNTAX:
-%   [Chi, dChi, Data] = susceptebility_calc(DoubleIntArea, Pars)
+%   Chi = susceptebility_calc(doubleIntArea, pars)
 %
 %   INPUT(S):
-%   DoubleIntArea - Integrated area of absorption EPR spectrum or double 
-%       integral from 1st harmonic spectrum
-%   Pars - structure containing measurement parameters from EPR experiment
+%   doubleIntArea - Integrated area of absorption EPR spectrum or double 
+%                   integral from 1st harmonic spectrum
+%   pars - structure containing measurement parameters from EPR experiment
 %
 %   OUTPUT(S):
-%   Chi - magnetic susceptebility
-%   dChi - estimated error
+%   Chi - magnetic susceptebility in m^3
 %
 %   DEPENDENCIES:
+%   mw_mean.m
 %   Natural Constants
 %
 
@@ -22,62 +25,50 @@ function [Chi, dChi] = susceptebility_calc(DoubleIntArea, Pars)
 %   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
 
 %% INPUT PROCESSING
-
-% check if file is a sliced 2D spectrum. If yes, use MW power from slice
-if isfield(Pars, 'PROCESS') && strcmp(Pars.PROCESS, '''prSlice''')
-    array = strsplit(Pars.Microwave);
-    Pars.MWPW = str2double(array{end})*1e-3;
-end
-
-%% account for MW field distribution in cavity
-try
-    position_correction = mw_mean(Pars);
-catch
-    fprintf(['MW field distribution in the cavity could not be read from the ' ...
-        'DSC file.\nProceeding without correcting for the position of the '...
-            'sample in the cavity.\n \n']);
-    position_correction=1;
-end
-
-%% Calculate susceptebility
-
-% Newer Bruker spectrometers save the cavity conversion factor in the DSC
-% file. Try to read it out, otherwise prompt user for input. 
-if isfield(Pars, 'ConvFact')==0
-    Pars.ConvFact = input('Please input the cavity specific conversion factor (from spin counting calibration):\n[default = 9.2710e-09]\n');
-    if isempty(Pars.ConvFact)
-        Pars.ConvFact = 9.2710e-09;
+% get cavity calibration factor from pars or prompt for input
+if ~isfield(pars, 'ConvFact')
+    pars.ConvFact = input(['Please input the cavity specific ' ...
+        'conversion factor (from spin counting calibration):\n' ...
+        '[default = 9.2710e-09]\n']);
+    if isempty(pars.ConvFact)
+        pars.ConvFact = 9.2710e-09;
     end
 end
 
-% get QValue from parameter file or promt user for input
-if isfield(Pars, 'QValue')==0
-    Pars.QValue = input('Please give cavity Q-value: ');
+% get QValue from pars or promt user for input
+if ~isfield(pars, 'QValue')
+    pars.QValue = input('Please give the cavity Q-value: ');
 end
 
-% get g-factor from parametr file
-sample_g = Pars.GFactor;
+%% CALCULATE SUSCEPTIBILITY
+try
+    position_correction = mw_mean(pars);
+catch
+    fprintf(['MW field distribution in the cavity could not be read ' ...
+        'from the DSC file.\nProceeding without correcting for the '...
+        'position of the sample in the cavity.\n \n']);
+    position_correction = 1;
+end
 
-% get MW powers
-if strcmp(Pars.YTYP, 'IGD')==1
-    Pmw = Pars.z_axis/1000; % MW Power in W
+% get MW power(s)
+if strcmp(pars.YTYP, 'IGD')
+    Pmw = pars.z_axis/1000; % MW Power in W
 else
-    Pmw = Pars.MWPW;
+    Pmw = pars.MWPW;
 end
 
-% make sure to adjust the calibration factor k for every cavity
+% get g-factor from pars
+sample_g = pars.GFactor;
 
-% get cavity and Bridge calibration factor
-k = 200/(Pars.BridgeCalib * Pars.ConvFact);
+% cavity and MW bridge calibration factors
+k = 200/(pars.BridgeCalib * pars.ConvFact);
 
 % normalization factor for measurement conditions
-norm = (Pars.QValue * sqrt(Pmw) * Pars.B0MA * position_correction);
+norm = (pars.QValue * sqrt(Pmw) * pars.B0MA * position_correction);
 
-Chi = mu0* k * DoubleIntArea .* sample_g.^2 .* bmagn^2 ./ (3 * planck * Pars.MWFQ  * norm);
-
-% estimate the error
-dI   = 0.04*DoubleIntArea;
-dQ   = 0.03*Pars.QValue;
-dChi = dI.*Chi./DoubleIntArea + dQ.*Chi./Pars.QValue;
+% -------------------------------------------------------------------------
+Chi = mu0* k * doubleIntArea .* sample_g.^2 .* bmagn^2 ./ (3 * ...
+    planck * pars.MWFQ  * norm);
+% -------------------------------------------------------------------------
 
 end
