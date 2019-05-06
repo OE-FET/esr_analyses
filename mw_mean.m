@@ -1,12 +1,12 @@
 function [position_correction] = mw_mean(Pars)
-%MW_MEAN Accounts for non-uniform MW field distribution in cavity by 
-% calculating effective "f_mean" depending on the vertical position and 
+%MW_MEAN Accounts for non-uniform MW field distribution in cavity by
+% calculating effective "f_mean" depending on the vertical position and
 % length of sample in cavity. The field distribution is calculated from the
 % polynomian coefficients saved in the .DSC file by Xepr.
 %
-% DEPENDENCIES:
-% get_sample_position.m
-%
+
+%   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %%
 % read string with polymer coefficients for Bmw distribution
@@ -35,7 +35,7 @@ Pars = get_sample_position(Pars);
 % check is sample length is smaller than the cavity size
 % if length > ResLength, promt user to enter new value 3 times, then abort
 count = 0;
-while Pars.SampleL > ResLength 
+while Pars.SampleL > ResLength
     disp('Sample length is larger than the cavity height. Please enter a valid sample length.');
     Pars.SampleL = input('Please give sample length in mm:\n[default = 20 mm]\n');
     if isempty(Pars.SampleL);Pars.SampleL=25;end

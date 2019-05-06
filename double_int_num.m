@@ -1,32 +1,33 @@
 function [IArea, Int1, yCorr, Int2] = double_int_num(x, y, varargin)
 %DOUBLE_INT_NUM Numerical double integration of signal.
 %
-%   Performs a numerical double integration of a given signal. It offers an
-%   optional base-line correction prior to numerical integration.
+%   Performs a numerical double integration of a given signal. It offers
+%   optional base-line correction and smoothing steps prior to numerical
+%   integration.
 %
 %   SYNTAX:
-%   [IArea, Int1, yCorr, Int2] = double_int_num(x, y)
-%   [IArea, Int1, yCorr, Int2] = double_int_num(x, y, 'baseline', 'n')
+%   [IArea, Int1, yCorr, Int2] = DOUBLE_INT_NUM(x, y)
+%   [IArea, Int1, yCorr, Int2] = DOUBLE_INT_NUM(x, y, 'baseline', 'n')
 %
-%   INPUT:
+%   INPUT(S):
 %   x - vector with magnetic field
 %   y - vector with ESR signal intensity
 %
-%   OUTPUT:
+%   OUTPUT(S):
 %   IArea - double integrated signal
 %   Int1  - single integrated signal
 %   yCorr - polynomial base line corrected ESR signalintensity
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 1.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 % default to baseline-correction if not specified
 
 baseline = get_varargin(varargin, 'baseline', 'y');
 
 % perform smoothing upon request
-if isequal(baseline, 'y')   
+if isequal(baseline, 'y')
     % plot spectrum itself
     hold off;
     stackplot(x, y);

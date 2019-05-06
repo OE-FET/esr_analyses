@@ -1,27 +1,31 @@
 function [argout] = PowerSatAnalysesVoigtFit(varargin)
 %POWERSATANALYSESVOIGTFIT Analyses of CW-ESR power saturation measurements
 %
-%   [argout] = PowerSatAnalysesVoigtFit() Calculates power saturation
-%   curves of integrated intensity and maximum intensity. This programm
-%   fits the ESR signal with a voigt curve derivative and then performs
-%   analytical integration.
+%   Performs a 2D fit of a cw-EPR power saturation spectrum to determine
+%   spin lifetimes, the magnetic susceptibility and the number of spins in
+%   the sample. This program assumes a Voigtian resonance line which is the
+%   convolution of multiple Lorentzian spin-ensembles with identifical
+%   lifetimes T1 and T2 with a Gaussian distribution of resonance fields.
 %
-%   Advantage: Long tails of the resonance peak are not negletcted.
-%   Disadvantage: Resonance curve has to have a Voigtian shape.
+%   Field modulation and the 1st harmonic detection of the cw-EPR signal,
+%   together with possible distortions from overmodulation, are explicitly
+%   accounted for. The MW field distribution in the cavity is taken from
+%   the Bruker DSC file and is used when calculating the MW field amplitude
+%   over the sample volume.
 %
 %   INPUT(S):
-%   PowerSatAnalysesVoigtFit()            - opens gui to select data file
-%   ...('signal_path')                    - ueses given path to data
-%   ...('signal_path', 'bg_path')         - path to signal data, path to
-%                                           background data
-%   ...(x, y, pars)                       - uses given data directly
+%   POWERSATANALYSESVOIGTFIT()        - opens gui to select data file
+%   ...('signal_path')                - ueses given path to data
+%   ...('signal_path', 'bg_path')     - path to signal data, path to
+%                                       background data
+%   ...(x, y, pars)                   - uses given data directly
 %
 %   OUTPUT(S):
-%   argout - structure containing all output data
+%	argout  - structure containing the measurement data and fit results
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 1.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 close all
 
@@ -57,7 +61,7 @@ var0 = [A0 B0 T1 T2 FWHM_gauss];        % starting points
 
 % grid data for fitting algorithm
 [X, Y]  = meshgrid(x, Bmw);
-Z       = y; 
+Z       = y;
 
 % create fit function and options
 fitfunc = @(var, x) abs(var(1))*ESRVoigtSimulation(x{1}, abs(var(2)), ...

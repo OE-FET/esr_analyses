@@ -1,26 +1,21 @@
 function [xnew, y, pars] = gmarker_calib(x, y, pars, varargin)
-%GMARKER_CALIB Calibrates the magnetic field axis with respect to a marker
-% signal. If the optional input 'gMarker' is not given, a standard Bruker 
-% marker with a g-value of 1.979843 is assumed.
+%GMARKER_CALIB Calibrates the magnetic field axis with respect to a marker.
+%
+%   If the optional input 'gMarker' is not given, a standard Bruker marker
+%   with a g-value of 1.979843 is assumed.
 %
 % 	SYNTAX:
-% 	gmarker_calib(x, y, pars)
-% 	gmarker_calib(x, y, pars, 'gMarker', marker_g_value)
+% 	[xnew, y, pars] = GMARKER_CALIB(x, y, pars)
+% 	[xnew, y, pars] = GMARKER_CALIB(x, y, pars, 'gMarker', marker_g_value)
 %
 % 	OUTPUT(S):
 % 	xnew		- magnetic field axis normalized by g-marker
 %	y			- ESR spectrum
 %	pars		- aquisition parameter structure
 %	                                  
-% 
-% 	DEPENDENCIES:
-% 	BrukerRead.m
-% 	g2b.m
-% 	gfactor_determination.m
-%
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %% Input analyses
 marker_g = get_varargin(varargin, 'gMarker', 1.979843);

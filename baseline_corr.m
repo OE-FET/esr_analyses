@@ -1,22 +1,18 @@
 function [ycorr, yfit] = baseline_corr(y)
 %BASELINE_CORR Performs a baseline correction on the input data.
 %
-%   [ycorr, yfit] = baseline_corr(y) performs a baseline fit on the input 
-%   data. The baseline region can be be selected through a GUI, and the 
-%   baseline is fitted as a spline through the smoothed data. Adjust the 
+%   [ycorr, yfit] = BASELINE_CORR(y) performs a baseline fit on the input
+%   data. The baseline region can be be selected through a GUI, and the
+%   baseline is fitted as a spline through the smoothed data. Adjust the
 %   number points to smooth over according to the noise in the data.
 %
 %   OUTPUT(S):
 %   ycorr - baseline corrected spectrum
 %   yfit - fitted baseline
 %
-%   DEPENDENCIES:
-%   stackplot.m
-%   point_input_gui.m
-%
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 1.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.2 $
 
 %% process data
 % get spectrum size
@@ -29,8 +25,8 @@ x = 1:lst;
 %% select methods for interpolation
 % use spline interpolation for polynomial baseline fit
 method  = 'spline';
-% average over 10 points for smoothing before fit 
-avgpts  = round(lst/100); % 1/100 of length of data 
+% average over 10 points for smoothing before fit
+avgpts  = round(lst/100); % 1/100 of length of data
 step = 8*avgpts;
 
 %% select area for baseline fit
@@ -53,23 +49,23 @@ while ~ok
     % round to integer values
     bounds = round(a.');
     bounds = sort(bounds);
-    
+
     % if points outside x-axis are selected, replace them with axis limits
-    if bounds(1)<1,       bounds(1)=1;            end     
-    if bounds(end)>lst,   bounds(end)=lst;        end     
-    
+    if bounds(1)<1,       bounds(1)=1;            end
+    if bounds(end)>lst,   bounds(end)=lst;        end
+
     % do nothing if whole x-axis range is selected
     if (bounds(1)<1 &&bounds(end)>lst)
         ycorr = y; yfit = zeros(size(y));
         return;
-    end 
-    
+    end
+
     % within baseline areas, use points in intervals of step for polynomial
     % fitting
     pts = [(1:step:bounds(1)), (bounds(2):step:lst)];
     pts = round(pts);
     npts = numel(pts);
-    
+
     % smooth curve by averaging over avgpts neighboring points
     pss = zeros(npts, 2);
     pss(:,1) = pts - floor(avgpts/2);
@@ -85,11 +81,11 @@ while ~ok
     if size(yfit, 1) == 1
         yfit = shiftdim(yfit, 1);    % make yfit a column if it is a row vector
     end
-    
+
     % plot for visual confirmation
     hold on;
     yL = get(gca, 'YLim');
-    phandle = stackplot(x, real(yfit), 'yoffset', 0.5*max(max(y)));    
+    phandle = stackplot(x, real(yfit), 'yoffset', 0.5*max(max(y)));
     set(phandle, 'Color', 'blue');
     ylim(gca, yL);
     for i = 1:2
@@ -111,9 +107,9 @@ while ~ok
 end
 % close figure if not already done by user
 if any(findobj('Type', 'figure') == fhandle)
-    close(fhandle)                   
+    close(fhandle)
 end
-% subtact baseline 
+% subtact baseline
 ycorr = y - yfit;
 % reshape spectrum to original form
 ycorr = reshape(ycorr, dim);

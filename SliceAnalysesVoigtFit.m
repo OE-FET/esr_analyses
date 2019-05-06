@@ -1,35 +1,31 @@
 function [argout] = SliceAnalysesVoigtFit(varargin)
-%ESRANALYESVOIGTFIT performs normalization and spin-counting of an ESR 
+%SLICEANALYSESVOIGTFIT performs normalization and spin-counting of an ESR 
 %signal by fitting it to a voigt function.
 %
-%   The ESR signal is normalised according to measurement conditions. If
-%   required, a background signal can be subtracted before performing the
-%   analyses.
+%   Performs a 1D fit of a cw-EPR spectrum to determine spin cohrence time
+%   T2, the magnetic susceptibility and the number of spins in the sample.
+%   This program assumes a Voigtian resonance line which is the convolution
+%   of multiple Lorentzian spin-ensembles with identifical lifetimes T1 and
+%   T2 with a Gaussian distribution of resonance fields.
 %
-%   The total ESR intensity and spin susceptibility are determined by fitting
-%   the ESR resonance to a Pseudo-voigt function and subsequent analytical
-%   double integration. The number of spins in the sample is then calculated 
-%   by assuming that the sample follows a Curie-Weiss law. This assumption is
-%   valid when T >> E/2. X-Band EPR typically operates around B = 350 mT while
-%   a field of up to 0.5 T corresponds to E/2 = 28.9 ueV. This still remains
-%   far lower than the corresponding thermal energy of 450 ueV at 5 K. 
+%   Field modulation and the 1st harmonic detection of the cw-EPR signal,
+%   together with possible distortions from overmodulation, are explicitly
+%   accounted for. The MW field distribution in the cavity is taken from
+%   the Bruker DSC file and is used when calculating the MW field amplitude
+%   over the sample volume.
 %
 %   INPUT(S):
-%   ESRAnalysesFIT()            - prompts user for spectrum file
+%   SLICEANALYSESVOIGTFIT()     - prompts user for spectrum file
 %   ...FIT('Path')              - path to file with ESR data
 %   ...FIT('PathSIG', 'PathBG') - path to signal, path to background
 %   ...FIT(x, y, Pars)          - field, signal, and spectral params
 %
 %   OUTPUT(S):
-%   argout                      - output structure containing the
-%                                 normalized spectra, measurement conditions,
-%                                 fitting parameters with errors, and the
-%                                 calculated number of spins and
-%                                 susceptibility
+%	argout  - structure containing the measurement data and fit results 
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 1.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 close all
 

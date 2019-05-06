@@ -3,13 +3,13 @@ function [fitresult, gof, yfit] = voigt_fit(x, y, varargin)
 % outputs fitting parameters, the goodness of fit and the fitted curve
 %
 %   SYNTAX:
-%   [fitresult, gof, yfit] = voigt_fit(x, y)
-%   [fitresult, gof, yfit] = voigt_fit(x, y, 'deriv', 1)
-%   [fitresult, gof, yfit] = voigt_fit(x, y, 'x0', x0, 'FWHM', FWHM, 'Area', A)
+%   [fitresult, gof, yfit] = VOIGT_FIT(x, y)
+%   [fitresult, gof, yfit] = VOIGT_FIT(x, y, 'deriv', 1)
+%   [fitresult, gof, yfit] = VOIGT_FIT(x, y, 'x0', x0, 'FWHM', FWHM, 'Area', A)
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 deriv = get_varargin(varargin, 'deriv', 0);
 yfit = zeros(size(y));

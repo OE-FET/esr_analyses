@@ -6,7 +6,7 @@ function [Chi] = susceptebility_calc(doubleIntArea, pars)
 %   double-integrated intensity of a 1st harmonic cw-EPR spectrum.
 %
 %   SYNTAX:
-%   Chi = susceptebility_calc(doubleIntArea, pars)
+%   Chi = SUSCEPTEBILITY_CALC(doubleIntArea, pars)
 %
 %   INPUT(S):
 %   doubleIntArea - Integrated area of absorption EPR spectrum or double 
@@ -16,13 +16,9 @@ function [Chi] = susceptebility_calc(doubleIntArea, pars)
 %   OUTPUT(S):
 %   Chi - magnetic susceptebility in m^3
 %
-%   DEPENDENCIES:
-%   mw_mean.m
-%   Natural Constants
-%
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %% INPUT PROCESSING
 % get cavity calibration factor from pars or prompt for input

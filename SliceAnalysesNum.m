@@ -1,28 +1,26 @@
 function [argout] = SliceAnalysesNum(varargin)
-%ESRANALYESNUM performs normalization and spin-counting of an ESR signal by
-%numercial double integration.
+%SLICEANALYSESNUM Numercial analyses of cw-EPR spectrum.
 %
-%   The ESR signal is normalised according to measurement conditions. If
-%   required, a background signal can be subtracted before performing the
-%   analyses.
+%   Numerically integrates a cw-EPR spectrum to determine the magnetic
+%   susceptibility and the number of spins.
 %
-%   The total ESR intensity and spin susceptibility are determined by
-%   numerical double-integration. 
+% 	WARNING: Using numerical integration may underestimate the tails of EPR
+% 	spectra. This can lead to significant errors for long-tailed resonance
+% 	shapes, such as Lorentzians, if the SNR ratio is small or the
+% 	measurement range is less than 5 times the peak-to-peak linewidth.
 %
-%   INPUT(S):
-%   ESRAnalysesNUM()            - prompts user for spectrum file
-%   ...NUM('Path')              - path to file with ESR data
-%   ...NUM('PathSIG','PathBG')  - path to signal, path to background
-%   ...NUM(x,y,Pars)            - field, signal, and spectral params
+%	INPUTS:
+%	SLICEANALYSESNUM()         - opens GUI for file selection
+%	SLICEANALYSESNUM(x,y,pars) - uses data given by (x,y,pars)
+%	...('sigPath')             - reads data from file
+%	...('sigPath', 'bgPath')   - reads data and background from file
 %
-%   OUTPUT(S):
-%   argout                      - output structure containing (x, y, pars)
-%                                 and the calculated number of spins and
-%                                 susceptibility
+%	OUTPUT:
+%	argout  - structure containing the measurement data and fit results 
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 1.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 close all
 

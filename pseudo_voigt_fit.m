@@ -1,10 +1,12 @@
 function [fitresult,gof,yfit] = pseudo_voigt_fit(x, y, varargin)
-%PSEUDO_VOIGT_FIT fits a Pseudo-Voigt curve to the given data, plots the 
-% results and outputs fitting parameters, goodness of fit and fitted
-% cruves.
+%PSEUDO_VOIGT_FIT fits a Pseudo-Voigt curve to the given data.
+% 
+%   Plots the results and outputs fitting parameters, goodness of fit and
+%   fitted cruves.
 %
-% If y is a matrix of spectral data with the same x-axis, all spetra are
-% fitted independently and fitresult is an array with fitresults.
+%   If y is a matrix of spectral data with the same x-axis, all spetra are
+%   fitted independently and fitresult is an array with fitresults.
+%
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
@@ -13,13 +15,13 @@ deriv = get_varargin(varargin, 'deriv', 0);
 yfit = zeros(size(y));
 
 for i = 1:size(y, 2)
-    
+
     [xData, yData] = prepareCurveData(x, y(:, i));
-    
+
     %% Find good starting parameters
 
     [Min, Nmin] = min(yData); [Max, Nmax] = max(yData);
-    
+
     if deriv == 0
         FWHM_default = (x(end) - x(1))/5;
         x0_default = Nmax;
@@ -27,7 +29,7 @@ for i = 1:size(y, 2)
     elseif deriv == 1
         FWHM_default = x(Nmin)-x(Nmax);
         x0_default = x(Nmax)+FWHM_default/2;
-        Area_default = 2*(Max - Min)*FWHM_default;   
+        Area_default = 2*(Max - Min)*FWHM_default;
     end
 
     FWHM = get_varargin(varargin, 'FWHM', FWHM_default);

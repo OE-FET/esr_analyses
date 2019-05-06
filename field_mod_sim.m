@@ -1,8 +1,8 @@
 function yModInPhase = field_mod_sim(x, y, modAmp, harmonic)
 %FIELD_MOD_SIM simulates the distortions of lock-in detection on a signal.
 %
-%   yModInPhase = field_mod_sim(x, y, modAmp);
-%   yModInPhase = field_mod_sim(x, y, modAmp, marmonic);
+%   yModInPhase = FIELD_MOD_SIM(x, y, modAmp);
+%   yModInPhase = FIELD_MOD_SIM(x, y, modAmp, marmonic);
 %
 %   Computes the effect of x-axis modulation with amplitude ModAmpl and
 %   n-th harmonic detection on a signal (x,y). This code implements the
@@ -27,6 +27,10 @@ function yModInPhase = field_mod_sim(x, y, modAmp, harmonic)
 %     x = linspace(300,400,1001);
 %     y = lorentzian(x,342,4);
 %     field_mod_sim(x,y,20);
+%
+
+%   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %% input checks
 if (nargin == 0)

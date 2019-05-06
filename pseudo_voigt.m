@@ -1,10 +1,12 @@
 function [y] = pseudo_voigt(x, x0, FWHM_gauss, FWHM_lorentz, varargin)
-%PSEUDO_VOIGT calculates a Pseudo-Voight profile or its nth derivative. The 
-% area is normalized to 1.
+%PSEUDO_VOIGT calculates a Pseudo-Voight profile or its n-th derivative.
+%
+%   Returns a Pseudo-Voigt peak with an area normalized to 1 or its n-th
+%   derivative.
 %
 %   SYNTAX:
-%   [y] = pseudo_voigt(x, x0, FWHM_gauss, FWHM_lorentz)
-%   [y] = pseudo_voigt(x, x0, FWHM_gauss, FWHM_lorentz, 'deriv', 1)
+%   [y] = PSEUDO_VOIGT(x, x0, FWHM_gauss, FWHM_lorentz)
+%   [y] = PSEUDO_VOIGT(x, x0, FWHM_gauss, FWHM_lorentz, 'deriv', 1)
 %
 %   INPUT(S):
 %   x - as x-axis values
@@ -17,7 +19,7 @@ function [y] = pseudo_voigt(x, x0, FWHM_gauss, FWHM_lorentz, varargin)
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %%
 

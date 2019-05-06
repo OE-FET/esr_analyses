@@ -6,20 +6,13 @@ function [x_norm, y_norm, pars] = normalise_spectrum_all(x, y, pars)
 % 	modulation amplitude and microwave power so that we can compare spectra
 % 	recorded under different conditions.
 %
-% 	INPUT:
-% 	normalise_spectrum_all(x, y, pars) uses given data in (x,y) and 
-% 	experimental conditions from pars.
-%
-% 	OUTPUT: 
+% 	OUTPUT(S):
 % 	x_norm and y_norm are vectors containg the magnetic field in Gauss and
 % 	the normalised ESR signal intensity.
 %
-% 	DEPENDENCIES:
-% 	normalise_spectrum.m
-%
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %% Normalise for default parameters first
 [x, y, pars] = normalise_spectrum(x, y, pars);

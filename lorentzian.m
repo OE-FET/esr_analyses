@@ -7,8 +7,8 @@ function [y] = lorentzian(x, x0, FWHM, varargin)
 %   much slower for n > 1.
 %
 %   SYNTAX:
-%   [y] = lorentzian(x, x0, FWHM)
-%   [y] = lorentzian(x, x0, FWHM, 'deriv', n)
+%   [y] = LORENTZIAN(x, x0, FWHM)
+%   [y] = LORENTZIAN(x, x0, FWHM, 'deriv', n)
 %
 %   INPUT(S):
 %   x - as x-axis values
@@ -20,7 +20,7 @@ function [y] = lorentzian(x, x0, FWHM, varargin)
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %%
 

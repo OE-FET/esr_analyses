@@ -9,7 +9,7 @@ function [yn] = ESRLorentzSimulation(x, B0, T1, T2, Bmw, modAmp, n)
 %   L = Bmw / ( 1 + Bmw^2*T1*T2*gmratio^2 + (xpd-B0)^2*T2^2*gmratio^2 )
 %
 %
-%   INPUT:
+%   INPUT(S):
 %   x - vector with external magnetic fields [Gauss]
 %   B0 - resonance center [Gauss]
 %   T1 - spin lattice relaxation time [sec]
@@ -18,11 +18,8 @@ function [yn] = ESRLorentzSimulation(x, B0, T1, T2, Bmw, modAmp, n)
 %   modAmp - field modulation amplitude [Gauss]
 %   n - n-th harmonic detection
 %
-%   OUTPUT:
+%   OUTPUT(S):
 %   yn - simulated n-th harmonic spectrum
-%
-%   DEPENDENCIES:
-%   field_mod_sim.m
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$

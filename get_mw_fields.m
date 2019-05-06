@@ -15,7 +15,7 @@ function Bmw = get_mw_fields(pars)
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2019/05/06 12:58 $    $Revision: 0.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 if strcmp(pars.YTYP, 'IGD') == 1
     Pmw = pars.z_axis * 1E-3; % MW Power in W

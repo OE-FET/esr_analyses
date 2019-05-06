@@ -18,13 +18,9 @@ function [NSpin] = spincounting(doubleIntArea, pars, S)
 %   OUTPUT(S):
 %   NSpin - number of spins
 %
-%   DEPENDENCIES:
-%   mw_mean.m
-%   Natural Constants
-%
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %% INPUT PROCESSING
 if nargin < 3; S = 1/2; end

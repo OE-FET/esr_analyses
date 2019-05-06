@@ -1,30 +1,30 @@
 function [argout] = PowerSatAnalysesLorentzFit(varargin)
-%POWERSATANALYSESLORENTYFIT Analyses of CW-ESR power saturation measurements
+%POWERSATANALYSESLORENTZFIT Analyses of CW-ESR power saturation measurements
 %
-%   [argout] = POWERSATANALYSESLORENTYFIT(varargin) Calculates power 
-%   saturation curves of integrated intensity and maximum
-%   intensity. This programm fits the ESR signal with a Lorentzian 
-%   derivative and then performs analytical integration.
+%   Performs a 2D fit of a cw-EPR power saturation spectrum to determine
+%   spin lifetimes, the magnetic susceptibility and the number of spins in
+%   the sample. This program assumes a Lorentzian resonance line, i.e. a
+%   single spin-ensemble with lifetimes T1 and T2.
 %
-%   Advantage: Long tails of the resonance peak are not negletcted.
-%   Disadvantage: Resonance curve has to be a Lorentzian.
-%
-%   All spectra are collected in the structure 'argout.ERSIntensity'.
+%   Field modulation and the 1st harmonic detection of the cw-EPR signal,
+%   together with possible distortions from overmodulation, are explicitly
+%   accounted for. The MW field distribution in the cavity is taken from
+%   the Bruker DSC file and is used when calculating the MW field amplitude
+%   over the sample volume.
 %
 %   INPUT(S):
-%   POWERSATANALYSESLORENTYFIT()          - opens gui to select data
-%   ...('signal_path')                    - path to signal data
-%   ...('signal_path', 'bg_path')          - path to signal data, path to
-%                                           background data
-%   ...(x, y, pars)                         - magnetic field, intensity,
-%                                           parameters
+%   POWERSATANALYSESLORENTZFIT()      - opens gui to select data
+%   ...('/path/to/file')              - path to signal data
+%   ...('signal_path', 'bg_path')     - path to signal data, path to
+%                                       background data
+%   ...(x, y, pars)                   - uses given data directly
 %
 %   OUTPUT(S):
-%   argout - structure containing all output data
+%	argout  - structure containing the measurement data and fit results
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2019/05/06 12:58 $    $Revision: 0.2 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 close all
 
@@ -59,7 +59,7 @@ var0 = [A0 B0 T1 T2];           % starting points
 
 % grid data for fitting algorithm
 [X, Y]  = meshgrid(x, Bmw);
-Z       = y; 
+Z       = y;
 
 % create fit function and options
 fitfunc = @(var, x) abs(var(1))*ESRLorentzSimulation(x{1}, abs(var(2)), ...

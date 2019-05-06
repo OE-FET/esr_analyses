@@ -1,10 +1,11 @@
 function [y] = voigtian(x, x0, FWHM_gauss, FWHM_lorentz, varargin)
-%VOIGTiAN calculates a Voight profile or its 1st derivative. The area is
-% normalized to 1.
+%VOIGTIAN calculates a Voight profile or its 1st derivative.
+%
+%   The area of the Voigtian is normalized to 1.
 %
 %   SYNTAX:
-%   [y] = voigtian(x, x0, FWHM_gauss, FWHM_lorentz)
-%   [y] = voigtian(x, x0, FWHM_gauss, FWHM_lorentz, 'deriv', 1)
+%   [y] = VOIGTIAN(x, x0, FWHM_gauss, FWHM_lorentz)
+%   [y] = VOIGTIAN(x, x0, FWHM_gauss, FWHM_lorentz, 'deriv', 1)
 %
 %   INPUT(S):
 %   x - as x-axis values

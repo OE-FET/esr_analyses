@@ -8,18 +8,12 @@ function [x, y, pars] = subtract_background(varargin)
 % 	offset in MWFQ.
 %
 % 	SYNTAX:
-% 	subtract_background()              - prompts user for signal & background paths
-% 	subtract_background(SPath, BPath)  - signal path, background path
-%
-% 	DEPENDENCIES:
-% 	BrukerRead.m
-% 	normalise_spectrum.m
-% 	compare_pars.m
-% 	stackplot.m
+% 	[x, y, pars] = SUBTRACT_BACKGROUND() - prompts user for file selection
+% 	[x, y, pars] = ...(sig, BPath)       - uses the given file paths
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %%
 global Path

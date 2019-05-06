@@ -2,8 +2,8 @@ function [phandle] = stackplot(x, y, varargin)
 %STACKPLOT Plots data as in stacked plots.
 %
 % 	SYNTAX:
-% 	stackplot(x, y)
-% 	stackplot(x, y, 'xoffset', xoffset, 'yoffset', yoffset, 'style', stylestring)
+% 	STACKPLOT(x, y)
+% 	STACKPLOT(x, y, 'xoffset', xoffset, 'yoffset', yoffset, 'style', stylestring)
 %
 % 	Where yoffset is the degree to which plots are separated if more than
 % 	one plot is plotted onto one graph. Default is 0.5 times the spectrum hieght.
@@ -17,14 +17,9 @@ function [phandle] = stackplot(x, y, varargin)
 % 	OUTPUT(S):
 %   phandle - plot handles
 %
-% 	EXAMPLE: 
-%   stackplot(x, y, 'yoffset', 1.2, 'xoffset', 5)
-%   Plots y against x with each spectrum (y) being moved up 1.2
-%   and across by 5 Gauss
-%
 
-% $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-% $Date: 2018/07/05 12:58 $ $Revision: 0.1 $
+%   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %% Input Analyses
 

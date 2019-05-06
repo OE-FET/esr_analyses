@@ -19,10 +19,6 @@ function yn = ESRVoigtSimulation(x, B0, T1, T2, Brms, Bmw, modAmp, n)
 %   OUTPUT(S):
 %   yn - simulated n-th harmonic spectrum
 %
-%   DEPENDENCIES:
-%   field_mod_sim.m
-%   voigt.m
-%
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2018/07/05 12:58 $    $Revision: 1.1 $

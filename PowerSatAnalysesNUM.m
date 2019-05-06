@@ -1,16 +1,20 @@
 function [argout] = PowerSatAnalysesNum(varargin)
-%POWERSATANALYSESNUM Numercial analyses of ESR power saturation curves
+%POWERSATANALYSESNUM Numercial analyses of ESR power saturation curves.
 %
-% 	Calculates power stauration curves from integrated intensities and maximum
-% 	intensities. This programm numerically intergrates the ESR signals.
+%   Numerically integrates a series of MW power dependent cw-EPR spectra to
+%   determine the power saturation beheviour and the product of spin
+%   lifetimes T1*T2. Allows for baseline correction and smoothing before
+%   the integration.
 %
-% 	Disadvantage: Long tails of the resonance peak are negletcted.
-% 	Advantage: Works with every peak shape.
+% 	Spin lifetimes are calculated by fitting the integrated areas to the
+% 	following equation:
 %
-% 	Power saturation curves are given in DATA with the colmuns:
-% 	[Pmw MwB II I_max DeltaBpp g]
+%   A = A0 * B_mw / sqrt(1 + gmratio^2 * B_mw^2 * T1 * T2)
 %
-% 	All spectra are collected in the structure 'argout.ERSIntensity'.
+% 	WARNING: Using numerical integration may underestimate the tails of EPR
+% 	spectra. This can lead to significant errors for long-tailed resonance
+% 	shapes, such as Lorentzians, if the SNR ratio is small or the
+% 	measurement range is less than 5 times the peak-to-peak linewidth.
 %
 %	INPUTS:
 %	POWERSATANALYSESNUM()         - opens GUI for file selection
@@ -19,11 +23,11 @@ function [argout] = PowerSatAnalysesNum(varargin)
 %	...('sigPath', 'bgPath')      - reads data and background from file
 %
 %	OUTPUT:
-%	argout  - structure containing all fitting results and measurement data
+%	argout  - structure containing the measurement data and fit results
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 close all
 
@@ -44,10 +48,10 @@ Bmw = get_mw_fields(pars);
 
 baseline = input('Perform base-line correction individually or as batch? i/[b]?', 's');
 if baseline == 'i'
+    doubleIntAreas = zeros(size(y, 2), 1);
     for i = 1:size(y, 2)
         doubleIntAreas(i) = double_int_num(x, y(:,i), 'y');
     end
-    doubleIntAreas = doubleIntAreas';
 else
     doubleIntAreas = double_int_num(x, y, 'y');
 end
@@ -111,8 +115,8 @@ argout.T1T2     = T1T2;
 argout.dA       = dA;
 argout.dT1T2    = dT1T2;
 
-argout.Chi      = Chi;
-argout.NSpin    = NSpin;
+argout.Chi      = Chi(1);
+argout.NSpin    = NSpin(1);
 
 
 end

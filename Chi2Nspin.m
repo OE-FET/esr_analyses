@@ -1,8 +1,10 @@
 function [n_spin] = chi2nspin(chi, T, S)
 %CHI2NSPIN Convert the Curie susceptebility to a number of spins.
-%   [n_spin] = chi2nspin(chi)
-%   [n_spin] = chi2nspin(chi, T)
-%   [n_spin] = chi2nspin(chi, T, S)
+%
+%   SYNTAX:
+%   [n_spin] = CHI2NSPIN(chi)
+%   [n_spin] = CHI2NSPIN(chi, T)
+%   [n_spin] = CHI2NSPIN(chi, T, S)
 %
 %   INPUT(S):
 %   chi - magnetc susceptibility in SI units
@@ -12,9 +14,9 @@ function [n_spin] = chi2nspin(chi, T, S)
 % 	OUTPUT(S):
 %   n_spin - number of spins per cubic meters
 %
-% 	Dependencies:
-% 	natural constants
-%
+
+%   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %% input analyses
 if nargin < 3; S=1/2; end

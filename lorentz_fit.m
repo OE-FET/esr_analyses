@@ -1,16 +1,17 @@
 function [fitresult, gof] = lorentz_fit(x, y, varargin)
-%LORENTZ_FIT fits a Lorentzian curve to the given data, plots the 
-% results and  outputs fitting parameters, the goodness of fit and the
-% fitted curve.
+%LORENTZ_FIT fits a Lorentzian curve to the given data.
+%
+%   Plots the results and  outputs fitting parameters, the goodness of fit
+%   and the fitted curve.
 %
 %   SYNTAX:
-%   [fitresult, gof, yfit] = lorentz_fit(x, y)
-%   [fitresult, gof, yfit] = lorentz_fit(x, y, 'deriv', 1)
-%   [fitresult, gof, yfit] = lorentz_fit(x, y, 'x0', x0, 'FWHM', FWHM, 'Area', A)
+%   [fitresult, gof, yfit] = LORENTZ_FIT(x, y)
+%   [fitresult, gof, yfit] = LORENTZ_FIT(x, y, 'deriv', 1)
+%   [fitresult, gof, yfit] = LORENTZ_FIT(x, y, 'x0', x0, 'FWHM', FWHM, 'Area', A)
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 deriv = get_varargin(varargin, 'deriv', 0);
 

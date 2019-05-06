@@ -1,5 +1,6 @@
 function [g_sample, B_res]= gfactor_determination(x, y, pars, varargin)
 %GFACTOR_DETERMINATION determines the g-factor of an ESR spectrum
+%
 %   [g_sample, B_res]= GFACTOR_DETERMINATION(x, y, Pars, plotting)
 %   determines the g-factor of derivative ESR spectra given by (x,y) with
 %   the microwave frequency in the paramater structure PARS. G_SAMPLE is
@@ -15,8 +16,8 @@ function [g_sample, B_res]= gfactor_determination(x, y, pars, varargin)
 %   have multiple zero-crossings.
 %
 %   SYNTAX:
-%   [g_sample, B_res]= gfactor_determination(x, y, pars)
-%   [g_sample, B_res]= gfactor_determination(x, y, pars, 'plot', 'y')
+%   [g_sample, B_res] = GFACTOR_DETERMINATION(x, y, pars)
+%   [g_sample, B_res] = GFACTOR_DETERMINATION(x, y, pars, 'plot', 'y')
 %
 %   INPUT(S):
 %   x        - Magnetic field in Gauss
@@ -27,15 +28,9 @@ function [g_sample, B_res]= gfactor_determination(x, y, pars, varargin)
 %   g_sample - Sample g-factor
 %   B_res    - Resonance center used to determine g-factor
 %
-%
-%   DEPENDENCIES:
-%   stackplot.m
-%   double_int_num.m
-%   b2g.m
-%
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 plotting = get_varargin(varargin, 'plot', 'n');
 
