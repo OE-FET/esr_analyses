@@ -67,8 +67,6 @@ for i = 1:size(y, 2)
     legend(h, 'Residuals', 'Zero Line', 'Location', 'NorthEast');
     axis tight; grid on;
 
-    display(fitresult{i});
-
 end
 
 if size(fitresult) == 1
