@@ -41,18 +41,23 @@ Bmw = get_mw_fields(pars);
 %%                      Get starting points for fit
 %%=========================================================================
 
-% get initial parameters from slice fit
+% perform slice fit of center spectrum
 mid  = round(length(Bmw)/2);
-fit = lorentz_fit(x, y(:,mid), 'deriv', 1);
+slice_fit  = lorentz_fit(x, y(:,mid), 'deriv', 1);
 
-FWHM = fit.FWHM;               % in Gauss
+% perform numerical double integrtion to estimate T1*T2
+DI = double_int_num(x, y, 'baseline', 'n');
+ft = fittype('A * x /sqrt(1+gmSquaredT1T2*x^2)');
+pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [slice_fit.a, 1e7], 'Lower', [0, 0]);
 
-A0   = fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw(mid));
-B0   = fit.x0;                  % in Gauss
-T2   = 1/(gmratio * FWHM*1E-4); % in sec
-T1   = 10*T2;                   % in sec
+FWHM = slice_fit.FWHM;                                 % in Gauss
+A0   = slice_fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw(mid)); % see 'modScaling'
+B0   = slice_fit.x0;                                   % in Gauss
+T1T2 = pwrst_fit.gmSquaredT1T2 / gmratio^2;            % in sec^2
+T2   = 2/(gmratio * FWHM*1E-4);                        % in sec
+T1   = T1T2/T2;                                        % in sec
 
-var0 = [A0 B0 T1 T2];           % starting points
+var0 = [A0 B0 T1 T2];                                  % starting points
 
 %%                          Perform Lorentz fit
 %%=========================================================================
@@ -64,12 +69,12 @@ Z       = y;
 % create fit function and options
 fitfunc = @(var, x) abs(var(1))*ESRLorentzSimulation(x{1}, abs(var(2)), ...
     abs(var(3)), abs(var(4)), x{2}, pars.B0MA*1e4, 1);
-opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
+opt = optimset('TolFun', 1e-5, 'TolX', 1e-5, 'PlotFcns', ...
     @optimplotfval, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
 fitres   = nelder_mead_fit(fitfunc, {X, Y}, Z, var0, opt);
-conf_int = confint(fitres); % estimate confidence intervals
+conf_int = confint(fitres, 'quick'); % rough estimate of confidence intervals
 
 A     = abs(fitres.coef(1));
 B0    = abs(fitres.coef(2));
