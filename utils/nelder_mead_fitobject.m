@@ -10,14 +10,22 @@ classdef nelder_mead_fitobject
     end
     
     methods
-        function ci = confint(obj)
+        function ci = confint(obj, accur)
+            if nargin < 2; accur = 'accurate'; end
             % degrees of freedom in fitting problem
             dof     = numel(obj.dependent_fitdata) - numel(obj.coef0);
             % standard deviation of residuals
             sdr     = sqrt(obj.sse/dof);
             % jacobian matrix
             rff     = @(coef) obj.fitfunc(coef, obj.independent_fitdata);
-            J       = jacobianest(rff, obj.coef);
+            if strcmp(accur, 'quick')
+                % use lsqnonlin with single iteration, much quicker
+                [~,~,~,~,~,~,J] = lsqnonlin(rff, obj.coef,[],[], ...
+                    optimset('MaxFunEvals', 0, 'Display', 'off'));
+            elseif strcmp(accur, 'accurate')
+                % use jacobianest from spinach toolbar, more accurate
+                J = jacobianest(rff, obj.coef);
+            end
             % decomposition J = Q*R with upper triangular matrix R and unitary matrix Q
             [~, R] = qr(J, 0);
             % diagnonal of covariance matrix Sigma = sdr^2*inv(J'*J)
