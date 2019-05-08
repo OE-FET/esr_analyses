@@ -1,11 +1,14 @@
 function [y] = gaussian(x, x0, FWHM, varargin)
 %GAUSSIAN 1D Gaussian profile or its n-th derivative.
 %
-%   Returns a 1D Gaussian with an area 1 or its n-th derivative.
+%   Returns a 1D Gaussian with an area 1 or its n-th derivative:
+%
+%   sigma = FWHM/sqrt(8*log(2))
+%   y = exp(-(x-x0)^2/(2*sigma^2)) ./ (sigma*sqrt(2*pi))
 %
 %   This function uses an explicit experession for the 1st derivate and
-%   hermite polynomial expressions for higher orders. It therefore becomes
-%   much slower for n > 1.
+%   hermite polynomial expressions for higher orders. Evaluation therefore
+%   becomes much slower for n > 1.
 %
 %   SYNTAX:
 %   [y] = GAUSSIAN(x, x0, FWHM)

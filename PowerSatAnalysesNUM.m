@@ -11,6 +11,9 @@ function [argout] = PowerSatAnalysesNum(varargin)
 %
 %   A = A0 * B_mw / sqrt(1 + gmratio^2 * B_mw^2 * T1 * T2)
 %
+%   The magnetic susceptibilty is then determined from A0. Its accuracy
+%   will therefore depend on the quality of the fit.
+%
 % 	WARNING: Using numerical integration may underestimate the tails of EPR
 % 	spectra. This can lead to significant errors for long-tailed resonance
 % 	shapes, such as Lorentzians, if the SNR ratio is small or the

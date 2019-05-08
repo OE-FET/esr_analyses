@@ -131,4 +131,3 @@ argout.Chi      = Chi(1);
 argout.NSpin    = NSpin(1);
 
 end
-

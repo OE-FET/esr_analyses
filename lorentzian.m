@@ -1,6 +1,10 @@
 function [y] = lorentzian(x, x0, FWHM, varargin)
-%LORENTZIAN calculates a 1D Gaussian profile or its nth derivative. The 
-% area is normalized to 1.
+%LORENTZIAN calculates a 1D Gaussian profile or its n-th derivative.
+%
+%   Returns a 1D Lorentzian with an area of 1 or its n-th derviate:
+%
+%   HWHM = FWHM/2
+%   y = HWHM/(pi*(x^2 + HWHM^2))
 %
 %   This function uses an explicit experession for the 1st derivate and
 %   analytical differentiation for higher derivatives. It therefore becomes
