@@ -15,7 +15,7 @@ switch argnum
         if strcmp(str, 'y')
             [x,y,pars]   = subtract_background(argcell{1});
         else
-            [x, y, pars] = BrukerRead;
+            [x, y, pars] = BrukerRead(argcell{1});
         end
     case 2
         [x, y, pars] = subtract_background(argcell{1},  argcell{2});
