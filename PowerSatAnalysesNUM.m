@@ -40,8 +40,6 @@ if ~strcmp(pars.YTYP, 'IGD')
     error('The specified file is not a 2D data file.');
 end
 
-g_factors = gfactor_determination(x, y, pars, 'plot', 'y');
-
 %%                         Calculate MW fields
 %%=========================================================================
 Bmw = get_mw_fields(pars);
@@ -62,6 +60,13 @@ end
 %%                      Fit power saturation curve
 %%=========================================================================
 
+try
+    g_factors = gfactor_determination(x, y, pars, 'plot', 'y');
+catch
+    fprintf('Could not determine g-factor. Using free electron value.')
+    g_factors = ones(size(Bmw))*gfree;
+end
+
 % determine starting values
 pars.GFactor = g_factors(ceil(end/2));
 gm = pars.GFactor * bmagn / hbar;
@@ -78,7 +83,7 @@ opt = optimset('TolFun', 1e-9,'TolX', 1e-9,'PlotFcns', @optimplotfval, ...
     'MaxFunEvals', 1e9, 'MaxIter', 1e9);
 
 % fit model to data with Nelder Mead algorithm
-fitres   = nelder_mead_fit(fitfunc, Bmw, doubleIntAreas, var0, opt);
+fitres   = nelder_mead_fit(fitfunc, Bmw(1:end), doubleIntAreas(1:end), var0, opt);
 conf_int = confint(fitres); % estimate confidence intervals
 
 A     = abs(fitres.coef(1));
