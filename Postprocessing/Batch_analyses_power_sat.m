@@ -1,12 +1,20 @@
 %% BATCH PROCESSING
+
+% Select analyses function, e.g., PowerSatAnalysesVoigtFit
+analysesFunc = @PowerSatAnalysesNum;
+
+% Try automatical matching of background signals
+bckgrndStrQ = input('Would you like to automatically match background spectra? [y]/n ', 's');
+
+
 global Path
 
-% data files
 [fileNames, Path] = uigetfile([Path, '*.DTA'], 'Please select ESR data files.', 'MultiSelect', 'on');
 
-bckgrndStrQ = input('Would you like to automatically match background spectra? [y]/n: ', 's');
+nFiles = numel(fileNames);
+output = cell(1, nFiles);
 
-for i = 1:length(fileNames)
+for i = 1:nFiles
     
     if iscell(fileNames)==0
         filePath = [Path fileNames];
@@ -14,21 +22,21 @@ for i = 1:length(fileNames)
         filePath = [Path fileNames{i}];
     end
     
-    if strcmp(bckgrndStrQ,'y')==0
-        argout = PowerSatAnalysesVoigtFIT(filePath);
+    if ~strcmp(bckgrndStrQ,'y')
+        argout = analysesFunc(filePath);
     else
         filePathBG1 = regexprep(filePath,'Vg_(\S+)(\.)','Vg_00.');
         filePathBG2 = regexprep(filePath,'Vg_(\S+)(\.)','Vg_0.');
         try
-            argout = PowerSatAnalysesVoigtFIT(filePath, filePathBG1);
+            argout = analysesFunc(filePath, filePathBG1);
         catch
             try
-                argout = PowerSatAnalysesVoigtFIT(filePath, filePathBG2);
+                argout = analysesFunc(filePath, filePathBG2);
             catch
                 display(['Error: no background file found for \n', filePathBG2]);
             end
         end
     end
             
-    outputMatrix(i,:) = [argout.T, argout.gfactor, argout.Brms, argout.Bp2p, argout.Chi, argout.dChi, argout.NSpin, argout.dNSpin, argout.T1, argout.dT1, argout.T2, argout.dT2];
+    output{i} = argout;
 end
