@@ -36,7 +36,7 @@ plotting = get_varargin(varargin, 'plot', 'n');
 
 %% Resonance center from maximum of 1st integral as first guess
 % integrate spectrum
-[~, Int1] = double_int_num(x, y, 'n');
+[~, Int1] = double_int_num(x, y, 'baseline', 'n');
 % find resonance peak at maximum
 [~, II] = max(Int1,[],1);
 B_res   = x(II);
