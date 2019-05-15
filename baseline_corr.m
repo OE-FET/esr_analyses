@@ -1,10 +1,17 @@
-function [ycorr, yfit] = baseline_corr(y)
+function [ycorr, yfit] = baseline_corr(x, y, method)
 %BASELINE_CORR Performs a baseline correction on the input data.
 %
-%   [ycorr, yfit] = BASELINE_CORR(y) performs a baseline fit on the input
+%   [ycorr, yfit] = BASELINE_CORR(x, y) performs a baseline fit on the input
 %   data. The baseline region can be be selected through a GUI, and the
 %   baseline is fitted as a spline through the smoothed data. Adjust the
 %   number points to smooth over according to the noise in the data.
+
+%   OUTPUT(S):
+%   x - x-axis values
+%   x - y-axis values
+%   method - If 'all', all points in the specified intervl will be used to
+%   determine the baseline. If method == 'interval', only the endpoints and
+%   centre point will be used. Default: 'interval'.
 %
 %   OUTPUT(S):
 %   ycorr - baseline corrected spectrum
@@ -15,18 +22,20 @@ function [ycorr, yfit] = baseline_corr(y)
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.2 $
 
 %% process data
-% get spectrum size
-dim = size(y);
-lst = dim(1);
-newdimy = [dim(1), prod(dim(2:end))];
-y = reshape(y, newdimy);
-x = 1:lst;
+if nargin < 2
+    error('Need both x-data and y-data.');
+end
 
-%% select methods for interpolation
-% use spline interpolation for polynomial baseline fit
-method  = 'spline';
-% average over 10 points for smoothing before fit
-avgpts  = round(lst/100); % 1/100 of length of data
+if nargin < 3
+    method = 'interval';
+end
+
+if length(x)~=length(y)
+    error("'x' and 'y' must have the same length.");
+end
+
+% get spectrum size
+N = length(x);
 
 %% select area for baseline fit
 
@@ -34,74 +43,87 @@ ok = false;
 % re-promt for user input until user confirms good baseline correction
 while ~ok
     % plot spectrum
-    stackplot(x, real(y));
-    fhandle = gcf;
-
+    fig = figure('Name', 'Baseline fit');
+    [~, offsets] = stackplot(x, real(y)); hold on;
     % set title of plot
-    title('Baseline Fit - Select points that belong to baseline');
+    title('Baseline Fit - Select intervals that belong to baseline');
+
     % promt user for input of baseline areas
     fprintf(['\n Select the area of the spectrum,', ...
         '\n by indicating points with the curser.', ...
         '\n Press Enter key when done.\n'])
-    % open GUI for input, accept only 2 points
-    [a, b] = ginput;                                 %#ok
-    % round to integer values
-    bounds = round(a.');
-    bounds = sort(bounds);
-
-    % if points outside x-axis are selected, replace them with axis limits
-    bounds(bounds<1) = 1;
-    bounds(bounds>lst) = lst;
-    bounds = unique(bounds); % delete duplicates
-
-    pts = unique(bounds);
-
-    % smooth curve by averaging over avgpts neighboring points
-    npts = length(x);
-    pss = zeros(npts, 2);
-    pss(:,1) = x - floor(avgpts/2);
-    pss(:,2) = pss(:,1) + avgpts;
-    pss(pss < 1) = 1;
-    pss(pss > lst) = lst;
-    yavg = zeros([npts, newdimy(2)]);
-    for n = 1:npts
-        yavg(n,:) = mean(y(pss(n,1):pss(n,2),:), 1);
+    % open GUI for input, accept points until user presses Enter
+    mask = false(N, 1);
+    xpts = [];
+    ypts = [];
+    yLim = get(gca, 'YLim');
+    while true
+        int = zeros(2,1);
+        for i =1:2
+            [xpt, ~, button] = ginput(1);
+            if isempty(button)
+                break;
+            end
+            % truncate at x-axis limits
+            xpt = max(min(x), xpt); xpt = min(max(x), xpt);
+            % plot marker
+            line([xpt xpt], yLim, 'Color', 'b');
+            int(i) = xpt;
+        end
+        if isempty(button)
+            break;
+        end
+        int = sort(int);
+        % plot interval
+        rectangle('Position', [int(1), yLim(1), diff(int), diff(yLim)], ...
+                      'FaceColor', [0 0 1 0.1]);
+        % get points in interval
+        int_msk = int(1)< x & x < int(2);
+        mask = or(mask, int_msk);
+        
+        % get end and center points
+        x_int = x(int_msk); y_int = y(int_msk, :);
+        
+        xpts(end+1:end+3) = [x_int(1); x_int(round(end/2)); x_int(end)];
+        ypts(end+1:end+3, :) = [y_int(1, :); y_int(round(end/2), :); y_int(end, :)];
     end
 
     %% perform baseline fit
-    yfit = interp1(pts, yavg(pts, :), x, method);
+    if strcmp(method, 'all')
+        % average over 10 points for smoothing before fit
+        avgpts  = round(N/100); % 1/100 of length of data
+        ysmooth = smoothdata(y, 'movmean', avgpts);
+        yfit = interp1(x(mask), ysmooth(mask, :), x, 'makima');
+    elseif strcmp(method, 'interval')
+        yfit = interp1(xpts, ypts, x, 'spline');
+    end
+
+    % make yfit a column if it is a row vector
     if size(yfit, 1) == 1
-        yfit = shiftdim(yfit, 1);    % make yfit a column if it is a row vector
+        yfit = shiftdim(yfit, 1); 
     end
 
     % plot for visual confirmation
-    hold on;
     yL = get(gca, 'YLim');
-    phandle = stackplot(x, real(yfit), 'yoffset', 0.5*max(max(y)));
+    hold on;
+    phandle = stackplot(x, yfit, 'yoffsets', offsets);
     set(phandle, 'Color', 'blue');
     ylim(gca, yL);
-    for b = bounds
-        line([b b], yL, 'Color', 'c');
-    end
-    hold off;
 
     %% promt user for confirmation of fit
-    set(fhandle, 'Name', 'Baseline Fit - Verify baseline')
-    answer = input('Would you like to redo the fit and reselect baseline points? y/[n] ', 's');
-    if strcmpi(answer, 'y')
+    title('Baseline Fit - Verify the baseline correction');
+    verfiyQ = input('Would you like to redo the fit and reselect baseline points? y/[n] ', 's');
+    if strcmpi(verfiyQ, 'y')
         ok = false;
     else
         ok = true;
     end
 end
 % close figure if not already done by user
-if any(findobj('Type', 'figure') == fhandle)
-    close(fhandle)
+try                                                                 %#ok
+    close(fig)
 end
 % subtact baseline
 ycorr = y - yfit;
-% reshape spectrum to original form
-ycorr = reshape(ycorr, dim);
-yfit = reshape(yfit, dim);
 
 end

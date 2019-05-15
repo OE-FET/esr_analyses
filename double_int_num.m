@@ -57,7 +57,7 @@ if isequal(baseline, 'y')
     str = input('Would you like to perform a polynomial base line correction y/[n]?', 's');
     if strcmp(str, 'y') == 1
         % calculate baseline
-        Int1 = baseline_corr(Int1);
+        Int1 = baseline_corr(x, Int1);
         % differentiate baseline corrected first integral
         yCorr = diff(Int1)/(x(2)-x(1));
         % add lost data point to derivative
