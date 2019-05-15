@@ -27,7 +27,6 @@ x = 1:lst;
 method  = 'spline';
 % average over 10 points for smoothing before fit
 avgpts  = round(lst/100); % 1/100 of length of data
-step = 8*avgpts;
 
 %% select area for baseline fit
 
@@ -39,36 +38,28 @@ while ~ok
     fhandle = gcf;
 
     % set title of plot
-    title('Baseline Fit - Select area of spectrum');
+    title('Baseline Fit - Select points that belong to baseline');
     % promt user for input of baseline areas
-    fprintf(['\n Now select the area of the spectrum,', ...
+    fprintf(['\n Select the area of the spectrum,', ...
         '\n by indicating points with the curser.', ...
         '\n Press Enter key when done.\n'])
     % open GUI for input, accept only 2 points
-    [a, b] = point_input_gui(2);                                 %#ok
+    [a, b] = ginput;                                 %#ok
     % round to integer values
     bounds = round(a.');
     bounds = sort(bounds);
 
     % if points outside x-axis are selected, replace them with axis limits
-    if bounds(1)<1,       bounds(1)=1;            end
-    if bounds(end)>lst,   bounds(end)=lst;        end
+    bounds(bounds<1) = 1;
+    bounds(bounds>lst) = lst;
+    bounds = unique(bounds); % delete duplicates
 
-    % do nothing if whole x-axis range is selected
-    if (bounds(1)<1 &&bounds(end)>lst)
-        ycorr = y; yfit = zeros(size(y));
-        return;
-    end
-
-    % within baseline areas, use points in intervals of step for polynomial
-    % fitting
-    pts = [(1:step:bounds(1)), (bounds(2):step:lst)];
-    pts = round(pts);
-    npts = numel(pts);
+    pts = unique(bounds);
 
     % smooth curve by averaging over avgpts neighboring points
+    npts = length(x);
     pss = zeros(npts, 2);
-    pss(:,1) = pts - floor(avgpts/2);
+    pss(:,1) = x - floor(avgpts/2);
     pss(:,2) = pss(:,1) + avgpts;
     pss(pss < 1) = 1;
     pss(pss > lst) = lst;
@@ -76,8 +67,9 @@ while ~ok
     for n = 1:npts
         yavg(n,:) = mean(y(pss(n,1):pss(n,2),:), 1);
     end
+
     %% perform baseline fit
-    yfit = interp1(pts, yavg, x, method);
+    yfit = interp1(pts, yavg(pts, :), x, method);
     if size(yfit, 1) == 1
         yfit = shiftdim(yfit, 1);    % make yfit a column if it is a row vector
     end
@@ -88,17 +80,14 @@ while ~ok
     phandle = stackplot(x, real(yfit), 'yoffset', 0.5*max(max(y)));
     set(phandle, 'Color', 'blue');
     ylim(gca, yL);
-    for i = 1:2
-        line([bounds(i) bounds(i)], yL, 'Color', 'c');
+    for b = bounds
+        line([b b], yL, 'Color', 'c');
     end
     hold off;
 
     %% promt user for confirmation of fit
     set(fhandle, 'Name', 'Baseline Fit - Verify baseline')
-    answer = input('  Do you to redo fit and reselect baseline points?[N] ', 's');
-    if isempty(answer)
-        answer = 'n';
-    end
+    answer = input('Would you like to redo the fit and reselect baseline points? y/[n] ', 's');
     if strcmpi(answer, 'y')
         ok = false;
     else
