@@ -116,25 +116,11 @@ NSpin = spincounting(doubleIntAreas, pars);
 %%=========================================================================
 
 % create output structure
-argout.x        = x;
-argout.y        = y;
-argout.pars     = pars;
 
-argout.fitres   = fitres;
-
-argout.A        = A;
-argout.B0       = B0;
-argout.T1       = T1;
-argout.T2       = T2;
-argout.Brms     = Brms;
-
-argout.dA       = dA;
-argout.dB0      = dB0;
-argout.dT1      = dT1;
-argout.dT2      = dT2;
-argout.dBrms    = dBrms;
-
-argout.Chi      = Chi(1);
-argout.NSpin    = NSpin(1);
+argout = struct(...
+    'x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
+    'A', A, 'B0', B0, 'T1', T1, 'T2', T2, 'Brms', Brms, ...
+    'dA', dA, 'dB0', dB0, 'dT1', dT1, 'dT2', dT2, 'dBrms', dBrms, ...
+    'Chi', Chi(1), 'NSpin', NSpin(1));
 
 end

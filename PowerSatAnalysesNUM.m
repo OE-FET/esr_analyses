@@ -111,20 +111,8 @@ NSpin = spincounting(doubleIntAreasCalc, pars);
 %%                              Output
 %%=========================================================================
 
-argout.x        = x;
-argout.y        = y;
-argout.pars     = pars;
-
-argout.fitres   = fitres;
-
-argout.A        = A;
-argout.T1T2     = T1T2;
-
-argout.dA       = dA;
-argout.dT1T2    = dT1T2;
-
-argout.Chi      = Chi(1);
-argout.NSpin    = NSpin(1);
-
+argout = struct('x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
+                'A', A, 'T1T2', T1T2, 'dA', dA, 'dT1T2', dT1T2, ...
+                'Chi', Chi(1), 'NSpin', NSpin(1));
 
 end
