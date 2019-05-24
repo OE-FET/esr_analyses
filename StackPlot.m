@@ -3,9 +3,9 @@ function [phandle, yoffsets] = stackplot(x, y, varargin)
 %
 % 	SYNTAX:
 % 	STACKPLOT(x, y)
-% 	STACKPLOT(x, y, 'xoffset', xoffset, 'yoffsets', yoffset, 'style', stylestring)
+% 	STACKPLOT(x, y, 'xoffset', xoffset, 'yoffsets', yoffsets, 'style', stylestring)
 %
-% 	If specified, 'yoffsets' a list of offsets between plots. It must have
+% 	If specified, 'yoffsets' is list of offsets between plots. It must have
 %   the same length as the number of curves. If not given, yoffset will be
 % 	determined automatically. If only a single value is given, it will be
 % 	used for all offsets.

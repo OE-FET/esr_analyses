@@ -66,9 +66,9 @@ classdef nelder_mead_fitobject
                 figure('Name', '3D fit, x-section');
                 offset = max(max(zData))*0.8;
                 hold on;
-                h3 = stackplot(x, zData, 'yoffset', offset, 'style', '.k');
+                [h3, yoffsets] = stackplot(x, zData, 'yoffset', offset, 'style', '.k');
                 h4 = stackplot(x, obj.fitfunc(obj.coef, {X, Y}), ...
-                    'yoffset', offset, 'style', '-r');
+                    'yoffsets', yoffsets, 'style', '-r');
                 legend([h3(1), h4(1)], {'Data', 'Fit'});
                 if nargout > 0
                     h = {h1 h2 h3 h4};
