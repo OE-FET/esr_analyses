@@ -6,7 +6,7 @@ function [NSpin] = spincounting(doubleIntArea, pars, S)
 %   a Curie susceptibility. This assumption is valid for independent spins
 %   when T >> ?E/2. X-Band EPR typically operates around B = 350 mT while
 %   a field of up to 0.5 T corresponds to ?E/2 = 28.9 ueV. This still 
-%   remains far lower than the corresponding thermal energy of 450 µeV at
+%   remains far lower than the corresponding thermal energy of 450 ÂµeV at
 %   5 K. 
 %
 %   If the input argument S is not given, S = 1/2 is used.
