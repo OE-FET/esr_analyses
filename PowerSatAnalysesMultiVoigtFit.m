@@ -3,10 +3,13 @@ function [argout] = PowerSatAnalysesMultiVoigtFit(varargin)
 %
 %   This function is equivelent to PowerSatAnalysesVoigtFit but fits
 %   multiple Voigtians instead of a single one. The number of Voigtians can
-%   be given as a keyword argument 'N' and defaults to two. Starting points
-%   may be given as a keyword argument 'var0'. They must be a Nx5 matrix
-%   with each row containing the starting points for one Voigtian in the
-%   order: [A0 B0 T1 T2 FWHM_gauss].
+%   be given as a keyword argument 'N' and defaults to two.
+%
+%   Starting points may be given as a keyword argument 'var0'. var0 must be 
+%   a Nx5 matrix with each row containing the starting points for one 
+%   Voigtian in the order: [A0 B0 T1 T2 FWHM_gauss]. If NaN is given for 
+%   any starting point, it will be substituted with a reasonable best-guess
+%   value.
 %
 %   Convergance may be bad. Take care to choose good starting points for
 %   the fit!
@@ -20,13 +23,13 @@ function [argout] = PowerSatAnalysesMultiVoigtFit(varargin)
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
+%   $Date: 2019/05/27 12:58 $    $Revision: 1.2 $
 
 close all
 
 if nargin > 0
     [N, varargin] = get_varargin(varargin, 'N', 2);
-    [var0, varargin] = get_varargin(varargin, 'var0', []);
+    [var0, varargin] = get_varargin(varargin, 'var0', nan(N,5));
 else
     N = 2;
     var0 = [];
@@ -38,6 +41,10 @@ if ~strcmp(pars.YTYP, 'IGD')
     error('The specified file is not a 2D data file.');
 end
 
+if N ~= size(var0, 1)
+    error('The number of starting points must match the number of Voigtians to fit.');
+end
+
 %%                         Calculate MW fields
 %%=========================================================================
 Bmw = get_mw_fields(pars);
@@ -45,10 +52,11 @@ Bmw = get_mw_fields(pars);
 %%                      Get starting points for fit
 %%=========================================================================
 
-if isempty(var0)
+if any(isnan(var0), 'all')
     % perform slice fit of center spectrum
     mid  = round(length(Bmw)/2);
     slice_fit  = pseudo_voigt_fit(x, y(:,mid), 'deriv', 1);
+    close(gcf); % close figure when done
 
     % perform numerical double integrtion to estimate T1*T2
     DI = double_int_num(x, y, 'baseline', 'n');
@@ -64,7 +72,10 @@ if isempty(var0)
     T2   = 2/(gmratio * FWHM_lorentz*1E-4);                % in sec
     T1   = T1T2/T2;                                        % in sec
 
-    var0 = ones(N,1)*[A0/2 B0 T1 T2 FWHM_gauss];             % starting points
+    auto_var0 = ones(N,1)*[A0/2 B0 T1 T2 FWHM_gauss];      % starting points
+    
+    % replace NaN values in var0 with our best-guess starting points
+    var0(isnan(var0)) = auto_var0(isnan(var0));
 end
 
 %%                          Perform Voigt fit
@@ -110,8 +121,26 @@ xlabel(h{1}(1).Parent, 'Magnetic field [G]')
 ylabel(h{1}(1).Parent, 'Microwave field [T]')
 zlabel(h{1}(1).Parent, 'ESR signal [a.u.]')
 
-xlabel(h{3}(1).Parent, 'Magnetic field [G]')
-ylabel(h{3}(1).Parent, 'ESR signal [a.u.]')
+close(h{3}(1).Parent.Parent)
+
+% use custom stackplot showing individual peaks instead of plot(fitres) 
+figure();hold on;
+p = {};
+[p{1}, yoffsets] = stackplot(x, y, 'style', 'k.');
+p{2} = stackplot(x, multi_fit_func(fitres.coef, {X, Y}), 'style', 'r', 'yoffsets', yoffsets);
+
+legend_texts = {'Data', 'Fit'};
+plot_handles = [p{1}(1), p{2}(1)];
+linespecs = {'-.g', ':b', '--c', '-.m', ':y'};
+
+for i=1:N
+    c = fitres.coef(i,:);
+    p{i+2} = stackplot(x, func_single(c, {X, Y}), 'yoffsets', yoffsets, 'style', linespecs{i});
+    legend_texts{i+2} = ['Peak ' num2str(i)];
+    plot_handles(i+2) = p{i+2}(1);
+end
+
+legend(plot_handles, legend_texts);
 
 %%                      Susceptibility Calculation
 %%=========================================================================
@@ -121,8 +150,8 @@ modScaling     = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
 Chi = zeros(size(A));
 NSpin = zeros(size(A));
 
-for i=1:length(A)
-    doubleIntAreas = modScaling * Bmw .* A(i); % use sum of all peak areas!
+for i=1:length(A) % calculate for each peak
+    doubleIntAreas = modScaling * Bmw .* A(i);
     
     % get 'maximum' value, even though all values are equal...
     Chi(i)   = max(susceptebility_calc(doubleIntAreas, pars));
