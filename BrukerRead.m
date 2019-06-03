@@ -147,6 +147,10 @@ switch extension
         end
         
         [y, ~] = fread(fid, inf, 'float64');
+        
+        if strcmp(par_struct.IKKF, 'CPLX')
+            y = complex(y(1:2:end), y(2:2:end));
+        end
 end
 
 fclose(fid);
