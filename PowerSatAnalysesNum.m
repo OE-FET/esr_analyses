@@ -96,14 +96,35 @@ T1T2  = abs(fitres.coef(2));
 dA    = abs(conf_int(1));
 dT1T2 = abs(conf_int(2));
 
+if gm^2*T1T2 < 1e-4
+    % refine and get fit errors from linear fit
+    var0 = [A];
+
+    % refine and get fit errors from standard matlab fit
+    fitfunc = @(A, x) A * x;
+
+    ft = fittype(fitfunc, 'independent', 'x', 'dependent', 'y' );
+    opts = fitoptions('Method', 'NonlinearLeastSquares', ...
+                      'Algorithm', 'Levenberg-Marquardt',...
+                      'Display', 'Off', ...
+                      'Robust', 'LAR', ...
+                      'StartPoint', var0);
+
+    fitres = fit(Bmw(1:end), doubleIntAreas(1:end), ft, opts );
+
+    A     = fitres.A;
+    dA    = diff(confint(fitres))/2;
+end
 %%                           Plot results
 %%=========================================================================
 
+figure();
 h = plot(fitres);
-set(h{1}, 'Marker', 'o');
 
-xlabel(h{1}(1).Parent, 'Microwave field [T]')
-ylabel(h{1}(1).Parent, 'ESR signal area [a.u.]')
+xlabel(h.Parent, 'Microwave field [T]')
+ylabel(h.Parent, 'ESR signal area [a.u.]')
+
+hold on; plot(Bmw, doubleIntAreas, 'ko', 'DisplayName', 'data');
 
 
 %%                          Spin counting
