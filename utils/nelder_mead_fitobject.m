@@ -10,8 +10,8 @@ classdef nelder_mead_fitobject
     end
     
     methods
-        function ci = standarderror(obj, accur)
-            if nargin < 2; accur = 'accurate'; end
+        function se = standarderror(obj, accur)
+            if nargin < 2; accur = 'quick'; end
             % degrees of freedom in fitting problem
             dof     = numel(obj.dependent_fitdata) - numel(obj.coef0);
             % standard deviation of residuals
@@ -21,7 +21,7 @@ classdef nelder_mead_fitobject
             if strcmp(accur, 'quick')
                 % use lsqnonlin with single iteration, much quicker
                 [~,~,~,~,~,~,J] = lsqnonlin(rff, obj.coef,[],[], ...
-                    optimset('MaxFunEvals', 0, 'Display', 'off'));
+                    optimset('Display', 'off'));
             elseif strcmp(accur, 'accurate')
                 % use jacobianest from spinach toolbox, more accurate
                 J = jacobianest(rff, obj.coef);
@@ -30,8 +30,10 @@ classdef nelder_mead_fitobject
             [~, R] = qr(J, 0);
             % diagnonal of covariance matrix Sigma = sdr^2*inv(J'*J)
             diag_sigma = sdr^2*sum(inv(R).^2, 2);
+            diag_sigma = sdr^2*inv(J'*J);
             % parameter standrad errors
-            ci      = sqrt(diag_sigma)';
+            se = sqrt(diag_sigma)';
+            se = full(se);
         end
         function h = plot(obj)
             
