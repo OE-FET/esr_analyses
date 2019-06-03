@@ -98,7 +98,7 @@ opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
 
 % fit model to data with Nelder Mead algorithm
 fitres   = nelder_mead_fit(multi_fit_func, {X, Y}, Z, var0, opt);
-conf_int = confint(fitres, 'quick')'; % estimate confidence intervals
+conf_int = standarderror(fitres, 'quick')'; % estimate confidence intervals
 
 A     = abs(fitres.coef(:,1));
 B0    = abs(fitres.coef(:,2));

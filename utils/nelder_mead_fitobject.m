@@ -10,7 +10,7 @@ classdef nelder_mead_fitobject
     end
     
     methods
-        function ci = confint(obj, accur)
+        function ci = standarderror(obj, accur)
             if nargin < 2; accur = 'accurate'; end
             % degrees of freedom in fitting problem
             dof     = numel(obj.dependent_fitdata) - numel(obj.coef0);
@@ -23,7 +23,7 @@ classdef nelder_mead_fitobject
                 [~,~,~,~,~,~,J] = lsqnonlin(rff, obj.coef,[],[], ...
                     optimset('MaxFunEvals', 0, 'Display', 'off'));
             elseif strcmp(accur, 'accurate')
-                % use jacobianest from spinach toolbar, more accurate
+                % use jacobianest from spinach toolbox, more accurate
                 J = jacobianest(rff, obj.coef);
             end
             % decomposition J = Q*R with upper triangular matrix R and unitary matrix Q
