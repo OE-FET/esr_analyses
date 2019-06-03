@@ -49,8 +49,4 @@ if nargout > 1
     output.exitflag = exitflag;
 end
 
-% refine with builtin fit
-
-[fitresult, gof] = fit( xData, yData, ft, opts );
-
 end
