@@ -21,7 +21,7 @@ function [y] = voigtian(x, x0, FWHM_gauss, FWHM_lorentz, varargin)
 
 %%
 
-deriv = get_varargin(varargin, 'deriv', 0);
+deriv = get_kwarg(varargin, 'deriv', 0);
 
 % padding with additional values for derivative
 N = length(x); dx=mean(diff(x));

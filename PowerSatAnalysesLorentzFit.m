@@ -102,10 +102,12 @@ ylabel(h{3}(1).Parent, 'ESR signal [a.u.]')
 %%=========================================================================
 pars.GFactor   = b2g(B0*1e-4, pars.MWFQ);
 modScaling     = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
-doubleIntAreas = modScaling * Bmw .* A;
 
-Chi   = susceptebility_calc(doubleIntAreas, pars);
-NSpin = spincounting(doubleIntAreas, pars);
+areaDI = modScaling * Bmw .* A;
+areaDIerror = modScaling * Bmw .* dA;
+
+[Chi, dChi]     = susceptebility_calc(areaDI, pars, 'dA', areaDIerror);
+[NSpin, dNSpin] = spincounting(areaDI, pars, 'dA', areaDIerror);
 
 %%                                Output
 %%=========================================================================
@@ -115,6 +117,7 @@ NSpin = spincounting(doubleIntAreas, pars);
 argout = struct('x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
                 'A', A, 'B0', B0, 'T1', T1, 'T2', T2, ...
                 'dA', dA, 'dB0', dB0, 'dT1', dT1, 'dT2', dT2, ...
-                'Chi', Chi(1), 'NSpin', NSpin(1));
+                'Chi', Chi(1), 'NSpin', NSpin(1), ...
+                'dChi', dChi(1), 'dNSpin', dNSpin(1));
 
 end

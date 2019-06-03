@@ -9,7 +9,7 @@ function [y, l] = multi_voigtian(Sys, Exp, Opt, varargin)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
 
-n = get_varargin(varargin, 'deriv', 1);
+n = get_kwarg(varargin, 'deriv', 1);
 
 x = linspace(Exp.Range(1), Exp.Range(2), Exp.nPoints);
 l = zeros(Opt.n, length(x));

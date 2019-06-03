@@ -28,7 +28,7 @@ function [y] = lorentzian(x, x0, FWHM, varargin)
 
 %%
 
-n = get_varargin(varargin, 'deriv', 0);
+n = get_kwarg(varargin, 'deriv', 0);
 
 HWHM = FWHM/2;
 x = x - x0;

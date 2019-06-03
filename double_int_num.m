@@ -24,7 +24,7 @@ function [IArea, Int1, yCorr, Int2] = double_int_num(x, y, varargin)
 
 % default to baseline-correction if not specified
 
-baseline = get_varargin(varargin, 'baseline', 'y');
+baseline = get_kwarg(varargin, 'baseline', 'y');
 
 % perform smoothing upon request
 if isequal(baseline, 'y')

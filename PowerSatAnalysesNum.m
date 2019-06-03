@@ -40,6 +40,10 @@ if ~strcmp(pars.YTYP, 'IGD')
     error('The specified file is not a 2D data file.');
 end
 
+% make sure QValue and QValueErr are given
+pars = get_par(pars, 'QValue');
+pars = get_par(pars, 'QValueErr');
+
 %%                         Calculate MW fields
 %%=========================================================================
 Bmw = get_mw_fields(pars);
@@ -63,7 +67,7 @@ end
 try
     g_factors = gfactor_determination(x, y, pars, 'plot', 'y');
 catch
-    fprintf('Could not determine g-factor. Using free electron value.')
+    fprintf('Could not determine g-factor. Using free electron value.\n')
     g_factors = ones(size(Bmw))*gfree;
 end
 
@@ -104,15 +108,20 @@ ylabel(h{1}(1).Parent, 'ESR signal area [a.u.]')
 
 %%                          Spin counting
 %%=========================================================================
-doubleIntAreasCalc = Bmw .* A;
-Chi   = susceptebility_calc(doubleIntAreasCalc, pars);
-NSpin = spincounting(doubleIntAreasCalc, pars);
+areaDI = Bmw.*A;
+areaDIerror = Bmw.*dA;
+
+[Chi, dChi]     = susceptebility_calc(areaDI, pars, 'dA', areaDIerror);
+[NSpin, dNSpin] = spincounting(areaDI, pars, 'dA', areaDIerror);
 
 %%                              Output
 %%=========================================================================
 
-argout = struct('x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
+T = str2double(strtrim(regexprep(pars.Temperature,'K','')));
+
+argout = struct('x', x, 'y', y, 'pars', pars, 'fitres', fitres, 'T', T, ...
                 'A', A, 'T1T2', T1T2, 'dA', dA, 'dT1T2', dT1T2, ...
-                'Chi', Chi(1), 'NSpin', NSpin(1));
+                'Chi', Chi(1), 'NSpin', NSpin(1), ...
+                'dChi', dChi(1), 'dNSpin', dNSpin(1));
 
 end

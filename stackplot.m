@@ -30,9 +30,9 @@ yoffsets = [0 max(ydiff)*1.3];
 
 %% Input Analyses
 
-xoffset = get_varargin(varargin, 'xoffset', 0);
-yoffsets = get_varargin(varargin, 'yoffsets', yoffsets);
-style = get_varargin(varargin, 'style', '');
+xoffset = get_kwarg(varargin, 'xoffset', 0);
+yoffsets = get_kwarg(varargin, 'yoffsets', yoffsets);
+style = get_kwarg(varargin, 'style', '');
 
 %% The actual programm 
 dimx = size(x);

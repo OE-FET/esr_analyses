@@ -11,7 +11,7 @@ function [fitresult, gof, yfit] = voigt_fit(x, y, varargin)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
-deriv = get_varargin(varargin, 'deriv', 0);
+deriv = get_kwarg(varargin, 'deriv', 0);
 yfit = zeros(size(y));
 
 for i = 1:size(y, 2)
@@ -32,9 +32,9 @@ for i = 1:size(y, 2)
         Area_default = 2*(Max - Min)*FWHM_default;   
     end
 
-    FWHM = get_varargin(varargin, 'FWHM', FWHM_default);
-    x0 = get_varargin(varargin, 'x0', x0_default);
-    Area = get_varargin(varargin, 'Area', Area_default);
+    FWHM = get_kwarg(varargin, 'FWHM', FWHM_default);
+    x0 = get_kwarg(varargin, 'x0', x0_default);
+    Area = get_kwarg(varargin, 'Area', Area_default);
 
     %% Fit:
 

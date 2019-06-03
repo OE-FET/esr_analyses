@@ -23,7 +23,7 @@ function [y] = pseudo_voigt(x, x0, FWHM_gauss, FWHM_lorentz, varargin)
 
 %%
 
-try n = get_varargin(varargin, 'deriv'); catch; n = 0; end
+try n = get_kwarg(varargin, 'deriv'); catch; n = 0; end
 
 f_G = FWHM_gauss;
 f_L = FWHM_lorentz;

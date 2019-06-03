@@ -18,7 +18,7 @@ function [xnew, y, pars] = gmarker_calib(x, y, pars, varargin)
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %% Input analyses
-marker_g = get_varargin(varargin, 'gMarker', 1.979843);
+marker_g = get_kwarg(varargin, 'gMarker', 1.979843);
 
 %% Find resonance peak of marker
 B_target = 10E3 * g2b(marker_g,pars.MWFQ);

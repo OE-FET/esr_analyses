@@ -28,8 +28,8 @@ function [argout] = PowerSatAnalysesMultiVoigtFit(varargin)
 close all
 
 if nargin > 0
-    [N, varargin] = get_varargin(varargin, 'N', 2);
-    [var0, varargin] = get_varargin(varargin, 'var0', nan(N,5));
+    [N, varargin] = get_kwarg(varargin, 'N', 2);
+    [var0, varargin] = get_kwarg(varargin, 'var0', nan(N,5));
 else
     N = 2;
     var0 = [];
@@ -147,15 +147,16 @@ legend(plot_handles, legend_texts);
 pars.GFactor   = mean(b2g(B0*1e-4, pars.MWFQ));
 modScaling     = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
 
-Chi = zeros(size(A));
-NSpin = zeros(size(A));
+Chi = zeros(size(A)); dChi = zeros(size(A));
+NSpin = zeros(size(A)); dNSpin = zeros(size(A));
 
 for i=1:length(A) % calculate for each peak
-    doubleIntAreas = modScaling * Bmw .* A(i);
+    areaDI = modScaling * Bmw .* A;
+    areaDIerror = modScaling * Bmw .* dA;
     
     % get 'maximum' value, even though all values are equal...
-    Chi(i)   = max(susceptebility_calc(doubleIntAreas, pars));
-    NSpin(i) = max(spincounting(doubleIntAreas, pars));
+    [Chi(i), dChi(i)]   = max(susceptebility_calc(areaDI, pars, 'dA', areaDIerror));
+    [NSpin(i), dNSpin(i)] = max(spincounting(areaDI, pars, 'dA', areaDIerror));
 end
 
 %%                                Output
@@ -167,7 +168,7 @@ argout = struct(...
     'x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
     'A', A, 'B0', B0, 'T1', T1, 'T2', T2, 'Brms', Brms, ...
     'dA', dA, 'dB0', dB0, 'dT1', dT1, 'dT2', dT2, 'dBrms', dBrms, ...
-    'Chi', Chi, 'NSpin', NSpin);
+    'Chi', Chi, 'NSpin', NSpin, 'dChi', dChi, 'dNSpin', dNSpin);
 
 end
 
