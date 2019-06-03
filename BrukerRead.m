@@ -47,12 +47,11 @@ function varargout = BrukerRead(varargin)
 %                then the intensity is in the 3rd "z" dimension
 %
 %   Example: 
-%   [x, y] = BrukerRead
-%            GUI load a file
+%   [x, y, pars] = BrukerRead
+%                  GUI load a file
 %
-%   [x, y, Pars] = BrukerRead('/path/to/file.DTA')
-%                  load x,y and info of file.DTA with to the workspace and 
-%                  plot x,y as a new figure
+%   [x, y, pars] = BrukerRead('/path/to/file.DTA')
+%                  load x,y and info of file.DTA to the workspace
 %
 %   MODIFICATIONS
 %   This version of BrukerRead automatically detects which parameters have
