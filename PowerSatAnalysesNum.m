@@ -88,19 +88,15 @@ opt = optimset('TolFun', 1e-9,'TolX', 1e-9,'PlotFcns', @optimplotfval, ...
 
 % fit model to data with Nelder Mead algorithm
 fitres   = nelder_mead_fit(fitfunc, Bmw(1:end), doubleIntAreas(1:end), var0, opt);
-conf_int = standarderror(fitres); % estimate confidence intervals
+se = standarderror(fitres); % estimate confidence intervals
 
 A     = abs(fitres.coef(1));
 T1T2  = abs(fitres.coef(2));
 
-dA    = abs(conf_int(1));
-dT1T2 = abs(conf_int(2));
+dT1T2 = abs(se(2));
 
-if gm^2*T1T2 < 1e-4
-    % refine and get fit errors from linear fit
-    var0 = [A];
-
-    % refine and get fit errors from standard matlab fit
+% refine and get fit errors from standard matlab fit
+if gm^2*T1T2 < 1
     fitfunc = @(A, x) A * x;
 
     ft = fittype(fitfunc, 'independent', 'x', 'dependent', 'y' );
@@ -108,12 +104,31 @@ if gm^2*T1T2 < 1e-4
                       'Algorithm', 'Levenberg-Marquardt',...
                       'Display', 'Off', ...
                       'Robust', 'LAR', ...
-                      'StartPoint', var0);
+                      'StartPoint', A);
 
     fitres = fit(Bmw(1:end), doubleIntAreas(1:end), ft, opts );
 
     A     = fitres.A;
     dA    = diff(confint(fitres))/2;
+else
+    fitfunc = @(A, gm2T1T2, x) A * x ./sqrt(1+x.^2*gm2T1T2);
+
+    ft = fittype(fitfunc, 'independent', 'x', 'dependent', 'y' );
+    opts = fitoptions('Method', 'NonlinearLeastSquares', ...
+                      'Algorithm', 'Levenberg-Marquardt',...
+                      'Display', 'Off', ...
+                      'Robust', 'LAR', ...
+                      'StartPoint', [A, gm^2*T1T2]);
+
+    fitres = fit(Bmw(1:end), doubleIntAreas(1:end), ft, opts );
+
+    A     = fitres.A;
+    T1T2  = fitres.gm2T1T2/gm^2;
+    
+    ci    = confint(fitres);
+    dA    = diff(ci(:,1))/2;
+    dT1T2    = diff(ci(:,2))/2;
+    
 end
 %%                           Plot results
 %%=========================================================================
@@ -141,8 +156,8 @@ areaDIerror = Bmw.*dA;
 T = str2double(strtrim(regexprep(pars.Temperature,'K','')));
 
 argout = struct('x', x, 'y', y, 'pars', pars, 'fitres', fitres, 'T', T, ...
-                'A', A, 'T1T2', T1T2, 'dA', dA, 'dT1T2', dT1T2, ...
-                'Chi', Chi(1), 'NSpin', NSpin(1), ...
-                'dChi', dChi(1), 'dNSpin', dNSpin(1));
+                'A', A, 'dA', dA, 'T1T2', T1T2, 'dT1T2', dT1T2, ...
+                'Chi', Chi(1), 'dChi', dChi(1), ...
+                'NSpin', NSpin(1), 'dNSpin', dNSpin(1));
 
 end
