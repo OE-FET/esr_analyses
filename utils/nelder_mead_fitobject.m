@@ -11,7 +11,7 @@ classdef nelder_mead_fitobject
     
     methods
         function se = standarderror(obj, accur)
-            if nargin < 2; accur = 'quick'; end
+            if nargin < 2; accur = 'accurate'; end
             % degrees of freedom in fitting problem
             dof     = numel(obj.dependent_fitdata) - numel(obj.coef0);
             % standard deviation of residuals

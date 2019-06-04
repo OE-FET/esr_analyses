@@ -1,4 +1,4 @@
-function [argout] = PowerSatAnalysesNum(varargin)
+function [arout_struct, out_table] = PowerSatAnalysesNum(varargin)
 %POWERSATANALYSESNUM Numercial analyses of ESR power saturation curves.
 %
 %   Numerically integrates a series of MW power dependent cw-EPR spectra to
@@ -93,10 +93,11 @@ se = standarderror(fitres); % estimate confidence intervals
 A     = abs(fitres.coef(1));
 T1T2  = abs(fitres.coef(2));
 
+dA = abs(se(1));
 dT1T2 = abs(se(2));
 
-% refine and get fit errors from standard matlab fit
-if gm^2*T1T2 < 1
+% refine with linear fit in case of no detectable saturation
+if gm^2*T1T2*Bmw(end) < 1e-3  % no saturation
     fitfunc = @(A, x) A * x;
 
     ft = fittype(fitfunc, 'independent', 'x', 'dependent', 'y' );
@@ -106,40 +107,27 @@ if gm^2*T1T2 < 1
                       'Robust', 'LAR', ...
                       'StartPoint', A);
 
-    fitres = fit(Bmw(1:end), doubleIntAreas(1:end), ft, opts );
-
+    fitres = fit(Bmw(1:end), doubleIntAreas(1:end), ft, opts);
+    
     A     = fitres.A;
     dA    = diff(confint(fitres))/2;
-else
-    fitfunc = @(A, gm2T1T2, x) A * x ./sqrt(1+x.^2*gm2T1T2);
 
-    ft = fittype(fitfunc, 'independent', 'x', 'dependent', 'y' );
-    opts = fitoptions('Method', 'NonlinearLeastSquares', ...
-                      'Algorithm', 'Levenberg-Marquardt',...
-                      'Display', 'Off', ...
-                      'Robust', 'LAR', ...
-                      'StartPoint', [A, gm^2*T1T2]);
-
-    fitres = fit(Bmw(1:end), doubleIntAreas(1:end), ft, opts );
-
-    A     = fitres.A;
-    T1T2  = fitres.gm2T1T2/gm^2;
-    
-    ci    = confint(fitres);
-    dA    = diff(ci(:,1))/2;
-    dT1T2    = diff(ci(:,2))/2;
-    
-end
 %%                           Plot results
 %%=========================================================================
 
-figure();
-h = plot(fitres);
+    figure();
+    h = plot(fitres);
 
-xlabel(h.Parent, 'Microwave field [T]')
-ylabel(h.Parent, 'ESR signal area [a.u.]')
+    xlabel(h.Parent, 'Microwave field [T]')
+    ylabel(h.Parent, 'ESR signal area [a.u.]')
 
-hold on; plot(Bmw, doubleIntAreas, 'ko', 'DisplayName', 'data');
+    hold on; plot(Bmw, doubleIntAreas, 'ko', 'DisplayName', 'data');
+else
+    h = plot(fitres);
+    xlabel(h{1}.Parent, 'Microwave field [T]')
+    ylabel(h{1}.Parent, 'ESR signal area [a.u.]')
+    set(h{1}, 'Marker', 'o');
+end
 
 
 %%                          Spin counting
@@ -155,9 +143,14 @@ areaDIerror = Bmw.*dA;
 
 T = str2double(strtrim(regexprep(pars.Temperature,'K','')));
 
-argout = struct('x', x, 'y', y, 'pars', pars, 'fitres', fitres, 'T', T, ...
+arout_struct = struct(...
+                'x', x, 'y', y, 'pars', pars, 'fitres', fitres, 'T', T, ...
                 'T1T2', T1T2, 'dT1T2', dT1T2, ...
                 'Chi', Chi(1), 'dChi', dChi(1), ...
                 'NSpin', NSpin(1), 'dNSpin', dNSpin(1));
+            
+out_table = struct2table(rmfield(arout_struct, {'x', 'y', 'pars', 'fitres'}));
+
+clc; disp(out_table);
 
 end

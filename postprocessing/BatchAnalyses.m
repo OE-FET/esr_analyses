@@ -61,4 +61,6 @@ for i = 1:nFiles
     pause(2) % pause for user to view plots
 end
 
+clc; disp(output_table);
+
 end
