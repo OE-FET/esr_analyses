@@ -1,17 +1,20 @@
-function Pars = get_sample_position(Pars)
+function pars = get_sample_position(pars)
 
 % ask for height and length of sample if not in Pars
 
-if ~isfield(Pars,'SampleL') && ~isfield(Pars,'SampleH')
+if ~isfield(pars,'SampleL')
 
-    Pars.SampleL = input('Please give sample length in mm [default = 20 mm]: ');
-    if isempty(Pars.SampleL)
-        Pars.SampleL = 20;
+    pars.SampleL = input('Please give sample length in mm [default = 20]: ');
+    if isempty(pars.SampleL)
+        pars.SampleL = 20;
     end
+end
 
-    Pars.SampleH = input('Please give vertical position of sample center in cavity in mm,\nmeasured from the top collar [default = 62.5 mm]: ');
-    if isempty(Pars.SampleH)
-        Pars.SampleH = 62.5;
+if ~isfield(pars,'SampleH')
+
+    pars.SampleH = input('Please give vertical position of sample center in the cavity,\nmeasured from the top collar in mm [default = 62.5]: ');
+    if isempty(pars.SampleH)
+        pars.SampleH = 62.5;
     end
 end
 

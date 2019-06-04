@@ -23,13 +23,14 @@ function [IArea, Int1, yCorr, Int2] = double_int_num(x, y, varargin)
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 % default to baseline-correction if not specified
-
 baseline = get_kwarg(varargin, 'baseline', 'y');
+
+% create a new figure
+figure();
 
 % perform smoothing upon request
 if isequal(baseline, 'y')
     % plot spectrum itself
-    hold off;
     stackplot(x, y);
 
     str = input('Would you like to smooth the spectrum y/[n]?', 's');

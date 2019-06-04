@@ -1,20 +1,23 @@
-function [phandle, yoffsets] = stackplot(x, y, varargin)
+function [phandle, yoffsets] = stackplot(varargin)
 %STACKPLOT Plots data as in stacked plots.
 %
 % 	SYNTAX:
 % 	STACKPLOT(x, y)
-% 	STACKPLOT(x, y, 'xoffset', xoffset, 'yoffsets', yoffsets, 'style', stylestring)
+% 	STACKPLOT(x, y, 'OptionName', OptionValue, ...)
+%   STACKPLOT(ax, ...)
 %
-% 	If specified, 'yoffsets' is list of offsets between plots. It must have
-%   the same length as the number of curves. If not given, yoffset will be
-% 	determined automatically. If only a single value is given, it will be
-% 	used for all offsets.
 %
-% 	xoffset allows you to create a staggered plot, offseting each plot by 
-% 	the stated number of Gauss. Default is 0 Gauss.
-%
-% 	When a 'style' is specified, the line style form the variable 
-% 	stylestring is used.
+%   INPUT(S):
+%   ax         - Axis handle for plot. If not given, the data is plotted in 
+%                the current axis, as returned by gca.
+%   x, y       - Data to plot.
+%   'xoffset'  - List of vertical offsets between curves. Automatically
+%                determined if not given.
+%   'yoffsets' - Horizontal offset between curves, creates a staggered 
+%                plot. Defaults to 0.
+%   'style'    - Line style string, such as 'r--' for a dashed red line.
+%   'rescale'  - Rescale all y-data such that max(abs(y)) = 1. Turned off 
+%                by default.
 %
 % 	OUTPUT(S):
 %   phandle - plot handles
@@ -24,17 +27,33 @@ function [phandle, yoffsets] = stackplot(x, y, varargin)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
-%% get default offset
-ydiff = y(:, 1:end-1) + y(:, 2:end);
-yoffsets = [0 max(ydiff)*1.3];
-
 %% Input Analyses
 
-xoffset = get_kwarg(varargin, 'xoffset', 0);
-yoffsets = get_kwarg(varargin, 'yoffsets', yoffsets);
-style = get_kwarg(varargin, 'style', '');
+if ishghandle(varargin{1}, 'axes')
+    ax = varargin{1};
+    x  = varargin{2};
+    y  = varargin{3};
+else
+    ax = gca;
+    x  = varargin{1};
+    y  = varargin{2};
+end
 
-%% The actual programm 
+rescale  = get_kwarg(varargin, 'rescale', 0);
+
+if rescale
+    y = y./max(abs(y));
+end
+
+% get default offset
+ydiff    = y(:, 1:end-1) + y(:, 2:end);
+yoffsets = [0 max(ydiff)*1.3];
+
+xoffset  = get_kwarg(varargin, 'xoffset', 0);
+yoffsets = get_kwarg(varargin, 'yoffsets', yoffsets);
+style    = get_kwarg(varargin, 'style', '');
+
+%% Prepare data with offsets
 dimx = size(x);
 dimy = size(y);
 
@@ -51,15 +70,16 @@ else
 end
 
 YOFFSETS = cumsum(yoffsets);
-if isempty(YOFFSETS) == 0
+if ~isempty(YOFFSETS)
     yNew = y + YOFFSETS(ones(1, dimy(1)), :);
 else
     yNew = y;
 end
 
-phandle = plot(xNew, yNew, style);
+%% Plot
+phandle = plot(ax, xNew, yNew, style);
 
-set(gcf, 'color', 'white');
+set(ax.Parent, 'color', 'white');
 grid on;
 
 ymin = min(min(yNew)) - abs(0.5*max(max(y)));
