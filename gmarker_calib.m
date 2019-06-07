@@ -36,7 +36,7 @@ if isempty(x_slice)
 end
 
 [~, ~, ~,p] = findpeaks(y_slice);
-if p < 0.5
+if p < 0.3
     disp('No ESR signal found at marker location.');
     plot(x, y, x_slice, y_slice);
     xnew=x;

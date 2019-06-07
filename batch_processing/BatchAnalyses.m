@@ -1,5 +1,14 @@
 function [output, output_table] = BatchAnalyses(analysesFunc)
-%% BATCH PROCESSING
+%% BATCHANALYSES Analyses ESR spectra from multiple files
+%
+%   INPUTS(S):
+%   analysesFunc    - Handle of function to use for analyses, e.g.,
+%                     '@PowerSatAnalysesVoigtFit'.
+%
+%   OUTPU(S):
+%   output          - cell array with all analyses results
+%   output_table    - table with all fitting results
+%
 
 % Select analyses function, e.g., PowerSatAnalysesVoigtFit
 if nargin < 1
