@@ -1,4 +1,4 @@
-function [IArea, Int1, yCorr, Int2] = double_int_num(x, y, varargin)
+function [IArea, yInt1, yCorr, yInt2] = double_int_num(x, y, varargin)
 %DOUBLE_INT_NUM Numerical double integration of signal.
 %
 %   Performs a numerical double integration of a given signal. It offers
@@ -15,7 +15,7 @@ function [IArea, Int1, yCorr, Int2] = double_int_num(x, y, varargin)
 %
 %   OUTPUT(S):
 %   IArea - double integrated signal
-%   Int1  - single integrated signal
+%   yInt1  - single integrated signal
 %   yCorr - polynomial base line corrected ESR signalintensity
 %
 
@@ -25,11 +25,10 @@ function [IArea, Int1, yCorr, Int2] = double_int_num(x, y, varargin)
 % default to baseline-correction if not specified
 baseline = get_kwarg(varargin, 'baseline', 'y');
 
-% create a new figure
-figure();
-
 % perform smoothing upon request
-if isequal(baseline, 'y')
+if strcmp(baseline, 'y')
+    % create a new figure
+    figure();
     % plot spectrum itself
     stackplot(x, y);
 
@@ -41,45 +40,38 @@ if isequal(baseline, 'y')
 end
 
 dim = size(y);
-% preallocate memory for integrated curve
-Int1 = zeros(dim);
 
 % numerical integration with trapez-algorithm
-for k = 2:dim(1)
-    Int1(k,:) = trapz(x(1:k), y(1:k,:));
-end
+yInt1 = cumtrapz(x, y);
 
 yCorr = y;
 
 % perform baseline correction upon request
-if isequal(baseline, 'y')
+if strcmp(baseline, 'y')
     % plot result from first integration
-    stackplot(x, Int1);
+    stackplot(x, yInt1);
     str = input('Would you like to perform a polynomial base line correction y/[n]?', 's');
-    if strcmp(str, 'y') == 1
+    if strcmp(str, 'y')
         % calculate baseline
-        Int1 = baseline_corr(x, Int1);
+        yInt1 = baseline_corr(x, yInt1);
         % differentiate baseline corrected first integral
-        yCorr = diff(Int1)/(x(2)-x(1));
+        yCorr = diff(yInt1)/(x(2)-x(1));
         % add lost data point to derivative
         yCorr(end+1,:) = y(end,:);
     end
 end
 
 % second integration to calculate totoal Area
-Int2 = zeros(dim);
-for k = 2:dim(1)
-    Int2(k,:) = trapz(x(1:k), Int1(1:k,:));
-end
+yInt2 = cumtrapz(x, yInt1);
 
 % plot result for visual check
-if strcmp(baseline, 'y') == 1
-    stackplot(x, Int2);
+if strcmp(baseline, 'y')
+    stackplot(x, yInt2);
     pause(0.2);
 end
 
 % average over last 3% from second integral for total area
-IArea = mean(Int2(round(97*dim(1)/100):end,:));
+IArea = mean(yInt2(round(97*dim(1)/100):end,:));
 IArea = IArea';
 
 end
