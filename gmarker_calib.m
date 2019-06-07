@@ -23,19 +23,22 @@ marker_g = get_kwarg(varargin, 'gMarker', 1.979843);
 %% Find resonance peak of marker
 B_target = 10E3 * g2b(marker_g,pars.MWFQ);
 
-% find 2 Gauss interval around suspected marker location
+% find 10 Gauss interval around suspected marker location
 Interval = [B_target-5, B_target+5];
 Slice = logical((Interval(1)<x) .* (x<Interval(2)));
 x_slice = x(Slice);
 y_slice = y(Slice);
 
 if isempty(x_slice)
-    disp('Cannot find g-marker. Proceeding without marker calibration.');
+    disp('Marker location outside of spectrum. Proceeding without marker calibration.');
     xnew=x;
     return;
 end
 
-[~, ~, ~,p] = findpeaks(y_slice);
+% heuristic check if there is a marker ESR signal
+y_slice_int = cumtrapz(x_slice, y_slice);
+y_slice_int_norm = y_slice_int/max(y_slice_int);
+[~, ~, ~, p] = findpeaks(y_slice_int_norm);
 if p < 0.3
     disp('No ESR signal found at marker location.');
     plot(x, y, x_slice, y_slice);
