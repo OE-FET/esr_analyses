@@ -1,7 +1,7 @@
 function [g_sample, B_res]= gfactor_determination(x, y, pars, varargin)
 %GFACTOR_DETERMINATION determines the g-factor of an ESR spectrum
 %
-%   [g_sample, B_res]= GFACTOR_DETERMINATION(x, y, Pars, plotting)
+%   [g_sample, B_res]= GFACTOR_DETERMINATION(x, y, pars)
 %   determines the g-factor of derivative ESR spectra given by (x,y) with
 %   the microwave frequency in the paramater structure PARS. G_SAMPLE is
 %   the g-factor, B_RES is the resonance field.
@@ -78,13 +78,11 @@ end
 
 % plot the result
 if plotting == 'y'
-    yoffset = 0.5*max(max(y));
-    hold off; stackplot(x,y,'yoffset',yoffset); hold on;
+    figure(); hold on;
+    [~, yoffsets] = stackplot(x, y);
     xL = xlim; yL = ylim;
-    h1 = stackplot(B_res', zeros(length(B_res), 1)', 'yoffset', yoffset);
-    set(h1, 'Marker', 'o', 'Color', 'r');
-    h2 = stackplot(x, zeros(size(y)), 'yoffset', yoffset);
-    set(h2, 'Color', 'k', 'LineWidth', 1);
+    stackplot(B_res', zeros(length(B_res), 1)', 'yoffsets', yoffsets, 'style', 'ro');
+    stackplot(x, zeros(size(y)), 'yoffsets', yoffsets, 'style', 'k-');
     xlim(gca, xL); ylim(gca, yL);
     hold off;
 end
