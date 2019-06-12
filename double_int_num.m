@@ -30,7 +30,7 @@ if strcmp(baseline, 'y')
     % create a new figure
     figure();
     % plot spectrum itself
-    stackplot(x, y);
+    stack_plot(x, y);
 
     str = input('Would you like to smooth the spectrum y/[n]?', 's');
         if isequal(str, 'y')
@@ -49,7 +49,7 @@ yCorr = y;
 % perform baseline correction upon request
 if strcmp(baseline, 'y')
     % plot result from first integration
-    stackplot(x, yInt1);
+    stack_plot(x, yInt1);
     str = input('Would you like to perform a polynomial base line correction y/[n]?', 's');
     if strcmp(str, 'y')
         % calculate baseline
@@ -66,7 +66,7 @@ yInt2 = cumtrapz(x, yInt1);
 
 % plot result for visual check
 if strcmp(baseline, 'y')
-    stackplot(x, yInt2);
+    stack_plot(x, yInt2);
     pause(0.2);
 end
 

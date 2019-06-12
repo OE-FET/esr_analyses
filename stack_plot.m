@@ -1,10 +1,10 @@
-function [phandle, yoffsets] = stackplot(varargin)
-%STACKPLOT Plots data as in stacked plots.
+function [phandle, yoffsets] = stack_plot(varargin)
+%stack_plot Plots data as in stacked plots.
 %
 % 	SYNTAX:
-% 	STACKPLOT(x, y)
-% 	STACKPLOT(x, y, 'OptionName', OptionValue, ...)
-%   STACKPLOT(ax, ...)
+% 	STACK_PLOT(x, y)
+% 	STACK_PLOT(x, y, 'OptionName', OptionValue, ...)
+%   STACK_PLOT(ax, ...)
 %
 %
 %   INPUT(S):

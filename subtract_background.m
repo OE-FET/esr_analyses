@@ -108,14 +108,14 @@ subplot(2, 1, 1);
 hold on
 yoffset = max(max(yS))*0.5;
 % plot background
-sp1 = stackplot(xB + B_offset, yB, 'yoffset', yoffset, 'style', 'r');
+sp1 = stack_plot(xB + B_offset, yB, 'yoffset', yoffset, 'style', 'r');
 % plot signal
-sp2 = stackplot(xS, yS, 'yoffset', yoffset, 'style', 'b'); 
+sp2 = stack_plot(xS, yS, 'yoffset', yoffset, 'style', 'b'); 
 hold off;
 legend([sp1(1) sp2(1)],{'background', 'signal'})
 
 % plot signal minus background
 subplot(2, 1, 2)
-stackplot(x, y, 'style', 'b');
+stack_plot(x, y, 'style', 'b');
 
 end

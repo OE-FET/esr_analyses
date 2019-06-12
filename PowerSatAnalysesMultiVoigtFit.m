@@ -123,11 +123,11 @@ zlabel(h{1}(1).Parent, 'ESR signal [a.u.]')
 
 close(h{3}(1).Parent.Parent)
 
-% use custom stackplot showing individual peaks instead of plot(fitres) 
+% use custom stack_plot showing individual peaks instead of plot(fitres) 
 figure();hold on;
 p = {};
-[p{1}, yoffsets] = stackplot(x, y, 'style', 'k.');
-p{2} = stackplot(x, multi_fit_func(fitres.coef, {X, Y}), 'style', 'r', 'yoffsets', yoffsets);
+[p{1}, yoffsets] = stack_plot(x, y, 'style', 'k.');
+p{2} = stack_plot(x, multi_fit_func(fitres.coef, {X, Y}), 'style', 'r', 'yoffsets', yoffsets);
 
 legend_texts = {'Data', 'Fit'};
 plot_handles = [p{1}(1), p{2}(1)];
@@ -135,7 +135,7 @@ linespecs = {'-.g', ':b', '--c', '-.m', ':y'};
 
 for i=1:N
     c = fitres.coef(i,:);
-    p{i+2} = stackplot(x, func_single(c, {X, Y}), 'yoffsets', yoffsets, 'style', linespecs{i});
+    p{i+2} = stack_plot(x, func_single(c, {X, Y}), 'yoffsets', yoffsets, 'style', linespecs{i});
     legend_texts{i+2} = ['Peak ' num2str(i)];
     plot_handles(i+2) = p{i+2}(1);
 end
