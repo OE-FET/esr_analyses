@@ -17,11 +17,8 @@ end
 S.x = x; S.y = y;
 S.style = get_kwarg(varargin, 'style', '');
 
-S.fh = figure('units','pixels',...
-              'menubar','none',...
-              'name','slider_plot',...
-              'numbertitle','off');    
-S.ax = axes();
+S.fh = gcf;
+S.ax = gca;
 
 plot(S.x, S.y(:,1), S.style);
 xlim([min(S.x) max(S.x)]);
