@@ -49,7 +49,7 @@ yCorr = y;
 % perform baseline correction upon request
 if strcmp(baseline, 'y')
     % plot result from first integration
-    stack_plot(x, yInt1);
+    stack_plot(x, yInt1, 'rescale', 1);
     str = input('Would you like to perform a polynomial base line correction y/[n]?', 's');
     if strcmp(str, 'y')
         % calculate baseline
