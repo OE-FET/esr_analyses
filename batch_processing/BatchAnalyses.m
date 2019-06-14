@@ -67,7 +67,7 @@ for i = 1:nFiles
         output_table = [output_table; struct2table(out_analyses)];
     end
     
-    pause(2) % pause for user to view plots
+    input('Press enter to continue.'); % pause for user to view plots
 end
 
 clc; disp(output_table);

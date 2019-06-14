@@ -1,4 +1,4 @@
-function [argout] = PowerSatAnalysesVoigtFit(varargin)
+function [out_struct, out_table] = PowerSatAnalysesVoigtFit(varargin)
 %POWERSATANALYSESVOIGTFIT Analyses of CW-ESR power saturation measurements
 %
 %   Performs a 2D fit of a cw-EPR power saturation spectrum to determine
@@ -119,10 +119,14 @@ areaDIerror = modScaling * Bmw .* dA;
 
 % create output structure
 
-argout = struct(...
+out_struct = struct(...
     'x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
     'B0', B0, 'dB0', dB0, 'T1', T1, 'dT1', dT1, 'T2', T2, 'dT2', dT2, ...
     'Brms', Brms, 'dBrms', dBrms, 'Chi', Chi(1), 'dChi', dChi(1), ...
     'NSpin', NSpin(1), 'dNSpin', dNSpin(1));
+
+out_table = struct2table(rmfield(out_struct, {'x', 'y', 'pars', 'fitres'}));
+
+clc; disp(out_table);
 
 end

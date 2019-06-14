@@ -1,4 +1,4 @@
-function [arout_struct, out_table] = PowerSatAnalysesNum(varargin)
+function [out_struct, out_table] = PowerSatAnalysesNum(varargin)
 %POWERSATANALYSESNUM Numercial analyses of ESR power saturation curves.
 %
 %   Numerically integrates a series of MW power dependent cw-EPR spectra to
@@ -143,13 +143,13 @@ areaDIerror = Bmw.*dA;
 
 T = str2double(strtrim(regexprep(pars.Temperature,'K','')));
 
-arout_struct = struct(...
+out_struct = struct(...
                 'x', x, 'y', y, 'pars', pars, 'fitres', fitres, 'T', T, ...
                 'T1T2', T1T2, 'dT1T2', dT1T2, ...
                 'Chi', Chi(1), 'dChi', dChi(1), ...
                 'NSpin', NSpin(1), 'dNSpin', dNSpin(1));
             
-out_table = struct2table(rmfield(arout_struct, {'x', 'y', 'pars', 'fitres'}));
+out_table = struct2table(rmfield(out_struct, {'x', 'y', 'pars', 'fitres'}));
 
 clc; disp(out_table);
 
