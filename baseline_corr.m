@@ -39,6 +39,10 @@ N = length(x);
 
 %% select area for baseline fit
 
+% rescale all data for better visibility
+scaling = max(abs(y));
+y = y./scaling;
+
 ok = false;
 % re-promt for user input until user confirms good baseline correction
 while ~ok
@@ -123,7 +127,12 @@ end
 try                                                                 %#ok
     close(fig)
 end
+
 % subtact baseline
 ycorr = y - yfit;
+
+% undo scaling
+yfit = yfit.*scaling;
+ycorr = ycorr.*scaling;
 
 end
