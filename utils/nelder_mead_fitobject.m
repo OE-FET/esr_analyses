@@ -11,29 +11,44 @@ classdef nelder_mead_fitobject
     
     methods
         function se = standarderror(obj, accur)
+            % STANDARDERROR of of fit paramters
+            %
+            % We calculate the standard-error (SE) of fit parameters as
+            %
+            %   SE = sqrt( sigma_y * inv(H) )
+            %
+            % where 'sqrt(sigma_y)' is the standard deviation of residuals 
+            % and 'H' is the Hessian. 'sigma_y' can be calculated as
+            %
+            %   sigma_y = RSS / dof
+            %
+            % where 'RSS' is the resiual sum-of-squares and 'dof' is the 
+            % number of degrees-of-freedom in the fitting problem. The
+            % Hessian can be estimated from the Jacobian 'J' of the fit
+            % function with respect to the fitting parameters as H ~ J'*J.
+            
             if nargin < 2; accur = 'accurate'; end
-            % degrees of freedom in fitting problem
+
             dof     = numel(obj.dependent_fitdata) - numel(obj.coef0);
-            % standard deviation of residuals
-            sdr     = sqrt(obj.sse/dof);
-            % jacobian matrix
-            rff     = @(coef) obj.fitfunc(coef, obj.independent_fitdata);
+            sigma_y = obj.sse/dof;
+            
+            % get jacobian matrix with respect to fit parameters
+            func = @(coef) obj.fitfunc(coef, obj.independent_fitdata);
             if strcmp(accur, 'quick')
-                % use lsqnonlin with single iteration, much quicker
-                [~,~,~,~,~,~,J] = lsqnonlin(rff, obj.coef,[],[], ...
-                    optimset('Display', 'off'));
+                % use lsqnonlin with single iteration to get J (quick)
+                [~,~,~,~,~,~,J] = lsqnonlin(func, obj.coef,[],[], optimset('Display', 'off'));
             elseif strcmp(accur, 'accurate')
-                % use jacobianest from spinach toolbox, more accurate
-                J = jacobianest(rff, obj.coef);
+                % use jacobianest from spinach toolbox (accurate but slow)
+                J = jacobianest(func, obj.coef);
             end
             % decomposition J = Q*R with upper triangular matrix R and unitary matrix Q
             [~, R] = qr(J, 0);
-            % diagnonal of covariance matrix Sigma = sdr^2*inv(J'*J)
-            diag_sigma = sdr^2*sum(inv(R).^2, 2);
-            diag_sigma = sdr^2*inv(J'*J);
+            % diagnonal of covariance matrix Sigma = sigma_y*inv(J'*J)
+            diag_sigma = sigma_y * sum(inv(R).^2, 2);
+            % diag_sigma = sigma_y*inv(J'*J);
             % parameter standrad errors
             se = sqrt(diag_sigma)';
-            se = full(se);
+            se = full(se); % convert sparse to full matrix
         end
         function h = plot(obj)
             
