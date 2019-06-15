@@ -33,7 +33,7 @@ pars.GFactor = gfactor_determination(x, y, pars, 'plot', 'y');
 
 doubleIntArea = double_int_num(x, y, 'baseline', 'y');
 
-Chi = susceptebility_calc(doubleIntArea, pars);
+Chi   = susceptebility_calc(doubleIntArea, pars);
 NSpin = spincounting(doubleIntArea, pars);
 
 %%                                Output

@@ -19,7 +19,8 @@ function [argout] = PowerSatAnalysesMultiVoigtFit(varargin)
 %   POWERSATANALYSESVOIGTFIT(..., 'var0', var0) - gives starting points
 %
 %   OUTPUT(S):
-%	argout  - structure containing the measurement data and fit results
+%	out_struct  - structure containing the measurement data and fit results 
+%   out_table   - fit results in table format
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
