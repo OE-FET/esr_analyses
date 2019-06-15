@@ -1,4 +1,4 @@
-function [argout] = SliceAnalysesVoigtFit(varargin)
+function [out_struct, out_table] = SliceAnalysesVoigtFit(varargin)
 %SLICEANALYSESVOIGTFIT performs normalization and spin-counting of an ESR 
 %signal by fitting it to a voigt function.
 %
@@ -21,7 +21,8 @@ function [argout] = SliceAnalysesVoigtFit(varargin)
 %   ...FIT(x, y, Pars)          - field, signal, and spectral params
 %
 %   OUTPUT(S):
-%	argout  - structure containing the measurement data and fit results 
+%	out_struct  - structure containing the measurement data and fit results 
+%   out_table   - fit results in table format
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
@@ -33,7 +34,6 @@ close all
 
 %%                         Calculate MW field
 %%=========================================================================
-
 Bmw = get_mw_fields(pars);
 
 %%                      Get starting points for fit
@@ -84,22 +84,29 @@ ylabel(h{1}(1).Parent, 'ESR signal [a.u.]')
 
 %%                      Susceptibility Calculation
 %%=========================================================================
-pars.GFactor   = b2g(B0*1e-4, pars.MWFQ);
-modScaling     = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
-doubleIntAreas = modScaling * Bmw .* A;
+pars.GFactor    = b2g(B0*1e-4, pars.MWFQ);
+modScaling      = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
 
-Chi   = susceptebility_calc(doubleIntAreas, pars);
-NSpin = spincounting(doubleIntAreas, pars);
+areaDI          = modScaling * Bmw .* A;
+areaDIerror     = modScaling * Bmw .* dA;
+
+[Chi, dChi]     = susceptebility_calc(areaDI, pars, 'dA', areaDIerror);
+[NSpin, dNSpin] = spincounting(areaDI, pars, 'dA', areaDIerror);
 
 %%                                Output
 %%=========================================================================
 
 % create output structure
 
-argout = struct(...
+out_struct = struct(...
     'x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
-    'A', A, 'B0', B0, 'T2', T2, 'Brms', Brms, ...
-    'dA', dA, 'dB0', dB0, 'dT2', dT2, 'dBrms', dBrms, ...
-    'Chi', Chi(1), 'NSpin', NSpin(1));
+    'A', A, 'dA', dA, 'B0', B0, 'dB0', dB0, 'T2', T2, 'dT2', dT2, ...
+    'Brms', Brms, 'dBrms', dBrms, 'Chi', Chi(1), 'dChi', dChi(1), ...
+    'NSpin', NSpin(1), 'dNSpin', dNSpin(1));
+
+
+out_table = struct2table(rmfield(out_struct, {'x', 'y', 'pars', 'fitres'}));
+
+clc; disp(out_table);
 
 end
