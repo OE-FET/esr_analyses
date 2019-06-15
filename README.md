@@ -2,14 +2,18 @@
 MATLAB scripts to analyze cw-ESR data. ESR-Analyses requires the
 [natural constants](https://github.com/OE-FET/Natural-constants) package.
 
+If you publish any data processed with the ESR-Analyses routines, please cite "Schott, S.
+et al. Nat. Phys. (2019) doi:10.1038/s41567-019-0538-0" where the methods implemented here
+have been first published in the Supplementary Information.
+
 ## About
 ESR-Analyses is composed of:
 
 1. General utility functions which are useful in an ESR context:
 
     - Functions for common resonance lineshapes: `lorentzian`, `gaussian`, etc.
-    - Utility functions for common conversions: `b2g` (converts magnetic field to g-factor),
-      `chi2nspin` (converts susceptibility to number of spins), etc.
+    - Utility functions for common conversions: `b2g` (converts magnetic field to
+      g-factor), `chi2nspin` (converts susceptibility to number of spins), etc.
     - Functions to simulate ESR spectra: `field_mod_sim`, `ESRLorentzSimulation`, etc.
 
 2. Functions to read and manipulate Bruker Xepr data files:
@@ -25,5 +29,7 @@ ESR-Analyses is composed of:
       `spin_counting`, etc.
     - High-level functions: `PowerSatAnalysesLorentzFit`, `PowerSatAnalysesVoigtFit`, etc.
 
-All functions do exactly what you would expect from their name, and most of them are well documented.
-Therefore, please refer to the individual doc-strings for more information.
+All functions do exactly what you would expect from their name, and most of them are well
+documented. Therefore, please refer to the individual doc-strings for more information.
+
+## Usage
