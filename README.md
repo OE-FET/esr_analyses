@@ -18,7 +18,7 @@ ESR-Analyses is composed of:
 
 2. Functions to read and manipulate Bruker Xepr data files:
 
-    - `BrukerRead` to parse Xepr data files and return the measurement data as well all
+    - `BrukerRead` to read Xepr data files and return the measurement data as well all
        measurement parameters.
     - Functions to process the data: `normalize_spectrum`, `subtract_background`,
       `baseline_corr`, etc.
@@ -31,5 +31,3 @@ ESR-Analyses is composed of:
 
 All functions do exactly what you would expect from their name, and most of them are well
 documented. Therefore, please refer to the individual doc-strings for more information.
-
-## Usage
