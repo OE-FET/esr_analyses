@@ -43,27 +43,29 @@ N = length(x);
 scaling = max(abs(y));
 y = y./scaling;
 
-ok = false;
 % re-promt for user input until user confirms good baseline correction
+ok = false;
 while ~ok
     % plot spectrum
     fig = figure('Name', 'Baseline fit');
     [~, offsets] = stack_plot(x, real(y)); hold on;
+    
     % set title of plot
     title('Baseline Fit - Select intervals that belong to baseline');
 
-    % promt user for input of baseline areas
-    fprintf(['\n Select the area of the spectrum,', ...
-        '\n by indicating points with the curser.', ...
-        '\n Press Enter key when done.\n'])
-    % open GUI for input, accept points until user presses Enter
+    % prompt user for input of baseline areas
+    fprintf(['\n Select the area of the spectrum', ...
+        '\n by indicating points with the cursor.', ...
+        '\n Press the Enter key when done.\n'])
+    
+    % open GUI for input & accept points until user presses Enter
     mask = false(N, 1);
     xpts = [];
     ypts = [];
     yLim = get(gca, 'YLim');
     while true
         int = zeros(2,1);
-        for i =1:2
+        for ii = 1:2
             [xpt, ~, button] = ginput(1);
             if isempty(button)
                 break;
