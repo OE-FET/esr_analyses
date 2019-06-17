@@ -4,7 +4,7 @@ MATLAB scripts to analyze cw-ESR data. ESR-Analyses requires the
 
 If you publish any data processed with the ESR-Analyses routines, please cite "Schott, S.
 et al. Nat. Phys. (2019) doi:10.1038/s41567-019-0538-0" where the methods implemented here
-have been first published in the Supplementary Information.
+have been first published.
 
 ## About
 ESR-Analyses is composed of:
