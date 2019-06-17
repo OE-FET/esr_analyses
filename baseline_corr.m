@@ -8,13 +8,13 @@ function [ycorr, yfit] = baseline_corr(x, y, method)
 
 %   OUTPUT(S):
 %   x - x-axis values
-%   x - y-axis values
-%   method - If 'all', all points in the specified intervl will be used to
+%   y - y-axis values
+%   method - If 'all', all points in the specified interval will be used to
 %   determine the baseline. If method == 'interval', only the endpoints and
 %   centre point will be used. Default: 'interval'.
 %
 %   OUTPUT(S):
-%   ycorr - baseline corrected spectrum
+%   ycorr - baseline-corrected spectrum
 %   yfit - fitted baseline
 %
 
@@ -72,7 +72,7 @@ while ~ok
             xpt = max(min(x), xpt); xpt = min(max(x), xpt);
             % plot marker
             line([xpt xpt], yLim, 'Color', 'b');
-            int(i) = xpt;
+            int(ii) = xpt;
         end
         if isempty(button)
             break;
@@ -116,7 +116,7 @@ while ~ok
 
     %% promt user for confirmation of fit
     title('Baseline Fit - Verify the baseline correction');
-    verfiyQ = input('Would you like to redo the fit and reselect baseline points? y/[n] ', 's');
+    verfiyQ = input('Would you like to redo the fit and re-select baseline points? y/[n] ', 's');
     if strcmpi(verfiyQ, 'y')
         ok = false;
     else

@@ -1,5 +1,5 @@
 function [returnValue, output] = get_kwarg(input, name, defaultValue)
-%GET_KWARG Pairs up argument discriptions with values form varargin.
+%GET_KWARG Pairs up argument descriptions with values from varargin.
 
 output = input;
 

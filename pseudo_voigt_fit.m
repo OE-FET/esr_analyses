@@ -4,7 +4,7 @@ function [fitresult,gof,yfit] = pseudo_voigt_fit(x, y, varargin)
 %   Plots the results and outputs fitting parameters, goodness of fit and
 %   fitted cruves.
 %
-%   If y is a matrix of spectral data with the same x-axis, all spetra are
+%   If y is a matrix of spectral data with the same x-axis, all spectra are
 %   fitted independently and fitresult is an array with fitresults.
 %
 

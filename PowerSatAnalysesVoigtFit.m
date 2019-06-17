@@ -7,21 +7,21 @@ function [out_struct, out_table] = PowerSatAnalysesVoigtFit(varargin)
 %   convolution of multiple Lorentzian spin-ensembles with identifical
 %   lifetimes T1 and T2 with a Gaussian distribution of resonance fields.
 %
-%   Field modulation and the 1st harmonic detection of the cw-EPR signal,
-%   together with possible distortions from overmodulation, are explicitly
-%   accounted for. The MW field distribution in the cavity is taken from
-%   the Bruker DSC file and is used when calculating the MW field amplitude
-%   over the sample volume.
+%   The effects of field modulation and the 1st harmonic detection of the
+%   cw-EPR signal, together with possible distortions from overmodulation
+%   are explicitly included. The MW field distribution in the cavity is
+%   taken from the Bruker DSC file and is used when calculating the MW
+%   field amplitude over the sample volume.
 %
 %   INPUT(S):
 %   POWERSATANALYSESVOIGTFIT()        - opens gui to select data file
-%   ...('signal_path')                - ueses given path to data
+%   ...('signal_path')                - uses given path to data
 %   ...('signal_path', 'bg_path')     - path to signal data, path to
 %                                       background data
 %   ...(x, y, pars)                   - uses given data directly
 %
 %   OUTPUT(S):
-%	out_struct  - structure containing the measurement data and fit results 
+%	out_struct  - structure containing the measurement data and fit results
 %   out_table   - fit results in table format
 %
 
@@ -47,7 +47,7 @@ Bmw = get_mw_fields(pars);
 mid  = round(length(Bmw)/2);
 slice_fit  = pseudo_voigt_fit(x, y(:,mid), 'deriv', 1);
 
-% perform numerical double integrtion to estimate T1*T2
+% Numerically double-integrate and then fit the 2D spectrum to estimate T1*T2
 DI = double_int_num(x, y, 'baseline', 'n');
 ft = fittype('A * x /sqrt(1+gmSquaredT1T2*x^2)');
 pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [slice_fit.a, 1e7], 'Lower', [0, 0]);

@@ -1,5 +1,5 @@
 function [y] = pseudo_voigt(x, x0, FWHM_gauss, FWHM_lorentz, varargin)
-%PSEUDO_VOIGT calculates a Pseudo-Voight profile or its n-th derivative.
+%PSEUDO_VOIGT calculates a Pseudo-Voigt profile or its n-th derivative.
 %
 %   Returns a Pseudo-Voigt peak with an area normalized to 1 or its n-th
 %   derivative.

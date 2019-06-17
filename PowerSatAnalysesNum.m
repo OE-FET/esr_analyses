@@ -26,7 +26,7 @@ function [out_struct, out_table] = PowerSatAnalysesNum(varargin)
 %	...('sigPath', 'bgPath')      - reads data and background from file
 %
 %	OUTPUT:
-%	out_struct  - structure containing the measurement data and fit results 
+%	out_struct  - structure containing the measurement data and fit results
 %   out_table   - fit results in table format
 %
 
@@ -109,7 +109,7 @@ if gm^2*T1T2*Bmw(end) < 1e-3  % no saturation
                       'StartPoint', A);
 
     fitres = fit(Bmw(1:end), doubleIntAreas(1:end), ft, opts);
-    
+
     A     = fitres.A;
     dA    = diff(confint(fitres))/2;
 

@@ -1,17 +1,24 @@
-function [x, y, pars] = subtract_background(varargin)
-%SUBTRACT_BACKGROUND Subtracts background signal from sample signal
+function [x, y, parsS] = subtract_background(varargin)
+%SUBTRACT_BACKGROUND Subtracts background signal from sample signal.
+%
 % 	If desired, the result is written to a new Bruker ESR file. Experimental 
 % 	conditions from DSC files are compared and a warning is issued when 
-% 	differences are detected. ESR data is normalised for MW power, reciever 
+% 	differences are detected. ESR data are normalised for MW power, reciever 
 % 	gain, number of scans, time constant, and modulation amplitude (to Hm = 1 G). 
 % 	Before subtracting, the background signal is shifted to compensate for an
 % 	offset in MWFQ.
 %
-% 	SYNTAX:
-% 	[x, y, pars] = SUBTRACT_BACKGROUND() - prompts user for file selection
-% 	[x, y, pars] = ...(sig, BPath)       - uses the given file paths
+% 	INPUT(S):
+%   SUBTRACT_BACKGROUND()           - opens gui to select signal and bg paths
+%   ...('signal_data')              - given signal path & opens a gui to 
+%                                     select bg path
+%   ...('signal_data','bg_data')    - given signal & bg paths
 %
-
+%   OUTPUT(S):
+% 	x       - magnetic field axis
+%   y       - normalised & subtracted signal intensity
+%   pars    - experimental parameters
+%
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
@@ -31,62 +38,59 @@ switch nargin
             fprintf('No background selected.');
             return
         end
+    case 1
+        File1 = varargin{1};
+        [SPath,~,~] = fileparts(File1);
+        [BName, BPath] = uigetfile([SPath, '*.DTA'], 'Select background data');
+        File2 = [BPath, BName];
     case 2
         File1 = varargin{1};
         File2 = varargin{2};
     otherwise
-        error('Only 0 or 2 inputs are accepted.');
+        error('Only 0-2 inputs are accepted.');
 end
 
-[xS, yS, pars] = BrukerRead(File1);
+[xS, yS, parsS] = BrukerRead(File1);
 [xB, yB, ParsB] = BrukerRead(File2);
 
 % normalise, if not yet done
-[xS, yS, pars] = normalise_spectrum(xS, yS, pars);
+[xS, yS, parsS] = normalise_spectrum(xS, yS, parsS);
 [xB, yB, ParsB] = normalise_spectrum(xB, yB, ParsB);
 
 % rescale background for Q-value, modulation amplitude and mw power
-% WARNIG: All parameters affect both the signal amplitude and shape.
-% Therefore, be caucious when subtracting a backround signal with 
+% WARNING: All parameters affect both the signal amplitude and shape.
+% Therefore, be cautious when subtracting a backround signal with 
 % significantly different parameters.
-Q_ratio = pars.QValue/ParsB.QValue;
-B0MA_ratio = pars.B0MA/ParsB.B0MA;
-Bmw_ratio = sqrt(pars.MWPW)/sqrt(ParsB.MWPW);
-
-if Q_ratio > 1.2 || Q_ratio < 0.8
-    disp(['Warning: Q-values differ by more than 20%.' newline ...
-          'The Q-value may impact the signal shape and' newline ...
-          'may prevent a proper background subtraction.']);
-end
-
-if Bmw_ratio > 1.2 || Bmw_ratio < 0.8
-    disp(['Warning: MW fields differ by more than 20%.' newline ...
-          'The MW field may impact the signal shape and' newline ...
-          'may prevent a proper background subtraction.']);
-end
-
-if B0MA_ratio > 1.2 || B0MA_ratio < 0.8
-    disp(['Warning: modulation amplitudes differ by more than 20%.' newline ...
-          'The modulation amplitude may impact the signal shape and' newline ...
-          'may prevent a proper background subtraction.']);
+Q_ratio = parsS.QValue/ParsB.QValue;
+B0MA_ratio = parsS.B0MA/ParsB.B0MA;
+Bmw_ratio = sqrt(parsS.MWPW)/sqrt(ParsB.MWPW);
+ratiosary = [Q_ratio, B0MA_ratio, Bmw_ratio];
+ratiostxt = {'Q-values','Modulation amplitudes','Microwave fields'};
+for ii = 1:length(ratiosary)
+    if ratiosary(ii) > 1.2 || ratiosary(ii) < 0.8
+        warning([ratiostxt{ii} ' differ by more than 20%. '... 
+                 'This may impact the signal shape and '...
+                 'prevent a proper background subtraction.']);
+    end
 end
 
 yB = yB * Q_ratio * B0MA_ratio * Bmw_ratio;
 
 %% Compare experimental conditions
-nDiff = compare_pars(pars, ParsB);
+nDiff = compare_pars(parsS, ParsB);
 
 if nDiff > 0
     str = input('Do you want to continue ([y]/n)?', 's');
-    if strcmpi(str, 'n') == 1
+    if strcmpi(str, 'n')
         error('Aborted.');
     end
 end
 
 %% Subtract spectra
 
-%Compute and correct for H - offset
-B_offset = (pars.MWFQ - ParsB.MWFQ) * planck/(gfree*bmagn) * 1E4;
+% Compute and correct for the expected resonance centre offset due to
+% differing microwave fields (from ge*bmagn*B = hbar*f)
+B_offset = (parsS.MWFQ - ParsB.MWFQ) * planck/(gfree*bmagn) * 1E4;
 disp(['B_offset = ', num2str(B_offset)]);
 Bstep = xB(2) - xB(1);
 offsetInterval = round(B_offset/Bstep);

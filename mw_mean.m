@@ -21,7 +21,7 @@ coefMatrix = reshape(coef, info(2:3));
 coefVector = coefMatrix(info(1), :);
 
 % coefVector now contains the polynomial coefficients from lowest to
-% higherst order. However, Matlab convention goes from higherst to lowest.
+% higherst order. However, Matlab convention goes from highest to lowest.
 % we need to flip coefVector.
 coefVector=fliplr(coefVector);
 
@@ -32,8 +32,8 @@ ResLength = str2double(strtrim(regexprep(Pars.ResLength, 'mm', '')));
 % ask for height and length of sample if not in Pars
 Pars = get_sample_position(Pars);
 
-% check is sample length is smaller than the cavity size
-% if length > ResLength, promt user to enter new value 3 times, then abort
+% check if sample length is smaller than the cavity size
+% if length > ResLength, prompt user to enter new value 3 times, then abort
 count = 0;
 while Pars.SampleL > ResLength
     disp('Sample length is larger than the cavity height. Please enter a valid sample length.');

@@ -1,10 +1,15 @@
 function [x_norm, y_norm, pars] = normalise_spectrum(x, y, pars)
-%NORMALISESPECTRUM Normlizes a Bruker EPR spectrum for aquisiation parameters.
+%NORMALISESPECTRUM Normlizes a Bruker EPR spectrum for acquisition parameters.
 %
 % 	ESR data is normalised for receiver gain, number of scans (Ns = 1),
 % 	time constant (Tc = 1 ms). The normalised conditions correspond to the
 % 	Xepr "normalised aquisition" option. The resulting spectrum is then
 % 	flagged as normlised by setting Pars.Norm = 'True'.
+%
+%   INPUT(S):
+%   x    - magnetic field axis
+%   y    - non-normalised signal intensity
+%   pars - experimental parameters
 %
 % 	OUTPUT(S):
 % 	x_norm                        - B field [gauss]
@@ -23,7 +28,7 @@ end
 
 x_norm=x;
 
-% Flag spectrum as normalised to prevent second normalization
+% Flag spectrum as normalised to prevent second normalisation
 pars.SctNorm = 'True';
 
 end

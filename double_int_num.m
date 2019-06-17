@@ -14,22 +14,22 @@ function [IArea, yInt1, yCorr, yInt2] = double_int_num(x, y, varargin)
 %   y - vector with ESR signal intensity
 %
 %   OUTPUT(S):
-%   IArea - double integrated signal
-%   yInt1  - single integrated signal
-%   yCorr - polynomial base line corrected ESR signalintensity
+%   IArea - double-integrated signal
+%   yInt1 - single-integrated signal
+%   yCorr - polynomial baseline-corrected ESR signal intensity
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
-% default to baseline-correction if not specified
+% default to baseline correction if not specified
 baseline = get_kwarg(varargin, 'baseline', 'y');
 
 % perform smoothing upon request
 if strcmp(baseline, 'y')
     % create a new figure
     figure();
-    % plot spectrum itself
+    % plot spectrum
     stack_plot(x, y);
 
     str = input('Would you like to smooth the spectrum y/[n]?', 's');
@@ -41,7 +41,7 @@ end
 
 dim = size(y);
 
-% numerical integration with trapez-algorithm
+% numerical integration with trapez algorithm
 yInt1 = cumtrapz(x, y);
 
 yCorr = y;
@@ -50,18 +50,18 @@ yCorr = y;
 if strcmp(baseline, 'y')
     % plot result from first integration
     stack_plot(x, yInt1);
-    str = input('Would you like to perform a polynomial base line correction y/[n]?', 's');
+    str = input('Would you like to perform a polynomial base-line correction y/[n]?', 's');
     if strcmp(str, 'y')
         % calculate baseline
         yInt1 = baseline_corr(x, yInt1);
-        % differentiate baseline corrected first integral
+        % differentiate baseline-corrected first integral
         yCorr = diff(yInt1)/(x(2)-x(1));
         % add lost data point to derivative
         yCorr(end+1,:) = y(end,:);
     end
 end
 
-% second integration to calculate totoal Area
+% second integration to calculate total area
 yInt2 = cumtrapz(x, yInt1);
 
 % plot result for visual check

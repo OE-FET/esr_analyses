@@ -11,7 +11,7 @@ function yn = ESRVoigtSimulation(x, B0, T1, T2, Brms, Bmw, modAmp, n)
 %   B0      - resonance center [Gauss]
 %   T1      - spin lattice relaxation time [sec]
 %   T2      - spin coherence time [sec]
-%   Brms    - Root-mean-square of ihomogeneous (Gaussian) fields [Gauss]
+%   Brms    - Root-mean-square of inhomogeneous (Gaussian) fields [Gauss]
 %   Bmw     - vector with microwave magnetic field amplitudes [Tesla]
 %   modAmp  - field modulation amplitude [Gauss]
 %   n       - n-th harmonic detection

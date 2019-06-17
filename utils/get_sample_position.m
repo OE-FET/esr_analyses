@@ -1,6 +1,20 @@
 function pars = get_sample_position(pars)
-
-% ask for height and length of sample if not in Pars
+%GET_SAMPLE_POSITION gets the sample position :)
+%
+% 	Ask the user for the length of the sample and the position of the
+% 	sample in the ESR cavity (if they are not already present in the pars 
+%   structure. These are necessary for proper determination of the mw field
+%   over the sample.
+%
+%   INPUT(S):
+%   get_sample_position(pars)   - experimental parameters
+%
+% 	OUTPUT(S):
+% 	pars.SampleL  - length of the sample [mm]
+% 	pars.SampleH  - height of the sample inside the cavity [mm]
+%
+%   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
+%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 if ~isfield(pars,'SampleL')
 
