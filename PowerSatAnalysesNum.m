@@ -142,14 +142,12 @@ areaDIerror = Bmw.*dA;
 %%                              Output
 %%=========================================================================
 
-T = str2double(strtrim(regexprep(pars.Temperature,'K','')));
-
 out_struct = struct(...
-                'x', x, 'y', y, 'pars', pars, 'fitres', fitres, 'T', T, ...
+                'x', x, 'y', y, 'pars', pars, 'fitres', fitres, 'T', pars.Temperature, ...
                 'T1T2', T1T2, 'dT1T2', dT1T2, ...
                 'Chi', Chi(1), 'dChi', dChi(1), ...
                 'NSpin', NSpin(1), 'dNSpin', dNSpin(1));
-            
+
 out_table = struct2table(rmfield(out_struct, {'x', 'y', 'pars', 'fitres'}));
 
 clc; disp(out_table);

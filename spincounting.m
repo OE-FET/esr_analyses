@@ -28,10 +28,11 @@ if nargout > 1; dA = get_kwarg(varargin, 'dA'); end
 
 pars = get_par(pars, 'ConvFact', 9.2710e-09);  % get calibration factor
 pars = get_par(pars, 'QValue'); % get or ask for QValue
-pars = get_par(pars, 'Temperature', '298 K'); % get or ask for temperature
+pars = get_par(pars, 'Temperature', 298); % get or ask for temperature
 if nargout > 1; pars = get_par(pars, 'QValueErr'); end
-
-T = str2double(strtrim(regexprep(pars.Temperature,'K','')));
+if ischar(pars.Temperature)
+    pars.Temperature = str2double(strtrim(regexprep(pars.Temperature,'K','')));
+end
 
 %% CALCULATE NSPIN
 try
@@ -54,7 +55,7 @@ end
 k = 200/(pars.BridgeCalib * pars.ConvFact);
 
 % boltzmann factor
-boltzman_factor = planck*pars.MWFQ / (boltzm*T);
+boltzman_factor = planck*pars.MWFQ / (boltzm*pars.Temperature);
 
 % -------------------------------------------------------------------------
 NSpin = k * doubleIntArea ./ (pars.QValue * sqrt(Pmw) * pars.B0MA * ...

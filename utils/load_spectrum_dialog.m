@@ -25,18 +25,13 @@ end
 
 % get sample position in cavity
 pars = get_sample_position(pars);
+pars = get_par(pars, 'Temperature', 298);
+pars = get_par(pars, 'QValue');
+pars = get_par(pars, 'QValueErr');
 
-% get measurement temperature
-if ~isfield(pars, 'Temperature')
-    T = input('Please give the temperature in K [default = 298 K]: ');
-    if isempty(T); T = 298; end
-    pars.Temperature = sprintf('%.1f K', T);
-end
-
-% get Q value
-if ~isfield(pars, 'QValue')
-    qValue = input('Please give the cavity QValue: ');
-    pars.QValue = qValue;
+% convert temperature from string to double if necessary
+if ischar(pars.Temperature)
+    pars.Temperature = str2double(strtrim(regexprep(pars.Temperature,'K','')));
 end
 
 [x, y, pars] = normalise_spectrum(x, y, pars);
