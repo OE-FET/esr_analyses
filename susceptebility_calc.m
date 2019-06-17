@@ -63,9 +63,12 @@ norm = (pars.QValue * sqrt(Pmw) * pars.B0MA * position_correction);
 Chi = mu0* k * doubleIntArea .* sample_g.^2 .* bmagn^2 ./ (3 * ...
     planck * pars.MWFQ  * norm);
 % -------------------------------------------------------------------------
-
+% Chi error
+% Note: this formula current omits error in position length & height, which
+% are likely the greatest sources of error
+QValErrRatio = 1/2 * pars.QValueErr/pars.QValue;
 if nargout > 1
-    dChi = dA .* Chi./doubleIntArea + pars.QValueErr .* Chi./pars.QValue;
+    dChi = Chi * sqrt((QValErrRatio)^2 + (dA/doubleIntArea)^2);
 end
 
 end

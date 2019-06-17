@@ -61,9 +61,15 @@ boltzman_factor = planck*pars.MWFQ / (boltzm*pars.Temperature);
 NSpin = k * doubleIntArea ./ (pars.QValue * sqrt(Pmw) * pars.B0MA * ...
      S*(S+1) * boltzman_factor * position_correction);
 % -------------------------------------------------------------------------
-
+% NSpin error (if you wonder why I changed this formula when you look at
+% these edits, I think your original error propagation formula was wrong.
+% For referenece, it was
+% dNSpin = pars.QValueErr .* NSpin./pars.QValue + dA .* NSpin ./ doubleIntArea)
+% Note: this formula current omits error in position length & height, which
+% are likely the greatest sources of error
+QValErrRatio = 1/2 * pars.QValueErr/pars.QValue;
 if nargout > 1
-    dNSpin = pars.QValueErr .* NSpin./pars.QValue + dA .* NSpin ./ doubleIntArea;
+    dNSpin = NSpin * sqrt(QValErrRatio^2 + (dA/doubleIntArea)^2);
 end
 
 end
