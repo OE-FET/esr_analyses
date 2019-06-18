@@ -64,7 +64,7 @@ for i = 1:nFiles
     if ~exist('output_table', 'var')
         output_table = struct2table(out_analyses);
     else
-        output_table = [output_table; struct2table(out_analyses)];
+        output_table = [output_table; struct2table(out_analyses)];  %#ok
     end
     
     input('Press enter to continue.'); % pause for user to view plots
