@@ -1,4 +1,4 @@
-function [w] = complexErrorFunction(x,y)
+function [w] = complexErrorFunction(x, y)
 % complexErrorFunction  Calculation of complex error function using dimentionless coordinates
 % 
 % [w] = complexErrorFunction(x,y)   Computes the complex error function
@@ -48,16 +48,16 @@ s15=15e0;
 x12 = y - s15; %        left wing -- center
 x21 = -x12;    % 15-y   center -- right wing
 
-if (y>s15 || x(1)>x21 || x(lenX)<x12),
+if (y>s15 || x(1)>x21 || x(lenX)<x12)
 %       all points are in Humlicek's region I
     for ii=1:lenX
         t= y - x(ii)*1i;
         w(ii) = (recSqrtPi*t) / (half + t*t);
-    end;
+    end
 else
     for ii=1:lenX
         s  = abs(x(ii)) + y;
-        if (s>s15),
+        if (s>s15)
             t     = y-x(ii)*1i;
             w(ii) = (recSqrtPi*t) / (half + t*t);
         else
@@ -66,8 +66,8 @@ else
             w(ii) =  recLmZ  *  (recSqrtPi + two*recLmZ*...
                 (a(24)+(a(23)+(a(22)+(a(21)+(a(20)+(a(19)+(a(18)+(a(17)+(a(16)+(a(15)+(a(14)+(a(13)+(a(12)+(a(11)+(a(10)+(a(9)+...
                 (a(8)+(a(7)+(a(6)+(a(5)+(a(4)+(a(3)+(a(2)+a(1)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t)*t));
-        end;
-    end;
-end;
+        end
+    end
+end
     
 end

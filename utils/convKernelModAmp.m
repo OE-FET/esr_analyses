@@ -5,13 +5,11 @@ function [y] = convKernelModAmp(x, Bm, n)
 % transform of a Bessel function of the first kind and order n. It
 % simulates a n-th harmonic detection.
 %
-% Input:
+% INPUT(S):
 % x - external field position
-% Bm - modulation amplitude
+% Bm - modulation amplitude, same units as x
 % n - order of harmonic deterction, n = 0,1,2
 %
-% Dependencies:
-% none
 %
 % References:
 % 1. Hyde, J. S., et al. Appl. Magn. Reson. 1, 483?496 (1990).
