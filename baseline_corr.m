@@ -1,11 +1,11 @@
-function [ycorr, yfit] = baseline_corr(x, y, method)
+function [ycorr, ybaseline] = baseline_corr(x, y, method)
 %BASELINE_CORR Performs a baseline correction on the input data.
 %
-%   [ycorr, yfit] = BASELINE_CORR(x, y) performs a baseline fit on the input
-%   data. The baseline region can be be selected through a GUI, and the
-%   baseline is fitted as a spline through the smoothed data. Adjust the
-%   number points to smooth over according to the noise in the data.
-
+%   [ycorr, ybaseline] = BASELINE_CORR(x, y) performs a baseline fit on the 
+%   input data. The baseline region can be be selected through a GUI, and
+%   the baseline is fitted as a spline through the smoothed data. Adjust
+%   thenumber points to smooth over according to the noise in the data.
+%
 %   OUTPUT(S):
 %   x - x-axis values
 %   y - y-axis values
@@ -15,7 +15,7 @@ function [ycorr, yfit] = baseline_corr(x, y, method)
 %
 %   OUTPUT(S):
 %   ycorr - baseline-corrected spectrum
-%   yfit - fitted baseline
+%   ybaseline - fitted baseline
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
@@ -93,26 +93,32 @@ while ~ok
         xpts(end+1:end+3) = [x_int(1); x_int(round(end/2)); x_int(end)];
         ypts(end+1:end+3, :) = [y_int(1, :); y_int(round(end/2), :); y_int(end, :)];
     end
-
+    
+    if ~any(mask)
+        ybaseline = y.*scaling;
+        ycorr = y.*scaling;
+        return
+    end
+    
     %% perform baseline fit
     if strcmp(method, 'all')
         % average over 10 points for smoothing before fit
         avgpts  = round(N/100); % 1/100 of length of data
         ysmooth = smoothdata(y, 'movmean', avgpts);
-        yfit = interp1(x(mask), ysmooth(mask, :), x, 'makima');
+        ybaseline = interp1(x(mask), ysmooth(mask, :), x, 'makima');
     elseif strcmp(method, 'interval')
-        yfit = interp1(xpts, ypts, x, 'spline');
+        ybaseline = interp1(xpts, ypts, x, 'spline');
     end
 
     % make yfit a column if it is a row vector
-    if size(yfit, 1) == 1
-        yfit = shiftdim(yfit, 1); 
+    if size(ybaseline, 1) == 1
+        ybaseline = shiftdim(ybaseline, 1); 
     end
 
     % plot for visual confirmation
     yL = get(gca, 'YLim');
     hold on;
-    phandle = stack_plot(x, yfit, 'yoffsets', offsets);
+    phandle = stack_plot(x, ybaseline, 'yoffsets', offsets);
     set(phandle, 'Color', 'blue');
     ylim(gca, yL);
 
@@ -131,10 +137,10 @@ try                                                                 %#ok
 end
 
 % subtact baseline
-ycorr = y - yfit;
+ycorr = y - ybaseline;
 
 % undo scaling
-yfit = yfit.*scaling;
+ybaseline = ybaseline.*scaling;
 ycorr = ycorr.*scaling;
 
 end
