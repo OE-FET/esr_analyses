@@ -1,5 +1,5 @@
 function [phandle, yoffsets] = stack_plot(varargin)
-%stack_plot Plots data as in stacked plots.
+%STACK_PLOT Plots data as in stacked plots.
 %
 % 	SYNTAX:
 % 	STACK_PLOT(x, y)
@@ -15,7 +15,9 @@ function [phandle, yoffsets] = stack_plot(varargin)
 %                determined if not given.
 %   'yoffsets' - Horizontal offset between curves, creates a staggered 
 %                plot. Defaults to 0.
-%   'style'    - Line style string, such as 'r--' for a dashed red line.
+%   'style'    - Line style and color, specified as a character vector or
+%                string scalar containing line style symbols, color
+%                options, or both.
 %   'rescale'  - Rescale all y-data such that max(abs(y)) = 1. Turned off 
 %                by default.
 %
