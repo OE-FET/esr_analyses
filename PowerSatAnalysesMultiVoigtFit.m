@@ -87,7 +87,7 @@ end
 Z       = y;
 
 % create single fit function
-func_single = @(v, x) abs(v(1))*ESRVoigtSimulation(x{1}, abs(v(2)), ...
+func_single = @(v, x) abs(v(1))*esr_voigt_simulation(x{1}, abs(v(2)), ...
     abs(v(3)), abs(v(4)), abs(v(5)), x{2}, pars.B0MA*1e4, 1);
 
 % expand to multiple peaks

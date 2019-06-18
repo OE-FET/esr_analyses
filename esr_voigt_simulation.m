@@ -1,4 +1,4 @@
-function yn = ESRVoigtSimulation(x, B0, T1, T2, Brms, Bmw, modAmp, n)
+function yn = esr_voigt_simulation(x, B0, T1, T2, Brms, Bmw, modAmp, n)
 %ESRVOIGTIMULATION simulates the n-th harmonic detection of a Voigtian
 % resonance with x-axis modulation. 
 %

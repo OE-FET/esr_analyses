@@ -1,5 +1,5 @@
-function [yn] = ESRLorentzSimulation(x, B0, T1, T2, Bmw, modAmp, n)
-%ESRLORENTZSIMULATION simulates the n-th harmonic detection of a Lorentzian
+function [yn] = esr_lorentz_simulation(x, B0, T1, T2, Bmw, modAmp, n)
+%esr_lorentz_simulation simulates the n-th harmonic detection of a Lorentzian
 %resonance with x-axis modulation.   
 %
 %   Simulates the n-th harmonic detection of a Lorentzian ESR resonance
