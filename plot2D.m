@@ -10,9 +10,6 @@ function argout = plot2D(varargin)
 %                the current axis, as returned by gca.
 %   x, y       - x- and y-axis data.
 %   o          - Ordinate data.
-%   'style'    - Line style and color, specified as a character vector or
-%                string scalar containing line style symbols, color
-%                options, or both. 
 %
 % 	OUTPUT(S):
 %   phandle - plot handle
@@ -31,11 +28,8 @@ else
     o  = varargin{3};
 end
 
-style    = get_kwarg(varargin, 'style', '');
 
 %% Data preparation
-[X, Y] = meshgrid(x, y);
-
 if ~all(size(o) == [length(y) length(x)])
     o = reshape(o, [length(x) length(y)])';
 end
@@ -45,8 +39,8 @@ if ~all(size(o) == [length(y) length(x)])
 end
 
 %% Plot
-
-h = contourf(ax, X, Y, o, style);
+h = imagesc(ax, x, y, o);
+ax.YDir = 'normal';
 
 colorbar;
 
