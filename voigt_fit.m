@@ -48,7 +48,7 @@ for i = 1:size(y, 2)
     opts.StartPoint = [Area x0  FWHM FWHM];
 
     % Fit model to data.
-    [fitresult{i}, gof{i}] = fit(xData, yData, ft, opts);
+    [fitresult{i}, gof{i}] = fit(xData, yData, ft, opts); %#ok
 
     % Create a figure for the plots.
     f1 = figure('Name', 'Voigt Fit');
