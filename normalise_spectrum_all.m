@@ -20,14 +20,14 @@ function [x_norm, y_norm, pars] = normalise_spectrum_all(x, y, pars)
 %% Normalise for other parameters next
 
 % Does the file contain multiple scans at different powers (2D) or only one scan?
-if strcmp(pars.YTYP, 'IGD') == 1
+if strcmp(pars.YNAM, 'Microwave Power') == 1
     % don't normalise for MWPW in power saturation measurement
-    y_norm = y / (pars.QValue * pars.B0MA );
+    y_norm = y / (pars.QValue * pars.B0MA);
 else
     y_norm = y / (pars.QValue * sqrt(pars.MWPW) * pars.B0MA );
 end
 
 %% normalise y-axis
-x_norm=x;
+x_norm = x;
 
 end
