@@ -1,10 +1,10 @@
-function [phandle, yoffsets] = stack_plot(varargin)
+function varargout = stack_plot(varargin)
 %STACK_PLOT Plots data as in stacked plots.
 %
 % 	SYNTAX:
-% 	STACK_PLOT(x, y)
-% 	STACK_PLOT(x, y, 'OptionName', OptionValue, ...)
-%   STACK_PLOT(ax, ...)
+% 	[phandle, yoffsets] = STACK_PLOT(x, y)
+% 	[phandle, yoffsets] = STACK_PLOT(x, y, 'OptionName', OptionValue, ...)
+%   [phandle, yoffsets] = STACK_PLOT(ax, ...)
 %
 %
 %   INPUT(S):
@@ -22,8 +22,8 @@ function [phandle, yoffsets] = stack_plot(varargin)
 %                by default.
 %
 % 	OUTPUT(S):
-%   phandle - plot handles
-%   yoffsets - y-offsets used for plotting
+%   phandle    - plot handles
+%   yoffsets   - y-offsets used for plotting
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
@@ -91,5 +91,15 @@ try
 catch
     axis tight
 end
- 
+
+%% Output
+
+switch nargout
+    case 1
+        varargout{1} = phandle;
+    case 2
+        varargout{1} = phandle;
+        varargout{2} = yoffsets;
+end
+
 end
