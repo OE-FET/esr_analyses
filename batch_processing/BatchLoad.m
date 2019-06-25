@@ -1,13 +1,13 @@
 function [output_table] = BatchLoad(step, slice)
-%% BATCHLOAD Loads and retunrns data from multiple ESR data files
+% BATCHLOAD Loads and retunrns data from multiple ESR data files
 %
-%   INPUTS(S):
+%   INPUTS:
 %   step    - name of parameter that is stepped between files, e.g.,
 %             'Temperature'
 %   slice   - for 2D data-sets only: return a slice of the data set, e.g.,
 %             at a certain microwave power or goniometer angle
 %
-%   OUTPU(S):
+%   OUTPU:
 %   output_table    - table with all data
 %
 
