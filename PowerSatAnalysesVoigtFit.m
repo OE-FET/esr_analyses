@@ -59,7 +59,7 @@ A0   = slice_fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw(mid)); % see 'modScaling'
 B0   = slice_fit.x0;                                   % in Gauss
 T1T2 = pwrst_fit.gmSquaredT1T2 / gmratio^2;            % in sec^2
 T2   = 2/(gmratio * FWHM_lorentz*1E-4);                % in sec
-T1   = T1T2/T2;                                        % in sec
+T1   = 10*T1T2/T2;                                        % in sec
 
 var0 = [A0 B0 T1 T2 FWHM_gauss];                       % starting points
 
@@ -78,7 +78,7 @@ opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
 
 % fit model to data with Nelder Mead algorithm
 fitres   = nelder_mead_fit(fitfunc, {X, Y}, Z, var0, opt);
-conf_int = standarderror(fitres, 'quick'); % estimate confidence intervals
+conf_int = standarderror(fitres, 'accurate'); % estimate confidence intervals
 
 A     = abs(fitres.coef(1));
 B0    = abs(fitres.coef(2));
