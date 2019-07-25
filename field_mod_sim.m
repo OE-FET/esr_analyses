@@ -70,7 +70,6 @@ isRowVector = (sizey(1) == 1);
 y = y(:);
 
 %% calculate convolution
-
 dx = x(2) - x(1); % get spacing of x-axis, assuming uniform spacing
 Ampl = modAmp / 2 / dx; % modulation amplitude in multiples of x-axis steps 
 

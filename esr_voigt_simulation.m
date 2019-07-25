@@ -1,6 +1,6 @@
 function yn = esr_voigt_simulation(x, B0, T1, T2, Brms, Bmw, modAmp, n)
 %ESRVOIGTIMULATION simulates the n-th harmonic detection of a Voigtian
-% resonance with x-axis modulation. 
+% resonance with x-axis modulation.
 %
 %   Simulates the n-th harmonic detection of a Voigtian ESR resonance line.
 %   If no modulation amplitude and harmonic are given, the ESR absorption
