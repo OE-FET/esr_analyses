@@ -44,7 +44,7 @@ fit = pseudo_voigt_fit(x, y, 'deriv', 1);
 FWHM_lorentz  = fit.FWHM_lorentz;       % in Gauss
 FWHM_gauss    = fit.FWHM_gauss;         % in Gauss
 
-A0   = fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw(mid));
+A0   = fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw);
 B0   = fit.x0;                          % in Gauss
 T1   = 1e-20;                           % in sec, assume not-saturated
 T2   = 1/(gmratio * FWHM_lorentz*1E-4); % in sec
@@ -55,7 +55,7 @@ var0 = [A0 B0 T2 FWHM_gauss];           % starting points
 %%=========================================================================
 
 % create fit function and options
-fitfunc = @(var, x) abs(var(1))*esr_voigt_simulation(x, T1, abs(var(2)), ...
+fitfunc = @(var, x) abs(var(1))*esr_voigt_simulation(x, abs(var(2)), T1, ...
     abs(var(3)), abs(var(4)), Bmw, pars.B0MA*1e4, 1);
 opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
     @optimplotfval, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
@@ -107,6 +107,6 @@ out_struct = struct(...
 
 out_table = struct2table(rmfield(out_struct, {'x', 'y', 'pars', 'fitres'}));
 
-clc; disp(out_table);
+disp(out_table);
 
 end
