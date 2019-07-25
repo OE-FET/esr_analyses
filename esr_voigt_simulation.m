@@ -25,6 +25,21 @@ function yn = esr_voigt_simulation(x, B0, T1, T2, Brms, Bmw, modAmp, n)
 
 % internally, we use SI units ONLY
 
+% Transpose x and Bmw if necessary and check if dimensions match
+if isempty(diff(x,1,2)) | all(diff(x,1,2) == 0)
+    % the columns of x contain the magnetic field steps -> transpose
+    x = x';
+end
+
+if isempty(diff(Bmw,1,1)) | all(diff(Bmw,1,1) == 0)
+    % the columns of Bmw contain the MW field steps -> transpose
+    Bmw = Bmw';
+end
+
+if size(Bmw) ~= size(x)
+    error("Dimentions of x and Bmw do not match.")
+end
+
 % convert Gauss to Tesla
 x = x*1e-4;
 B0 = B0*1e-4;
@@ -32,10 +47,10 @@ Brms = Brms*1e-4;
 if nargin > 6; modAmp = modAmp*1e-4; end
 
 %% Calculate ESR voigt signal (centered around zero)
-x1 = x(1,:);
+x1 = x(1, :);
 y0 = zeros(size(x))';
 if nargin > 6; yn = zeros(size(x))'; end
-Bmw1 = Bmw(:,1);
+Bmw1 = Bmw(1, :);
 
 if Brms == 0
     FWHMGauss = 1e-12; % need a finite value
