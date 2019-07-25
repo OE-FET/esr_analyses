@@ -45,8 +45,10 @@ catch
 end
 
 % get MW power(s)
-if strcmp(pars.YNAM, 'Microwave Power')
-    Pmw = pars.z_axis/1000; % MW Power in W
+if isfield(pars,'YNAM')    
+    if strcmp(pars.YNAM, 'Microwave Power')
+        Pmw = pars.z_axis*1e-3; % MW Power in W
+    end
 else
     Pmw = pars.MWPW;
 end
