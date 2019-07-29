@@ -12,7 +12,7 @@ function [yn] = esr_lorentz_simulation(x, B0, T1, T2, Bmw, modAmp, n)
 %   INPUT(S):
 %   x - vector with external magnetic fields [Gauss]
 %   B0 - resonance center [Gauss]
-%   T1 - spin lattice relaxation time [sec]
+%   T1 - spin-lattice relaxation time [sec]
 %   T2 - spin coherence time [sec]
 %   Bmw - vector with microwave magnetic field amplitudes [Tesla]
 %   modAmp - field modulation amplitude [Gauss]

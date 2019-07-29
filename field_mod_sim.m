@@ -2,19 +2,19 @@ function yModInPhase = field_mod_sim(x, y, modAmp, harmonic)
 %FIELD_MOD_SIM simulates the distortions of lock-in detection on a signal.
 %
 %   yModInPhase = FIELD_MOD_SIM(x, y, modAmp);
-%   yModInPhase = FIELD_MOD_SIM(x, y, modAmp, marmonic);
+%   yModInPhase = FIELD_MOD_SIM(x, y, modAmp, harmonic);
 %
-%   Computes the effect of x-axis modulation with amplitude ModAmpl and
+%   Computes the effect of x-axis modulation with amplitude ModAmp and
 %   n-th harmonic detection on a signal (x,y). This code implements the
 %   psuedo-modulation approach from:
 %
 %   Hyde, J. S., et al. Applied Magnetic Resonance 1, 483-496 (1990) 
 %
 %   INPUT(S):
-%   - x: x-axis data vector, must be uniformliy spaced
-%   - y: signal vector
-%   - modAmp: peak-to-peak modulation amplitude [same units as x]
-%   - harmonic: harmonic (0, 1, 2, ...); default is 1
+%   x      - x-axis data vector, must be uniformliy spaced
+%   y      - signal vector
+%   modAmp - peak-to-peak modulation amplitude [same units as x]
+%   harmonic - harmonic (0, 1, 2, ...); default is 1
 %
 %   OUTPUT(S):
 %   - yModInPhase: in-phase component of pseudo-modulated spectrum

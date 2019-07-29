@@ -13,12 +13,11 @@ function [out_struct, out_table] = PowerSatAnalysesVoigtFit(varargin)
 %   taken from the Bruker DSC file and is used when calculating the MW
 %   field amplitude over the sample volume.
 %
-%   INPUT(S):
-%   POWERSATANALYSESVOIGTFIT()        - opens gui to select data file
-%   ...('signal_path')                - uses given path to data
-%   ...('signal_path', 'bg_path')     - path to signal data, path to
-%                                       background data
-%   ...(x, y, pars)                   - uses given data directly
+%   INPUT SYNTAX:
+%   none                    - opens gui to select data files   
+%   'signal_path'           - path to signal data
+%   'signal_path','bg_path' - path to signal data, path to background data
+%   x, y, pars              - field axis, intensity axis, experimental parameters
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results
@@ -128,6 +127,6 @@ out_struct = struct(...
 
 out_table = struct2table(rmfield(out_struct, {'x', 'y', 'pars', 'fitres'}));
 
-clc; disp(out_table);
+disp(out_table);
 
 end

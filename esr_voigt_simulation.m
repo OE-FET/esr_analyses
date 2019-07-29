@@ -9,7 +9,7 @@ function yn = esr_voigt_simulation(x, B0, T1, T2, Brms, Bmw, modAmp, n)
 %   INPUT(S):
 %   x       - vector with external magnetic fields [Gauss]
 %   B0      - resonance center [Gauss]
-%   T1      - spin lattice relaxation time [sec]
+%   T1      - spin-lattice relaxation time [sec]
 %   T2      - spin coherence time [sec]
 %   Brms    - Root-mean-square of inhomogeneous (Gaussian) fields [Gauss]
 %   Bmw     - vector with microwave magnetic field amplitudes [Tesla]
@@ -37,7 +37,7 @@ if isempty(diff(Bmw,1,1)) | all(diff(Bmw,1,1) == 0)
 end
 
 if size(Bmw) ~= size(x)
-    error("Dimentions of x and Bmw do not match.")
+    error("Dimensions of x and Bmw do not match.")
 end
 
 % convert Gauss to Tesla

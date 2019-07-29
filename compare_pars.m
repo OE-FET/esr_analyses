@@ -1,5 +1,5 @@
 function n_diff = compare_pars(pars1, pars2)
-%COMPARE_PARS Compares experimental conditions ffom two ESR measurements
+%COMPARE_PARS Compares experimental conditions from two ESR measurements
 %
 %   nDiff = COMPARE_PARS(pars1,pPars2) compares the measurement parameters
 %   Pars1 and Pars2 from two different ESR data sets and outputs the number
@@ -10,7 +10,7 @@ function n_diff = compare_pars(pars1, pars2)
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %% determine parameters to be ignored in comparision
-% in case of a power dependant measurement, ignore MWPW paramaters
+% in case of a power-dependent measurement, ignore MWPW paramaters
 
 ParCheckIgnore = {'TITL', 'TIME', 'DATE', 'MWFQ', 'FrequencyMon', ...
          'Flyback', 'XMIN', 'XWID', 'XMAX', 'StaticFieldMon', ...
@@ -33,6 +33,7 @@ for i = 1:N
     end
 end
 
+% print all parameters that are different
 n_diff = find(comp);
 if n_diff>0
     fprintf(2, 'The following parameters are different:\n');

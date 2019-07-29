@@ -4,9 +4,9 @@ function [ycorr, ybaseline] = baseline_corr(x, y, method)
 %   [ycorr, ybaseline] = BASELINE_CORR(x, y) performs a baseline fit on the 
 %   input data. The baseline region can be be selected through a GUI, and
 %   the baseline is fitted as a spline through the smoothed data. Adjust
-%   thenumber points to smooth over according to the noise in the data.
+%   the number points to smooth over according to the noise in the data.
 %
-%   OUTPUT(S):
+%   INPUT(S):
 %   x - x-axis values
 %   y - y-axis values
 %   method - If 'all', all points in the specified interval will be used to

@@ -11,10 +11,10 @@ function varargout = stack_plot(varargin)
 %   ax         - Axis handle for plot. If not given, the data is plotted in 
 %                the current axis, as returned by gca.
 %   x, y       - Data to plot.
-%   'xoffset'  - List of vertical offsets between curves. Automatically
-%                determined if not given.
-%   'yoffsets' - Horizontal offset between curves, creates a staggered 
+%   'xoffset'  - Horizontal offset between curves, creates a staggered 
 %                plot. Defaults to 0.
+%   'yoffsets' - List of vertical offsets between curves. Automatically
+%                determined if not given.
 %   'style'    - Line style and color, specified as a character vector or
 %                string scalar containing line style symbols, color
 %                options, or both.

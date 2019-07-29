@@ -1,7 +1,7 @@
 function [fitresult, gof] = gauss_fit(x, y, varargin)
 %GAUSS_FIT fits a Gaussian curve to the given data.
 %
-%   Plots the  results and  outputs fitting parameters, the goodness of fi
+%   Plots the  results and  outputs fitting parameters, the goodness of fit
 %   and the fitted curve.
 %
 %   SYNTAX:

@@ -1,7 +1,7 @@
 function Bmw = get_mw_fields(pars)
 %GET_MW_FIELDS Gets microwave fields from measurement parameter structure.
 %
-%   Converts MW powers given in pars structure to MW magentic field 
+%   Converts MW powers given in pars structure to MW magentic field
 %   amplitudes, given the measurement conditions from pars. In case of
 %   power saturation measurements, a vector is returned. Otherwise,
 %   GET_MW_FIELDS returns a scalar.

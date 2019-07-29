@@ -1,5 +1,5 @@
 function [chi] = nspin2chi(n_spin, T, S)
-%CHI2NSPIN Convert the Curie susceptebility to a number of spins.
+%CHI2NSPIN Convert the Curie susceptibility to a number of spins.
 %
 %   SYNTAX:
 %   [chi] = CHI2NSPIN(n_spin)
@@ -9,10 +9,10 @@ function [chi] = nspin2chi(n_spin, T, S)
 %   INPUT(S):
 %   n_spin - number of spins per cubic meters
 %   T - temperature in Kelvin (default: T = 298)
-%   S - electron spin (default: S = 1/2)
+%   S - system spin (default: S = 1/2)
 %
 % 	OUTPUT(S):
-%   chi - magnetc susceptibility in SI units
+%   chi - magnetc susceptibility in SI units (i.e., dimensionless)
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
