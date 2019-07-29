@@ -107,14 +107,25 @@ elseif offsetInterval == 0
 end
 
 %% plot results
-figure(1);
+figure('Name','Background subtraction');
 subplot(2, 1, 1);
 hold on
-yoffset = max(max(yS))*0.5;
+% 27/07/19: For PowerSat data: It appears as if you meant to use the below
+% line to send the offsets to stackplot, but you used the keyword "yoffset"
+% rather than "yoffsets" so the offset wasn't interpreted in stack_plot and
+% instead defaulted to stack_plot's calculation of yoffsets = [0
+% max(ydiff)*1.3]. This caused different offsets for the bg and signal
+% data (and the slices didn't align). Moreoever, max(max(yS)) was returning
+% one value, meaning that even if you sent it properly to stack_plot, it 
+% was sending one value rather than an array. Every slice would be moved up
+% by the same amount (and thus they would not be offset). Hopefully this 
+% change is what you meant to do: every slice is moved up by a different 
+% amount and the bg and signal slices overlap.
+yoffset = max(yS)*0.5; 
 % plot background
-sp1 = stack_plot(xB + B_offset, yB, 'yoffset', yoffset, 'style', 'r');
+sp1 = stack_plot(xB + B_offset, yB, 'yoffsets', yoffset, 'style', 'r');
 % plot signal
-sp2 = stack_plot(xS, yS, 'yoffset', yoffset, 'style', 'b'); 
+sp2 = stack_plot(xS, yS, 'yoffsets', yoffset, 'style', 'b'); 
 hold off;
 legend([sp1(1) sp2(1)],{'background', 'signal'})
 
