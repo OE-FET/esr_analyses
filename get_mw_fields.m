@@ -17,10 +17,11 @@ function Bmw = get_mw_fields(pars)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
-if strcmp(pars.YTYP, 'IGD') == 1
-    Pmw = pars.z_axis * 1E-3; % MW Power in W
+%% Get microwave powers based on whether this is a PowerSat measurement
+if isfield(pars,'YNAM') & strcmp(pars.YNAM, 'Microwave Power')
+    Pmw = pars.z_axis*1e-3; % MW Power in W
 else
-    Pmw = pars.MWPW;          % MW Power in W
+    Pmw = pars.MWPW; % MW Power in W
 end
 
 % convert MWPW to magnetic field strength in Tesla
