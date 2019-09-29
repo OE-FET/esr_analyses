@@ -156,7 +156,7 @@ for i=1:length(A) % calculate for each peak
     areaDIerror = modScaling * Bmw .* dA;
     
     % get 'maximum' value, even though all values are equal...
-    [Chi(i), dChi(i)]   = max(susceptebility_calc(areaDI, pars, 'dA', areaDIerror));
+    [Chi(i), dChi(i)]   = max(susceptibility_calc(areaDI, pars, 'dA', areaDIerror));
     [NSpin(i), dNSpin(i)] = max(spincounting(areaDI, pars, 'dA', areaDIerror));
 end
 

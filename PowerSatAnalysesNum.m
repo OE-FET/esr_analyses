@@ -136,7 +136,7 @@ end
 areaDI = Bmw.*A;
 areaDIerror = Bmw.*dA;
 
-[Chi, dChi]     = susceptebility_calc(areaDI, pars, 'dA', areaDIerror);
+[Chi, dChi]     = susceptibility_calc(areaDI, pars, 'dA', areaDIerror);
 [NSpin, dNSpin] = spincounting(areaDI, pars, 'dA', areaDIerror);
 
 %%                              Output

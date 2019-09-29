@@ -34,7 +34,7 @@ pars.GFactor = gfactor_determination(x, y, pars, 'plot', 'y');
 intArea = double_int_num(x, y, 'baseline', 'y');
 dA = intArea*pars.QValueErr/pars.QValue;
 
-[Chi, dChi]     = susceptebility_calc(intArea, pars, 'dA', dA);
+[Chi, dChi]     = susceptibility_calc(intArea, pars, 'dA', dA);
 [NSpin, dNSpin] = spincounting(intArea, pars, 'dA', dA);
 
 %%                                Output

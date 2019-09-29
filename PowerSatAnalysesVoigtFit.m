@@ -111,7 +111,7 @@ modScaling     = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
 areaDI = modScaling * Bmw .* A;
 areaDIerror = modScaling * Bmw .* dA;
 
-[Chi, dChi]     = susceptebility_calc(areaDI, pars, 'dA', areaDIerror);
+[Chi, dChi]     = susceptibility_calc(areaDI, pars, 'dA', areaDIerror);
 [NSpin, dNSpin] = spincounting(areaDI, pars, 'dA', areaDIerror);
 
 %%                                Output

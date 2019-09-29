@@ -1,4 +1,4 @@
-function [Chi, dChi] = susceptebility_calc(doubleIntArea, pars, varargin)
+function [Chi, dChi] = susceptibility_calc(doubleIntArea, pars, varargin)
 %SUSCEPTEBILITY_CALC Susceptebility calculation from the integrated EPR
 %intensity.
 %
