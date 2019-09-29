@@ -1,4 +1,4 @@
-function [x_norm, y_norm, pars] = normalise_spectrum_all(x, y, pars)
+function [x_norm, y_norm, pars_norm] = normalise_spectrum_all(x, y, pars)
 %NORMALISE_SPECTRUM_ALL normlizes an EPR spectrum for all aquisition conditions
 %
 % 	ESR data is normalised for reciever gain, number of scans (Ns = 1),
@@ -18,16 +18,19 @@ function [x_norm, y_norm, pars] = normalise_spectrum_all(x, y, pars)
 [x, y, pars] = normalise_spectrum(x, y, pars);
 
 %% Normalise for other parameters next
+pars_norm = pars;
+pars_norm.QValue = 1;
+pars_norm.B0MA = 1;
 
 % Does the file contain multiple scans at different powers (2D) or only one scan?
-if strcmp(pars.YNAM, 'Microwave Power') == 1
+if isfield(pars,'YNAM') && strcmp(pars.YNAM, 'Microwave Power')
     % don't normalise for MWPW in power saturation measurement
     y_norm = y / (pars.QValue * pars.B0MA);
 else
+    pars_norm.MWPW = 1;
     y_norm = y / (pars.QValue * sqrt(pars.MWPW) * pars.B0MA );
 end
 
-%% normalise y-axis
 x_norm = x;
 
 end
