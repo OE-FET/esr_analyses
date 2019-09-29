@@ -49,7 +49,7 @@ end
 
 % get default offset
 ydiff    = y(:, 1:end-1) + y(:, 2:end);
-yoffsets = [0 max(ydiff)*1.3];
+yoffsets = [0 max(abs(ydiff))*1.3];
 
 xoffset  = get_kwarg(varargin, 'xoffset', 0);
 yoffsets = get_kwarg(varargin, 'yoffsets', yoffsets);
