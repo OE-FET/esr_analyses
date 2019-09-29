@@ -67,7 +67,8 @@ classdef nelder_mead_fitobject
                 x_interp        = linspace(min(x), max(x), 2^10);
                 y_interp        = linspace(min(y), max(y), 2^10);
                 [XPlot, YPlot]  = meshgrid(x_interp, y_interp);
-                zFit            = obj.fitfunc(obj.coef, {XPlot, YPlot});
+                zFit            = obj.fitfunc(obj.coef, {X, Y});
+                zFitMesh        = obj.fitfunc(obj.coef, {XPlot, YPlot});
                 
                 % plot best-fit curve and data
                 Xt = X'; Yt = Y';
@@ -75,17 +76,15 @@ classdef nelder_mead_fitobject
                 figure('Name', '3D fit');
                 hold on;
                 h1 = scatter3(Xt(:), Yt(:), zData(:), '.k');
-                h2 = surf(XPlot, YPlot, zFit', 'FaceAlpha', 0.5, 'EdgeColor', 'none');
+                h2 = surf(XPlot, YPlot, zFitMesh', 'FaceAlpha', 0.5, 'EdgeColor', 'none');
                 legend('Data', 'Fit', 'Location', 'northeast')
                 axis tight; grid on;
                 view(3);
 
                 figure('Name', '3D fit, x-section');
-                offset = max(max(zData))*0.8;
                 hold on;
-                [h3, yoffsets] = stack_plot(x, zData, 'yoffset', offset, 'style', '.k');
-                h4 = stack_plot(x, obj.fitfunc(obj.coef, {X, Y}), ...
-                    'yoffsets', yoffsets, 'style', '-r');
+                [h3, yoffsets] = stack_plot(x, zData, 'style', '.k');
+                h4 = stack_plot(x, zFit, 'yoffsets', yoffsets, 'style', '-r');
                 legend([h3(1), h4(1)], {'Data', 'Fit'});
                 if nargout > 0
                     h = {h1 h2 h3 h4};
