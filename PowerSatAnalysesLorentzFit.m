@@ -46,7 +46,7 @@ Bmw = get_mw_fields(pars);
 mid  = round(length(Bmw)/2);
 slice_fit  = lorentz_fit(x, y(:,mid), 'deriv', 1);
 
-% perform numerical double integrtion to estimate T1*T2
+% perform numerical double-integration to estimate T1*T2
 DI = double_int_num(x, y, 'baseline', 'n');
 ft = fittype('A * x /sqrt(1+1e7*gmSquaredT1T2*x^2)');
 pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [slice_fit.a, 1], 'Lower', [0, 0]);
@@ -122,6 +122,6 @@ out_struct = struct(...
 
 out_table = struct2table(rmfield(out_struct, {'x', 'y', 'pars', 'fitres'}));
 
-clc; disp(out_table);
+disp(out_table);
 
 end
