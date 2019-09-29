@@ -18,7 +18,7 @@ function Bmw = get_mw_fields(pars)
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %% Get microwave powers based on whether this is a PowerSat measurement
-if isfield(pars,'YNAM') & strcmp(pars.YNAM, 'Microwave Power')
+if isfield(pars,'YNAM') & strcmp(pars.YNAM, '''Microwave Power''')
     Pmw = pars.z_axis*1e-3; % MW Power in W
 else
     Pmw = pars.MWPW; % MW Power in W
