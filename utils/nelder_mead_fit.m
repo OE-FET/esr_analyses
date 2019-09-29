@@ -15,7 +15,7 @@ function [fitres, output] = nelder_mead_fit(fitfunc, x, y, coef0, opt)
 %
 %   OUTPUTS(S):
 %   fitres  - Object holding the fit function, the best-fit coefficients,
-%             the starting points and the fit data. Call 
+%             the starting points and the fit data. Call
 %             standarderror(fitres) to get confidence intervals for fit
 %             coefficients.
 %   output  - Structure containing information associated with the

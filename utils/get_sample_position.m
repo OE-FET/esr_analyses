@@ -2,7 +2,7 @@ function pars = get_sample_position(pars)
 %GET_SAMPLE_POSITION gets the sample position :)
 %
 % 	Ask the user for the length of the sample and the position of the
-% 	sample in the ESR cavity (if they are not already present in the pars 
+% 	sample in the ESR cavity (if they are not already present in the pars
 %   structure. These are necessary for proper determination of the mw field
 %   over the sample.
 %

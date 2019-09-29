@@ -46,7 +46,7 @@ function varargout = BrukerRead(varargin)
 %                For 3 dimensional pulsed experiments - such as HYSCORE,
 %                then the intensity is in the 3rd "z" dimension
 %
-%   Example: 
+%   Example:
 %   [x, y, pars] = BrukerRead
 %                  GUI load a file
 %
@@ -75,11 +75,11 @@ switch nargin
             Path = [];
             return
         end
-                
+
         % File name/path manipulation
         address = [directory, file];
         [~, name, extension] = fileparts(address);
-                      
+
     case 1
         address = varargin{1};
         [directory, name, extension] = fileparts(address);
@@ -95,19 +95,19 @@ switch extension
     case '.spc'
         file_par = [directory '/' name '.par'];
         fid = fopen(file_par, 'r');
-        
+
         if fid < 0
-            error('Both *.spc and *.par files are required to open the file.')            
+            error('Both *.spc and *.par files are required to open the file.')
         end
-                
+
     case {'.DTA', '.DSC'}
         file_dsc = [directory '/' name '.DSC'];
         fid = fopen(file_dsc, 'r');
-        
+
         if fid < 0
             error('Both *.DSC and *.DTA files are required to open the file.')
         end
-                
+
 end
 
 % Get characters from file
@@ -131,22 +131,22 @@ par_struct = param2struct(parameter_list);
 switch extension
     case '.spc'
         fid   = fopen( [directory '/' name '.spc'], 'r');
-        
+
         if fid < 0
             error(['File ''',name,'.spc'' could not be opened, both *.spc and *.par files are required to open the file.'])
         end
-        
+
         [y, ~] = fread(fid, inf, 'float');
-        
+
     case {'.DTA', '.DSC'}
         fid = fopen( [directory '/' name '.DTA'], 'r', 'ieee-be.l64');
-        
+
         if fid < 0
             error(['File ''', name, '.DTA'' could not be opened, both *.DTA and *.DSC files are required to open the file.'])
         end
-        
+
         [y, ~] = fread(fid, inf, 'float64');
-        
+
         if strcmp(par_struct.IKKF, 'CPLX')
             y = complex(y(1:2:end), y(2:2:end));
         end
@@ -160,20 +160,20 @@ fclose(fid);
 
 switch extension
     case '.spc'
-        
+
         MagField.min      = par_struct.HCF - (par_struct.HSW / 2);
         MagField.max      = par_struct.HCF + (par_struct.HSW / 2);
         MagField.sampling = par_struct.HSW / par_struct.ANZ;
-        
+
         x = (MagField.min:MagField.sampling:MagField.max)';
-        
+
     case {'.DTA', '.DSC'}
-        
+
         par_struct.XSTEP	= par_struct.XWID / par_struct.XPTS;
         par_struct.XMAX	= par_struct.XMIN + par_struct.XWID - par_struct.XSTEP;
-        
+
         x = (par_struct.XMIN:par_struct.XSTEP:par_struct.XMAX)';
-        
+
 end
 
 
@@ -183,38 +183,38 @@ end
 % Some work required for Pulsed experiments, cw experiments fine
 
 if strcmp(par_struct.EXPT, 'PLS')
-    
+
     % PELDOR, FSE and FID require splitting into real and imaginary
     % channels, these should have no Y axis data.
-    
+
     if strcmp(par_struct.YTYP, 'NODATA')
-    
+
         z = reshape(y, 2, []);
         clear y;
         y.real = z(1, :)';
         y.imag = z(2, :)';
-    
+
     % HYSCORE obviously have Y axis data collection and require splitting
-    
+
     elseif strcmp(par_struct.YTYP, 'IDX')
-        
+
         z = y;
         clear y
-        
+
         % Create Y-axis
         % =============
-        
+
         % Create other Y points
         par_struct.YSTEP	= par_struct.YWID / par_struct.YPTS;
         par_struct.YMAX	= par_struct.YMIN + par_struct.YWID - par_struct.YSTEP;
-        
+
         y = (par_struct.YMIN:par_struct.YSTEP:par_struct.YMAX)';
-        
+
         % Format Z-axis
         % =============
-        
+
         z = reshape(z, size(y, 1), []);
-        
+
     end
 end
 
@@ -224,19 +224,19 @@ end
 
 % search directory for .YGF file
 if exist([directory '/' name '.YGF'], 'file')
-    
+
     % if exist, load .YGF , convert to usable matrix
     fid = fopen( [directory '/' name '.YGF'], 'r', 'ieee-be.l64');
-    
+
     if fid < 0
         error('BrukerRead: a *.YGF file was found in the folder but could not be opened. BrukerRead will now abort. Please remove the file from the folder or check its permissions.')
     end
-    
+
     [par_struct.z_axis, par_struct.z_axis_points] = fread(fid, inf, 'float64');
-    
+
     % reshape the y-axis into columns using number of data points
     y = reshape(y, par_struct.XPTS , []);
-    
+
 end
 
 
@@ -260,13 +260,13 @@ switch nargout
             varargout{2} = y;
             varargout{3} = par_struct;
         end
-        
+
     case 4
         varargout{1} = x;
         varargout{2} = y;
         varargout{3} = z;
         varargout{4} = par_struct;
-        
+
     otherwise
         varargout{1} = x;
         varargout{2} = y;
@@ -276,28 +276,28 @@ end
 
 function [info] = param2struct(parameter_list)
     %% generate info structure
-    
+
     % get number of remaining rows
     [N, ~] = size(parameter_list);
-    
+
     % preallocate memory for analysed rows, ignore last (empty) row
     Keep        = zeros(N, 1);
     ParaMatrix	= cell(N, 2);
-    
+
     % separate parameter names from values and save both in array
     for i = 1:N
         [parameter, value] = strtok(parameter_list(i, :));
-        
+
         value = strtrim(value);
         ParaMatrix{i, 1} = parameter;
-        
+
         % if value not numeric, paste as string, else convert to double
         if isnan(str2double(value))
             ParaMatrix{i, 2} = value;
         else
             ParaMatrix{i, 2} = str2double(value);
         end
-        
+
         % Mark rows that do not contain aquisition parameters.
         % We recognize them because they start with non-letter characters
         % or are empty
@@ -310,7 +310,7 @@ function [info] = param2struct(parameter_list)
     end
     % delete rows that do not contain aquisition parameters
     ParaMatrix = ParaMatrix(Keep==1, :);
-    
+
     % save all parameters in info structure
     for i = 1:length(ParaMatrix)
         info.(ParaMatrix{i, 1}) = ParaMatrix{i, 2};

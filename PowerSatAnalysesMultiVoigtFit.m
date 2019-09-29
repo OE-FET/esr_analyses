@@ -5,9 +5,9 @@ function [argout] = PowerSatAnalysesMultiVoigtFit(varargin)
 %   multiple Voigtians instead of a single one. The number of Voigtians can
 %   be given as a keyword argument 'N' and defaults to two.
 %
-%   Starting points may be given as a keyword argument 'var0'. var0 must be 
-%   a Nx5 matrix with each row containing the starting points for one 
-%   Voigtian in the order: [A0 B0 T1 T2 FWHM_gauss]. If NaN is given for 
+%   Starting points may be given as a keyword argument 'var0'. var0 must be
+%   a Nx5 matrix with each row containing the starting points for one
+%   Voigtian in the order: [A0 B0 T1 T2 FWHM_gauss]. If NaN is given for
 %   any starting point, it will be substituted with a reasonable best-guess
 %   value.
 %
@@ -19,7 +19,7 @@ function [argout] = PowerSatAnalysesMultiVoigtFit(varargin)
 %   POWERSATANALYSESVOIGTFIT(..., 'var0', var0) - gives starting points
 %
 %   OUTPUT(S):
-%	out_struct  - structure containing the measurement data and fit results 
+%	out_struct  - structure containing the measurement data and fit results
 %   out_table   - fit results in table format
 %
 
@@ -74,7 +74,7 @@ if any(isnan(var0), 'all')
     T1   = T1T2/T2;                                        % in sec
 
     auto_var0 = ones(N,1)*[A0/2 B0 T1 T2 FWHM_gauss];      % starting points
-    
+
     % replace NaN values in var0 with our best-guess starting points
     var0(isnan(var0)) = auto_var0(isnan(var0));
 end
@@ -124,7 +124,7 @@ zlabel(h{1}(1).Parent, 'ESR signal [a.u.]')
 
 close(h{3}(1).Parent.Parent)
 
-% use custom stack_plot showing individual peaks instead of plot(fitres) 
+% use custom stack_plot showing individual peaks instead of plot(fitres)
 figure();hold on;
 p = {};
 [p{1}, yoffsets] = stack_plot(x, y, 'style', 'k.');
@@ -154,7 +154,7 @@ NSpin = zeros(size(A)); dNSpin = zeros(size(A));
 for i=1:length(A) % calculate for each peak
     areaDI = modScaling * Bmw .* A;
     areaDIerror = modScaling * Bmw .* dA;
-    
+
     % get 'maximum' value, even though all values are equal...
     [Chi(i), dChi(i)]   = max(susceptibility_calc(areaDI, pars, 'dA', areaDIerror));
     [NSpin(i), dNSpin(i)] = max(spincounting(areaDI, pars, 'dA', areaDIerror));

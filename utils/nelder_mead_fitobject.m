@@ -1,5 +1,5 @@
 classdef nelder_mead_fitobject
-    
+
     properties
         fitfunc
         coef0
@@ -8,7 +8,7 @@ classdef nelder_mead_fitobject
         independent_fitdata
         dependent_fitdata
     end
-    
+
     methods
         function se = standarderror(obj, accur)
             % STANDARDERROR of of fit paramters
@@ -17,21 +17,21 @@ classdef nelder_mead_fitobject
             %
             %   SE = sqrt( sigma_y * inv(H) )
             %
-            % where 'sqrt(sigma_y)' is the standard deviation of residuals 
+            % where 'sqrt(sigma_y)' is the standard deviation of residuals
             % and 'H' is the Hessian. 'sigma_y' can be calculated as
             %
             %   sigma_y = RSS / dof
             %
-            % where 'RSS' is the resiual sum-of-squares and 'dof' is the 
+            % where 'RSS' is the resiual sum-of-squares and 'dof' is the
             % number of degrees-of-freedom in the fitting problem. The
             % Hessian can be estimated from the Jacobian 'J' of the fit
             % function with respect to the fitting parameters as H ~ J'*J.
-            
+
             if nargin < 2; accur = 'accurate'; end
 
             dof     = numel(obj.dependent_fitdata) - numel(obj.coef0);
             sigma_y = obj.sse/dof;
-            
+
             % get jacobian matrix with respect to fit parameters
             func = @(coef) obj.fitfunc(coef, obj.independent_fitdata);
             if strcmp(accur, 'quick')
@@ -51,16 +51,16 @@ classdef nelder_mead_fitobject
             se = full(se); % convert sparse to full matrix
         end
         function h = plot(obj)
-            
+
             if iscell(obj.independent_fitdata)
                 if ~length(obj.independent_fitdata) == 2
                     error('Can only plot 2D or 3D data.')
                 end
-                
+
                 X       = obj.independent_fitdata{1};
                 Y       = obj.independent_fitdata{2};
                 zData   = obj.dependent_fitdata;
-                
+
                 x = X(1,:);
                 y = Y(:,1);
                 % get best-fit curve (in a higher resolution version)
@@ -69,7 +69,7 @@ classdef nelder_mead_fitobject
                 [XPlot, YPlot]  = meshgrid(x_interp, y_interp);
                 zFit            = obj.fitfunc(obj.coef, {X, Y});
                 zFitMesh        = obj.fitfunc(obj.coef, {XPlot, YPlot});
-                
+
                 % plot best-fit curve and data
                 Xt = X'; Yt = Y';
 
@@ -92,10 +92,10 @@ classdef nelder_mead_fitobject
             else
                 x = obj.independent_fitdata;
                 zData = obj.dependent_fitdata;
-                
+
                 x_interp = linspace(min(x), max(x), 2^10)';
                 zFit = obj.fitfunc(obj.coef, x_interp);
-                
+
                 figure('Name', 'Least-squares fit');
                 hold on;
                 h1 = plot(x, zData, '.k');
@@ -106,7 +106,7 @@ classdef nelder_mead_fitobject
                     h = {h1 h2};
                 end
             end
-                
+
         end
     end
 end

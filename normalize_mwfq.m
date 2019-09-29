@@ -14,7 +14,7 @@ function [x, y, pars] = normalize_mwfq(x, y, pars, varargin)
 
 freq = get_kwarg(varargin, 'MWFQ', 9.4*1e9);
 
-B_offset = 10000* ( g2b(gfree, freq) - g2b(gfree, pars.MWFQ) );
+B_offset = 10000 * ( g2b(gfree, freq) - g2b(gfree, pars.MWFQ) );
 
 pars.MWFQ = freq;
 

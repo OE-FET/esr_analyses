@@ -1,5 +1,5 @@
 function [out_struct, out_table] = SliceAnalysesVoigtFit(varargin)
-%SLICEANALYSESVOIGTFIT performs normalization and spin-counting of an ESR 
+%SLICEANALYSESVOIGTFIT performs normalization and spin-counting of an ESR
 %signal by fitting it to a voigt function.
 %
 %   Performs a 1D fit of a cw-EPR spectrum to determine spin cohrence time
@@ -21,7 +21,7 @@ function [out_struct, out_table] = SliceAnalysesVoigtFit(varargin)
 %   ...FIT(x, y, Pars)          - field, signal, and spectral params
 %
 %   OUTPUT(S):
-%	out_struct  - structure containing the measurement data and fit results 
+%	out_struct  - structure containing the measurement data and fit results
 %   out_table   - fit results in table format
 %
 
@@ -35,7 +35,7 @@ close all
 %%                         Calculate MW field
 %%=========================================================================
 Bmw = get_mw_fields(pars);
-
+y = y-median(y);
 %%                      Get starting points for fit
 %%=========================================================================
 

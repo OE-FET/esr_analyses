@@ -1,5 +1,5 @@
 function [y] = convKernelModAmp(x, Bm, n)
-%% Modulation Kernel 
+%% Modulation Kernel
 % Kernel for convolution with ESR absorption spectrum to simulate lock-in
 % detection with external field modulaiton. The kernel is the Fourier
 % transform of a Bessel function of the first kind and order n. It

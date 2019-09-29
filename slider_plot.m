@@ -31,7 +31,7 @@ S.sl = uicontrol('style', 'slide', ...
                  'sliderstep', [1/size(S.y, 2) 1/size(S.y, 2)], ...
                  'callback', {@sl_call, S});
 end
-             
+
 function [] = sl_call(varargin)
 % Callback for the slider.
 [h, S] = varargin{[1, 3]};  % calling handle and data structure.

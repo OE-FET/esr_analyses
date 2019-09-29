@@ -1,9 +1,9 @@
 function [yn] = esr_lorentz_simulation(x, B0, T1, T2, Bmw, modAmp, n)
 %esr_lorentz_simulation simulates the n-th harmonic detection of a Lorentzian
-%resonance with x-axis modulation.   
+%resonance with x-axis modulation.
 %
 %   Simulates the n-th harmonic detection of a Lorentzian ESR resonance
-%   line. If no modulation amplitude and harmonic are given, the ESR 
+%   line. If no modulation amplitude and harmonic are given, the ESR
 %   absorption signal without field modulation is returned.
 %
 %   L = Bmw / ( 1 + Bmw^2*T1*T2*gmratio^2 + (xpd-B0)^2*T2^2*gmratio^2 )

@@ -1,13 +1,13 @@
 function [NSpin, dNSpin] = spincounting(doubleIntArea, pars, varargin)
 %SPINCOUNTING Spin-counting from the integrated EPR intensity.
-%   
+%
 %   Determines the absolute number of spins in a sample from the
-%   double-integrated intensity of a 1st harmonic cw-EPR spectrum assuming 
+%   double-integrated intensity of a 1st harmonic cw-EPR spectrum assuming
 %   a Curie susceptibility. This assumption is valid for independent spins
 %   when T >> E_Zeeman/2. X-Band EPR typically operates around B = 350 mT
-%   while a field of up to 0.5 T corresponds to E_Zeeman/2 = 28.9 畫V. This  
+%   while a field of up to 0.5 T corresponds to E_Zeeman/2 = 28.9 畫V. This
 %   still remains far lower than the corresponding thermal energy of
-%   450 畫V at 5 K. 
+%   450 畫V at 5 K.
 %
 %   If the input argument S is not given, S = 1/2 is used.
 %

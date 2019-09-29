@@ -12,7 +12,7 @@ function [xnew, y, pars] = gmarker_calib(x, y, pars, varargin)
 % 	xnew		- magnetic field axis normalized by g-marker
 %	y			- ESR spectrum
 %	pars		- aquisition parameter structure
-%	                                  
+%
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $

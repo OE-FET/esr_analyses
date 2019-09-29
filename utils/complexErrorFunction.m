@@ -1,12 +1,12 @@
 function [w] = complexErrorFunction(x, y)
 % complexErrorFunction  Calculation of complex error function using dimentionless coordinates
-% 
+%
 % [w] = complexErrorFunction(x,y)   Computes the complex error function
 %   using the algorithm developed by Dr. F. Schreier and kindly presented
 %   in Fortran. The function was rewriten to MATLAB by Dr. N. Cherkasov
 %   For more details on algorithm see the publication:
-%   F. Schreier: Optimized Implementations of Rational Approximations for the voigt ane Complex Error Function. 
-%   J. Quant. Spectrosc. & Radiat. Transfer, 112(6), 10101025, doi 10.1016/j.jqsrt.2010.12.010, 2011. 
+%   F. Schreier: Optimized Implementations of Rational Approximations for the voigt ane Complex Error Function.
+%   J. Quant. Spectrosc. & Radiat. Transfer, 112(6), 10101025, doi 10.1016/j.jqsrt.2010.12.010, 2011.
 %
 %   Briefly, the algorithm is compiled from two:
 %       for    large x+y     J  Humlicek, JQSRT 27, 437, 1982
@@ -26,8 +26,8 @@ function [w] = complexErrorFunction(x, y)
 
 
 half=0.5;
-one=1; 
-two=2; 
+one=1;
+two=2;
 recSqrtPi=1/sqrt(pi);
 
 lenX=length(x);
@@ -69,5 +69,5 @@ else
         end
     end
 end
-    
+
 end

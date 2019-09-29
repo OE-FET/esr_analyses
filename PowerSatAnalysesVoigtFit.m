@@ -14,7 +14,7 @@ function [out_struct, out_table] = PowerSatAnalysesVoigtFit(varargin)
 %   field amplitude over the sample volume.
 %
 %   INPUT SYNTAX:
-%   none                    - opens gui to select data files   
+%   none                    - opens gui to select data files
 %   'signal_path'           - path to signal data
 %   'signal_path','bg_path' - path to signal data, path to background data
 %   x, y, pars              - field axis, intensity axis, experimental parameters

@@ -1,16 +1,16 @@
 function [x, y, parsS] = subtract_background(varargin)
 %SUBTRACT_BACKGROUND Subtracts background signal from sample signal.
 %
-% 	If desired, the result is written to a new Bruker ESR file. Experimental 
-% 	conditions from DSC files are compared and a warning is issued when 
-% 	differences are detected. ESR data are normalised for MW power, reciever 
-% 	gain, number of scans, time constant, and modulation amplitude (to Hm = 1 G). 
+% 	If desired, the result is written to a new Bruker ESR file. Experimental
+% 	conditions from DSC files are compared and a warning is issued when
+% 	differences are detected. ESR data are normalised for MW power, reciever
+% 	gain, number of scans, time constant, and modulation amplitude (to Hm = 1 G).
 % 	Before subtracting, the background signal is shifted to compensate for an
 % 	offset in MWFQ.
 %
 % 	INPUT(S):
 %   SUBTRACT_BACKGROUND()           - opens gui to select signal and bg paths
-%   ...('signal_data')              - given signal path & opens a gui to 
+%   ...('signal_data')              - given signal path & opens a gui to
 %                                     select bg path
 %   ...('signal_data','bg_data')    - given signal & bg paths
 %
@@ -59,7 +59,7 @@ end
 
 % rescale background for Q-value, modulation amplitude and mw power
 % WARNING: All parameters affect both the signal amplitude and shape.
-% Therefore, be cautious when subtracting a backround signal with 
+% Therefore, be cautious when subtracting a backround signal with
 % significantly different parameters.
 Q_ratio = parsS.QValue/ParsB.QValue;
 B0MA_ratio = parsS.B0MA/ParsB.B0MA;
@@ -68,7 +68,7 @@ ratiosary = [Q_ratio, B0MA_ratio, Bmw_ratio];
 ratiostxt = {'Q-values','Modulation amplitudes','Microwave fields'};
 for ii = 1:length(ratiosary)
     if ratiosary(ii) > 1.2 || ratiosary(ii) < 0.8
-        warning([ratiostxt{ii} ' differ by more than 20%. '... 
+        warning([ratiostxt{ii} ' differ by more than 20%. '...
                  'This may impact the signal shape and '...
                  'prevent a proper background subtraction.']);
     end
@@ -116,16 +116,16 @@ hold on
 % instead defaulted to stack_plot's calculation of yoffsets = [0
 % max(ydiff)*1.3]. This caused different offsets for the bg and signal
 % data (and the slices didn't align). Moreoever, max(max(yS)) was returning
-% one value, meaning that even if you sent it properly to stack_plot, it 
+% one value, meaning that even if you sent it properly to stack_plot, it
 % was sending one value rather than an array. Every slice would be moved up
-% by the same amount (and thus they would not be offset). Hopefully this 
-% change is what you meant to do: every slice is moved up by a different 
+% by the same amount (and thus they would not be offset). Hopefully this
+% change is what you meant to do: every slice is moved up by a different
 % amount and the bg and signal slices overlap.
-yoffset = max(yS)*0.5; 
+yoffset = max(yS)*0.5;
 % plot background
 sp1 = stack_plot(xB + B_offset, yB, 'yoffsets', yoffset, 'style', 'r');
 % plot signal
-sp2 = stack_plot(xS, yS, 'yoffsets', yoffset, 'style', 'b'); 
+sp2 = stack_plot(xS, yS, 'yoffsets', yoffset, 'style', 'b');
 hold off;
 legend([sp1(1) sp2(1)],{'background', 'signal'})
 

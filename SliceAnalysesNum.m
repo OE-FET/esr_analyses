@@ -16,7 +16,7 @@ function [argout] = SliceAnalysesNum(varargin)
 %	...('sigPath', 'bgPath')   - reads data and background from file
 %
 %	OUTPUT:
-%	argout  - structure containing the measurement data and fit results 
+%	argout  - structure containing the measurement data and fit results
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$

@@ -14,7 +14,7 @@ function [Chi, dChi] = susceptibility_calc(doubleIntArea, pars, varargin)
 %   [Chi, dChi] = SUSCEPTEBILITY_CALC(doubleIntArea, pars, 'dA', areaError)
 %
 %   INPUT(S):
-%   doubleIntArea - Integrated area of absorption EPR spectrum or double 
+%   doubleIntArea - Integrated area of absorption EPR spectrum or double
 %                   integral from 1st harmonic spectrum
 %   pars - structure containing measurement parameters from EPR experiment
 %   dA   - standard error for doubleIntArea, used for error propagation

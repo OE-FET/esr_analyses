@@ -1,7 +1,7 @@
 function [ycorr, ybaseline] = baseline_corr(x, y, method)
 %BASELINE_CORR Performs a baseline correction on the input data.
 %
-%   [ycorr, ybaseline] = BASELINE_CORR(x, y) performs a baseline fit on the 
+%   [ycorr, ybaseline] = BASELINE_CORR(x, y) performs a baseline fit on the
 %   input data. The baseline region can be be selected through a GUI, and
 %   the baseline is fitted as a spline through the smoothed data. Adjust
 %   the number points to smooth over according to the noise in the data.
@@ -49,7 +49,7 @@ while ~ok
     % plot spectrum
     fig = figure('Name', 'Baseline fit');
     [~, offsets] = stack_plot(x, real(y)); hold on;
-    
+
     % set title of plot
     title('Baseline Fit - Select intervals that belong to baseline');
 
@@ -57,7 +57,7 @@ while ~ok
     fprintf(['\n Select the area of the spectrum', ...
         '\n by indicating points with the cursor.', ...
         '\n Press the Enter key when done.\n'])
-    
+
     % open GUI for input & accept points until user presses Enter
     mask = false(N, 1);
     xpts = [];
@@ -86,20 +86,20 @@ while ~ok
         % get points in interval
         int_msk = int(1)< x & x < int(2);
         mask = or(mask, int_msk);
-        
+
         % get end and center points
         x_int = x(int_msk); y_int = y(int_msk, :);
-        
+
         xpts(end+1:end+3) = [x_int(1); x_int(round(end/2)); x_int(end)];
         ypts(end+1:end+3, :) = [y_int(1, :); y_int(round(end/2), :); y_int(end, :)];
     end
-    
+
     if ~any(mask)
         ybaseline = y.*scaling;
         ycorr = y.*scaling;
         return
     end
-    
+
     %% perform baseline fit
     if strcmp(method, 'all')
         % average over 10 points for smoothing before fit
@@ -112,7 +112,7 @@ while ~ok
 
     % make yfit a column if it is a row vector
     if size(ybaseline, 1) == 1
-        ybaseline = shiftdim(ybaseline, 1); 
+        ybaseline = shiftdim(ybaseline, 1);
     end
 
     % plot for visual confirmation

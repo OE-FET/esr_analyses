@@ -8,7 +8,7 @@ function yModInPhase = field_mod_sim(x, y, modAmp, harmonic)
 %   n-th harmonic detection on a signal (x,y). This code implements the
 %   psuedo-modulation approach from:
 %
-%   Hyde, J. S., et al. Applied Magnetic Resonance 1, 483-496 (1990) 
+%   Hyde, J. S., et al. Applied Magnetic Resonance 1, 483-496 (1990)
 %
 %   INPUT(S):
 %   x      - x-axis data vector, must be uniformliy spaced
@@ -36,42 +36,42 @@ function yModInPhase = field_mod_sim(x, y, modAmp, harmonic)
 if (nargin == 0)
     help(mfilename)
     return
-end 
+end
 
 Display = (nargout == 0);
 
-if (nargin < 3) || (nargin > 4), error('Wrong number of input arguments!'); end 
-if (nargout < 0), error('Not enough output arguments.'); end 
-if (nargout > 1), error('Too many output arguments.'); end 
+if (nargin < 3) || (nargin > 4), error('Wrong number of input arguments!'); end
+if (nargout < 0), error('Not enough output arguments.'); end
+if (nargout > 1), error('Too many output arguments.'); end
 
 
 if (nargin < 4)
     harmonic = 1;
-end 
+end
 if numel(harmonic) ~= 1 || (harmonic < 0) || ~isreal(harmonic) || mod(harmonic, 1)
     error('Harmonic must be a positive integer (1, 2, 3, etc)!');
-end 
+end
 
 if (modAmp <= 0)
     error('Modulation amplitude (3rd argument) must be positive.');
-end 
+end
 
 n = length(x);
 if length(y) ~= n
     error('x and y must have the same length!');
-end 
+end
 
 sizey = size(y);
 if all(sizey ~= 1)
     error('y must be a row or column vector.');
-end 
+end
 
 isRowVector = (sizey(1) == 1);
 y = y(:);
 
 %% calculate convolution
 dx = x(2) - x(1); % get spacing of x-axis, assuming uniform spacing
-Ampl = modAmp / 2 / dx; % modulation amplitude in multiples of x-axis steps 
+Ampl = modAmp / 2 / dx; % modulation amplitude in multiples of x-axis steps
 
 NN = n; % zero padding length for fft
 ffty = fft(y, NN); % fourier transform signal
@@ -86,7 +86,7 @@ yMod = (1i) ^ harmonic * yMod; % swap real and imaginary parts depending on harm
 
 if isRowVector
     yMod = yMod';
-end 
+end
 
 yModInPhase = real(yMod); % get in-phase data from real part
 
@@ -101,4 +101,4 @@ if (Display)
     title(sprintf('Modulated spectrum, harmonic %d, modulation amplitude %g G', harmonic, modAmp));
 end
 
-end 
+end

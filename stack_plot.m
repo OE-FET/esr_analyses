@@ -8,17 +8,17 @@ function varargout = stack_plot(varargin)
 %
 %
 %   INPUT(S):
-%   ax         - Axis handle for plot. If not given, the data is plotted in 
+%   ax         - Axis handle for plot. If not given, the data is plotted in
 %                the current axis, as returned by gca.
 %   x, y       - Data to plot.
-%   'xoffset'  - Horizontal offset between curves, creates a staggered 
+%   'xoffset'  - Horizontal offset between curves, creates a staggered
 %                plot. Defaults to 0.
 %   'yoffsets' - List of vertical offsets between curves. Automatically
 %                determined if not given.
 %   'style'    - Line style and color, specified as a character vector or
 %                string scalar containing line style symbols, color
 %                options, or both.
-%   'rescale'  - Rescale all y-data such that max(abs(y)) = 1. Turned off 
+%   'rescale'  - Rescale all y-data such that max(abs(y)) = 1. Turned off
 %                by default.
 %
 % 	OUTPUT(S):
@@ -59,7 +59,7 @@ style    = get_kwarg(varargin, 'style', '');
 dimx = size(x);
 dimy = size(y);
 
-% if every y data has its own x-data, keep. Otherwise, expand x to matrix. 
+% if every y data has its own x-data, keep. Otherwise, expand x to matrix.
 if dimx(2)  ==  1
 	x = x(:, ones(1, dimy(2)));
 end

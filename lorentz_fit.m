@@ -16,13 +16,13 @@ function [fitresult, gof] = lorentz_fit(x, y, varargin)
 deriv = get_kwarg(varargin, 'deriv', 0);
 
 for i = 1:size(y, 2)
-    
+
     [xData, yData] = prepareCurveData(x, y(:, i));
-    
+
     %% Find good starting parameters
 
     [Min, Nmin] = min(yData); [Max, Nmax] = max(yData);
-    
+
     if deriv == 0
         FWHM_default = (x(end) - x(1))/5;
         x0_default = Nmax;
@@ -30,7 +30,7 @@ for i = 1:size(y, 2)
     elseif deriv == 1
         FWHM_default = x(Nmin)-x(Nmax);
         x0_default = x(Nmax)+FWHM_default/2;
-        Area_default = 2*(Max - Min)*FWHM_default;   
+        Area_default = 2*(Max - Min)*FWHM_default;
     end
 
     FWHM = get_kwarg(varargin, 'FWHM', FWHM_default);

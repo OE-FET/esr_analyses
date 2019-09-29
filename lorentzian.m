@@ -17,7 +17,7 @@ function [y] = lorentzian(x, x0, FWHM, varargin)
 %   INPUT(S):
 %   x - as x-axis values
 %   x0 - position of the line center
-%   FWHM - full-width-at-half-maximum 
+%   FWHM - full-width-at-half-maximum
 %
 % 	OUTPUT(S):
 %   y - Lorentzian profile

@@ -1,6 +1,6 @@
 function [fitresult,gof,yfit] = pseudo_voigt_fit(x, y, varargin)
 %PSEUDO_VOIGT_FIT fits a Pseudo-Voigt curve to the given data.
-% 
+%
 %   Plots the results and outputs fitting parameters, goodness of fit and
 %   fitted cruves.
 %

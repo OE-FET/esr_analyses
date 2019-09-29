@@ -6,7 +6,7 @@ function argout = plot2D(varargin)
 %   STACK_PLOT(ax, ...)
 %
 %   INPUT(S):
-%   ax         - Axis handle for plot. If not given, the data is plotted in 
+%   ax         - Axis handle for plot. If not given, the data is plotted in
 %                the current axis, as returned by gca.
 %   x, y       - x- and y-axis data.
 %   o          - Ordinate data.

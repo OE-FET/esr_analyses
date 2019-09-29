@@ -23,7 +23,7 @@ function [g_sample, B_res]= gfactor_determination(x, y, pars, varargin)
 %   x        - Magnetic field in Gauss
 %   y        - Derivative ESR spetrum
 %   pars     - Structure containing measurement parameters
-%   plot     - If plot == 'y', the spectrum is plotted with the resonance 
+%   plot     - If plot == 'y', the spectrum is plotted with the resonance
 %              centre marked prominently.
 %
 %   OUTPUT(S):

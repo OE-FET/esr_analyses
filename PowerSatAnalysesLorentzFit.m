@@ -20,7 +20,7 @@ function [out_struct, out_table] = PowerSatAnalysesLorentzFit(varargin)
 %   ...(x, y, pars)                   - uses given data directly
 %
 %   OUTPUT(S):
-%	out_struct  - structure containing the measurement data and fit results 
+%	out_struct  - structure containing the measurement data and fit results
 %   out_table   - fit results in table format
 %
 

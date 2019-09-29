@@ -31,7 +31,7 @@ else
     xNew(1+deriv:N+deriv) = x;
     xNew(1:deriv) = x(1)-dx*(deriv:-1:1);
     xNew(N+deriv+1:N+2*deriv) = x(N)+dx*(1:deriv);
-end 
+end
 
 % convert to dimensionless coordinates and calculate voigtian from fadf
 HWHM_lorentz = FWHM_lorentz/2;
