@@ -59,7 +59,9 @@ B0   = slice_fit.x0;                                   % in Gauss
 T1T2 = 1e7*pwrst_fit.gmSquaredT1T2 / gmratio^2;        % in sec^2
 T2   = 2/(gmratio * FWHM_lorentz*1E-4);                % in sec
 T1   = T1T2/T2;                                        % in sec
-
+% RLC 21/09/19 Note: Bad fits are often attributable to inaccurate
+% estimates of T1. If your fits are off then change the order-of-magnitude
+% for this estimation parameter.
 var0 = [A0 B0 T1 T2 FWHM_gauss];                       % starting points
 
 %%                          Perform Voigt fit
