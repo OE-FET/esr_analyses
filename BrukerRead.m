@@ -296,6 +296,7 @@ function [info] = param2struct(parameter_list)
 
         % if value not numeric, paste as string, else convert to double
         if isnan(str2double(value))
+            value = strip(value, 'both', "'"); % strip single quotes
             ParaMatrix{i, 2} = value;
         else
             ParaMatrix{i, 2} = str2double(value);
