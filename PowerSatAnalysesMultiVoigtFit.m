@@ -41,8 +41,8 @@ end
 
 [x, y, pars] = load_spectrum_dialog(varargin);
 
-if ~strcmp(pars.YTYP, 'IGD')
-    error('The specified file is not a 2D data file.');
+if ~(isfield(pars,'YNAM') && strcmp(pars.YNAM, 'Microwave Power'))
+    error('The specified file is not a power saturation measurement.');
 end
 
 if N ~= size(var0, 1)
