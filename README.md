@@ -2,8 +2,8 @@
 MATLAB scripts to analyze cw-ESR data. ESR-Analyses requires the
 [natural constants](https://github.com/OE-FET/Natural-constants) package.
 
-If you publish any data processed with the ESR-Analyses routines, please cite "Schott, S.
-et al. Nat. Phys. (2019) doi:10.1038/s41567-019-0538-0" where the methods implemented here
+If you publish any data processed with the ESR-Analyses routines, please cite Schott, S.
+et al. [Nat. Phys. 15, 814–822 (2019)](http://doi.org/10.1038/s41567-019-0538-0) where the methods implemented here
 have been first published.
 
 ## About
