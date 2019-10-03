@@ -29,5 +29,12 @@ ESR-Analyses is composed of:
       `spin_counting`, etc.
     - High-level functions: `PowerSatAnalysesLorentzFit`, `PowerSatAnalysesVoigtFit`, etc.
 
+ESR-Analyses is structured as a package, to avoid name space conflicts with other
+toolboxes such as easyspin. Once downloaded, please rename the top level folder to
+"+esr_analyses". You can then access all functions by prepending `esr_analyses`, for
+example as `esr_analyses.lorentzian`, or after importing all functions from the package
+with `import esr_analyses.*`. An introduction to MATLAB packages is given
+[here](https://uk.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html#brf3g8k).
+
 All functions do exactly what you would expect from their name, and most of them are well
 documented. Therefore, please refer to the individual doc-strings for more information.
