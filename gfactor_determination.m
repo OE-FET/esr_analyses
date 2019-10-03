@@ -34,6 +34,9 @@ function [g_sample, B_res]= gfactor_determination(x, y, pars, varargin)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 plotting = get_kwarg(varargin, 'plot', 'n');
 
 %% Resonance center from maximum of 1st integral as first guess

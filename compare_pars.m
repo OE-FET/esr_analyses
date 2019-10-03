@@ -12,6 +12,9 @@ function n_diff = compare_pars(pars1, pars2)
 %% determine parameters to be ignored in comparision
 % in case of a power-dependent measurement, ignore MWPW paramaters
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 ParCheckIgnore = {'TITL', 'TIME', 'DATE', 'MWFQ', 'FrequencyMon', ...
          'Flyback', 'XMIN', 'XWID', 'XMAX', 'StaticFieldMon', ...
          'NbScansAcc', 'NbScansToDo', 'OPER'};

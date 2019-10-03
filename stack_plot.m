@@ -29,6 +29,9 @@ function varargout = stack_plot(varargin)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 %% Input Analyses
 
 if ishghandle(varargin{1}, 'axes')

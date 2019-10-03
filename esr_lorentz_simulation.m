@@ -25,6 +25,9 @@ function [yn] = esr_lorentz_simulation(x, B0, T1, T2, Bmw, modAmp, n)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2018/07/05 12:58 $    $Revision: 1.1 $
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 % internally, we use SI units ONLY
 
 % convert Gauss to Tesla

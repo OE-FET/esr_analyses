@@ -25,6 +25,9 @@ function yn = esr_voigt_simulation(x, B0, T1, T2, Brms, Bmw, modAmp, n)
 
 % internally, we use SI units ONLY
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 %% Initialize
 % Transpose x and Bmw if necessary and check if dimensions match
 if isempty(diff(x,1,2)) | all(diff(x,1,2) == 0)

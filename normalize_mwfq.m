@@ -12,6 +12,9 @@ function [x, y, pars] = normalize_mwfq(x, y, pars, varargin)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 freq = get_kwarg(varargin, 'MWFQ', 9.4*1e9);
 
 B_offset = 10000 * ( g2b(gfree, freq) - g2b(gfree, pars.MWFQ) );

@@ -62,6 +62,9 @@ function varargout = BrukerRead(varargin)
 %%                         Input arguments
 % ========================================================================
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 % remember file path from previous function calls
 global Path
 

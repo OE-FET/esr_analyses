@@ -17,6 +17,9 @@ function [y] = convKernelModAmp(x, Bm, n)
 %    resonance" (2003)
 %
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 %% Kernel functions
 if n==0
     y = 2 ./ sqrt(Bm^2-x.^2);

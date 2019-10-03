@@ -10,6 +10,9 @@ function [S] = slider_plot(x, y, varargin)
 %       the plotted data.
 %
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 if length(x) ~= length(y)
     error('x and y data must have the same length.')
 end

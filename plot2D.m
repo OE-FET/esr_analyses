@@ -14,6 +14,10 @@ function argout = plot2D(varargin)
 % 	OUTPUT(S):
 %   phandle - plot handle
 %
+
+import esr_analyses.*
+import esr_analyses.utils.*
+
 %% Input Analyses
 
 if ishghandle(varargin{1}, 'axes')

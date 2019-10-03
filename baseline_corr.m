@@ -21,6 +21,9 @@ function [ycorr, ybaseline] = baseline_corr(x, y, method)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.2 $
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 %% process data
 if nargin < 2
     error('Need both x-data and y-data.');

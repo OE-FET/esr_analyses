@@ -6,6 +6,9 @@ function f = gb2f(g, B)
 % "Natureal constants" folder
 %
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 f = g*bmagn*B / planck;
 
 end

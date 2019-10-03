@@ -33,6 +33,9 @@ function FF = fadf(z)
 % University, Canada, September 2014. Last modifications to the code were
 % made on July 2016 (see the file 'readme.txt' for more information).
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 ind_neg = imag(z)<0; % if some imag(z) values are negative, then ...
 z(ind_neg) = conj(z(ind_neg)); % ... bring them to the upper-half plane
 

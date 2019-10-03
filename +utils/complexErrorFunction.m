@@ -24,6 +24,8 @@ function [w] = complexErrorFunction(x, y)
 % 27-December-2013 N. Cherkasov
 % Comments and questions to: n.b.cherkasov@gmail.com
 
+import esr_analyses.*
+import esr_analyses.utils.*
 
 half=0.5;
 one=1;

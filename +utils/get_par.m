@@ -1,6 +1,9 @@
 function pars = get_par(pars, name, default)
 %GET_PAR Fills out missing parameters by asking user for input.
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 if ~isstruct(pars); error('First argument must be a structure.'); end
 if ~ischar(name); error('Second argument must be a string / character array.'); end
 

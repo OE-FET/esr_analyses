@@ -1,6 +1,9 @@
 function [returnValue, output] = get_kwarg(input, name, defaultValue)
 %GET_KWARG Pairs up argument descriptions with values from varargin.
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 output = input;
 
 % get parameter from varargin 'input' and return varargin without patameter

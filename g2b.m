@@ -10,6 +10,9 @@ function B = g2b(g, MWFQ)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 if nargin < 2
     MWFQ = 9.4*1e9;
 end

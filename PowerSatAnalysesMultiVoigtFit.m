@@ -26,6 +26,9 @@ function [argout] = PowerSatAnalysesMultiVoigtFit(varargin)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/27 12:58 $    $Revision: 1.2 $
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 close all
 
 if nargin > 0

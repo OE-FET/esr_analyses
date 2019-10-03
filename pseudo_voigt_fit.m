@@ -11,6 +11,9 @@ function [fitresult,gof,yfit] = pseudo_voigt_fit(x, y, varargin)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 deriv = get_kwarg(varargin, 'deriv', 0);
 yfit = zeros(size(y));
 

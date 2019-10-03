@@ -16,6 +16,9 @@ function stop = optimlogplotfval(~,optimValues,state,varargin)
 
 %   Copyright 2006-2010 The MathWorks, Inc.
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 stop = false;
 switch state
     case 'iter'

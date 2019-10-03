@@ -27,6 +27,9 @@ classdef nelder_mead_fitobject
             % Hessian can be estimated from the Jacobian 'J' of the fit
             % function with respect to the fitting parameters as H ~ J'*J.
 
+            import esr_analyses.*
+            import esr_analyses.utils.*
+
             if nargin < 2; accur = 'accurate'; end
 
             dof     = numel(obj.dependent_fitdata) - numel(obj.coef0);
@@ -51,6 +54,9 @@ classdef nelder_mead_fitobject
             se = full(se); % convert sparse to full matrix
         end
         function h = plot(obj)
+
+            import esr_analyses.*
+            import esr_analyses.utils.*
 
             if iscell(obj.independent_fitdata)
                 if ~length(obj.independent_fitdata) == 2

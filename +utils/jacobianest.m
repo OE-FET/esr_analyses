@@ -66,6 +66,9 @@ function [jac,err] = jacobianest(fun,x0)
 % Release: 1.0
 % Release date: 3/6/2007
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 % get the length of x0 for the size of jac
 nx = numel(x0);
 

@@ -25,6 +25,9 @@ function [IArea, yInt1, yCorr, yInt2] = double_int_num(x, y, varargin)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 % default to baseline correction if not specified
 baseline = get_kwarg(varargin, 'baseline', 'y');
 

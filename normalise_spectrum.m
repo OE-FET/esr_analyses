@@ -19,6 +19,9 @@ function [x_norm, y_norm, pars] = normalise_spectrum(x, y, pars)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 y_norm = y;
 if strcmp(pars.SctNorm, 'False') == 1 % check if y-axis already has been normalised
     %--------------------------------------------------------------------

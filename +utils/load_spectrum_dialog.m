@@ -23,6 +23,10 @@ function [x, y, pars] = load_spectrum_dialog(argcell)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/06/17 10:43 $    $Revision: 1.1 $
 %%
+
+import esr_analyses.*
+import esr_analyses.utils.*
+
 argnum = length(argcell);
 
 switch argnum

@@ -27,6 +27,9 @@ function [Chi, dChi] = susceptibility_calc(doubleIntArea, pars, varargin)
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 %% INPUT PROCESSING
 pars = get_par(pars, 'ConvFact', 9.2710e-09);  % get calibration factor
 pars = get_par(pars, 'QValue'); % get or ask for QValue

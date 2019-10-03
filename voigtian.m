@@ -19,6 +19,9 @@ function [y] = voigtian(x, x0, FWHM_gauss, FWHM_lorentz, varargin)
 % 27-December-2013 N. Cherkasov
 % Comments and questions to: n.b.cherkasov@gmail.com
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 %%
 
 deriv = get_kwarg(varargin, 'deriv', 0);
