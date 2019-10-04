@@ -42,7 +42,7 @@ end
 [x, y, pars] = load_spectrum_dialog(varargin);
 
 if ~(isfield(pars,'YNAM') && strcmp(pars.YNAM, 'Microwave Power'))
-    error('The specified file is not a power saturation measurement.');
+    error('The given data is not from a power saturation measurement.');
 end
 
 if N ~= size(var0, 1)
