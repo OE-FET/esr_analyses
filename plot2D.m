@@ -48,7 +48,8 @@ ax.YDir = 'normal';
 
 colorbar;
 
-if nargout > 1
+%% Argout
+if nargout > 0
     argout = h;
 end
 
