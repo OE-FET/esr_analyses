@@ -44,13 +44,12 @@ x_label = sprintf('%s [%s]', pars.XNAM, pars.XUNI);
 y_label = sprintf('%s [%s]', pars.YNAM, pars.YUNI);
 color_label = 'ESR signal [a.u.]';
 
-cbar = colorbar;
-
 %% Plot
 h = plot2D(ax, x, pars.z_axis, y);
 xlabel(ax, x_label, 'Interpreter', 'none');
 ylabel(ax, y_label, 'Interpreter', 'none');
 title(ax, fig_titel, 'Interpreter', 'none');
+cbar = colorbar;
 cbar.Title.String = color_label;
 
 %% Argout

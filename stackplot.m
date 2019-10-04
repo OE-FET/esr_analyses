@@ -83,12 +83,11 @@ end
 
 %% Plot
 if strcmp(style, '')
-    set(gca, 'ColorOrder', distinguishable_colors(size(y,2)), 'NextPlot', 'replacechildren');
+    set(ax, 'ColorOrder', distinguishable_colors(size(y,2)), 'NextPlot', 'replacechildren');
 end
 
 phandle = plot(ax, xNew, yNew, style);
 
-set(ax.Parent, 'color', 'white');
 grid on;
 
 ymin = min(min(yNew)) - abs(0.5*max(max(y)));
