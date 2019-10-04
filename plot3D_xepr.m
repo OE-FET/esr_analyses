@@ -1,11 +1,11 @@
-function argout = plot3Dxepr(varargin)
-%PLOT2DXEPR Plots 2D Xepr data as 3D line plot.
+function argout = plot3D_xepr(varargin)
+%PLOT2D_XEPR Plots 2D Xepr data as 3D line plot.
 %
-%   PLOT3DXEPR will create axis labels and an appropriate legend
+%   PLOT2D_XEPR will create axis labels and an appropriate legend
 %   automatically from pars.
 %
-% 	PLOT3DXEPR(x, y, pars)
-%   PLOT3DXEPR(ax, ...)
+% 	PLOT2D_XEPR(x, y, pars)
+%   PLOT2D_XEPR(ax, ...)
 %
 %   INPUT(S):
 %   ax         - Axis handle for plot. If not given, the data is plotted in

@@ -1,13 +1,13 @@
-function varargout = stackplotXepr(varargin)
-%STACKPLOTXEPR Plots Xepr data as in stacked plots.
+function varargout = stackplot_xepr(varargin)
+%STACKPLOT_XEPR Plots Xepr data as in stacked plots.
 %
 %   In addition to STACKPLOT, STACKPLOTXEPR will create axis labels and an
 %   appropriate legend automatically from pars.
 %
 % 	SYNTAX:
-% 	[phandle, yoffsets] = STACKPLOTXEPR(x, y, pars)
-% 	[phandle, yoffsets] = STACKPLOTXEPR(x, y, pars, 'OptionName', OptionValue, ...)
-%   [phandle, yoffsets] = STACKPLOT(ax, ...)
+% 	[phandle, yoffsets] = STACKPLOT_XEPR(x, y, pars)
+% 	[phandle, yoffsets] = STACKPLOT_XEPR(x, y, pars, 'OptionName', OptionValue, ...)
+%   [phandle, yoffsets] = STACKPLOT_XEPR(ax, ...)
 %
 %
 %   INPUT(S):

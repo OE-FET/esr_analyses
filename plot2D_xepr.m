@@ -1,12 +1,12 @@
-function argout = plot2Dxepr(varargin)
-%PLOT2DXEPR Plots Xepr data as 2D contour plot.
+function argout = plot2D_xepr(varargin)
+%PLOT2D_XEPR Plots Xepr data as 2D contour plot.
 %
-%   In addition to PLOT2D, PLOT2DXEPR will create axis labels and an
+%   In addition to PLOT2D, PLOT2D_XEPR will create axis labels and an
 %   appropriate legend automatically from pars.
 %
-% 	PLOT2DXEPR(x, y, pars)
-% 	PLOT2DXEPR(x, y, pars, 'style', style, ...)
-%   PLOT2DXEPR(ax, ...)
+% 	PLOT2D_XEPR(x, y, pars)
+% 	PLOT2D_XEPR(x, y, pars, 'style', style, ...)
+%   PLOT2D_XEPR(ax, ...)
 %
 %   INPUT(S):
 %   ax         - Axis handle for plot. If not given, the data is plotted in
