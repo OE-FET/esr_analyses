@@ -84,10 +84,10 @@ end
 % plot the result
 if plotting == 'y'
     figure(); hold on;
-    [~, yoffsets] = stack_plot(x, y);
+    [~, yoffsets] = stackplot(x, y);
     xL = xlim; yL = ylim;
-    stack_plot(B_res', zeros(length(B_res), 1)', 'yoffsets', yoffsets, 'style', 'ro');
-    stack_plot(x, zeros(size(y)), 'yoffsets', yoffsets, 'style', 'k-');
+    stackplot(B_res', zeros(length(B_res), 1)', 'yoffsets', yoffsets, 'style', 'ro');
+    stackplot(x, zeros(size(y)), 'yoffsets', yoffsets, 'style', 'k-');
     xlim(gca, xL); ylim(gca, yL);
     hold off;
 end

@@ -51,7 +51,7 @@ ok = false;
 while ~ok
     % plot spectrum
     fig = figure('Name', 'Baseline fit');
-    [~, offsets] = stack_plot(x, real(y)); hold on;
+    [~, offsets] = stackplot(x, real(y)); hold on;
 
     % set title of plot
     title('Baseline Fit - Select intervals that belong to baseline');
@@ -121,7 +121,7 @@ while ~ok
     % plot for visual confirmation
     yL = get(gca, 'YLim');
     hold on;
-    phandle = stack_plot(x, ybaseline, 'yoffsets', offsets);
+    phandle = stackplot(x, ybaseline, 'yoffsets', offsets);
     set(phandle, 'Color', 'blue');
     ylim(gca, yL);
 
