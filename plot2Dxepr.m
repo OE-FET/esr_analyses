@@ -1,6 +1,9 @@
 function argout = plot2Dxepr(varargin)
 %PLOT2DXEPR Plots Xepr data as 2D contour plot.
 %
+%   In addition to PLOT2D, PLOT2DXEPR will create axis labels and an
+%   appropriate legend automatically from pars.
+%
 % 	PLOT2DXEPR(x, y, pars)
 % 	PLOT2DXEPR(x, y, pars, 'style', style, ...)
 %   PLOT2DXEPR(ax, ...)
@@ -39,12 +42,16 @@ end
 fig_titel = pars.TITL;
 x_label = sprintf('%s [%s]', pars.XNAM, pars.XUNI);
 y_label = sprintf('%s [%s]', pars.YNAM, pars.YUNI);
+color_label = 'ESR signal [a.u.]';
+
+cbar = colorbar;
 
 %% Plot
 h = plot2D(ax, x, pars.z_axis, y);
 xlabel(ax, x_label, 'Interpreter', 'none');
 ylabel(ax, y_label, 'Interpreter', 'none');
 title(ax, fig_titel, 'Interpreter', 'none');
+cbar.Title.String = color_label;
 
 %% Argout
 if nargout > 0
