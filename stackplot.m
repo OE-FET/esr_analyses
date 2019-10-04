@@ -82,6 +82,10 @@ else
 end
 
 %% Plot
+if strcmp(style, '')
+    set(gca, 'ColorOrder', distinguishable_colors(size(y,2)), 'NextPlot', 'replacechildren');
+end
+
 phandle = plot(ax, xNew, yNew, style);
 
 set(ax.Parent, 'color', 'white');
