@@ -34,9 +34,7 @@ else
     pars  = varargin{3};
 end
 
-if ~isfield(pars,'YNAM')
-    error('The given data is not a 2D data set.');
-end
+assert_2d_exp(pars)
 
 %% Data preparation
 fig_titel = pars.TITL;

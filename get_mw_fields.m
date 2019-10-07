@@ -21,7 +21,7 @@ import esr_analyses.*
 import esr_analyses.utils.*
 
 %% Get microwave powers based on whether this is a PowerSat measurement
-if isfield(pars,'YNAM') & strcmp(pars.YNAM, 'Microwave Power')
+if is_powersat_exp(pars)
     Pmw = pars.z_axis*1e-3; % MW Power in W
 else
     Pmw = pars.MWPW; % MW Power in W

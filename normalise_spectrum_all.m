@@ -26,7 +26,7 @@ pars_norm.QValue = 1;
 pars_norm.B0MA = 1;
 
 % Does the file contain multiple scans at different powers (2D) or only one scan?
-if isfield(pars,'YNAM') && strcmp(pars.YNAM, 'Microwave Power')
+if is_powersat_exp(pars)
     % don't normalise for MWPW in power saturation measurement
     y_norm = y / (pars.QValue * pars.B0MA);
 else

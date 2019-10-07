@@ -41,9 +41,7 @@ end
 
 [x, y, pars] = load_spectrum_dialog(varargin);
 
-if ~(isfield(pars,'YNAM') && strcmp(pars.YNAM, 'Microwave Power'))
-    error('The given data is not from a power saturation measurement.');
-end
+assert_powersat_exp(pars)
 
 if N ~= size(var0, 1)
     error('The number of starting points must match the number of Voigtians to fit.');
