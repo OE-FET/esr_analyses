@@ -7,7 +7,6 @@ function n_diff = compare_pars(pars1, pars2)
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 %% determine parameters to be ignored in comparision
 % in case of a power-dependent measurement, ignore MWPW paramaters

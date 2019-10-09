@@ -19,7 +19,6 @@ function [y] = pseudo_voigt(x, x0, FWHM_gauss, FWHM_lorentz, varargin)
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 import esr_analyses.*
 import esr_analyses.utils.*

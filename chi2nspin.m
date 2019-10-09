@@ -16,7 +16,6 @@ function [n_spin] = chi2nspin(chi, T, S)
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
-%   $Date: 2019/05/06 12:58 $    $Revision: 1.1 $
 
 import esr_analyses.*
 import esr_analyses.utils.*
