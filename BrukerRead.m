@@ -148,10 +148,14 @@ switch extension
             error(['File ''', name, '.DTA'' could not be opened, both *.DTA and *.DSC files are required to open the file.'])
         end
 
-        [y, ~] = fread(fid, inf, 'float64');
-
-        if strcmp(par_struct.IKKF, 'CPLX')
-            y = complex(y(1:2:end), y(2:2:end));
+        [y_raw, ~] = fread(fid, inf, 'float64');
+        
+        yType = split(par_struct.IKKF, ',');  % type of datasets (REAL, CPLX, etc)
+        yNum = length(yType);  % number of datasets per slice scan
+        yNum = yNum + length(yType(yType == "CPLX")); % add rows for imaginary parts
+        
+        for i = 1:yNum
+            y(:, i) = y_raw(i:yNum:end);
         end
 end
 
