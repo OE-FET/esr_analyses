@@ -1,5 +1,5 @@
 function [output_table] = BatchLoad(step, slice)
-% BATCHLOAD Loads and retunrns data from multiple ESR data files
+% BATCHLOAD Loads and returns data from multiple ESR data files
 %
 %   INPUTS:
 %   step    - name of parameter that is stepped between files, e.g.,
@@ -11,8 +11,11 @@ function [output_table] = BatchLoad(step, slice)
 %   output_table    - table with all data
 %
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 if nargin < 2
-    slice = False;
+    slice = false;
 end
 
 % try automatical matching of background signals
