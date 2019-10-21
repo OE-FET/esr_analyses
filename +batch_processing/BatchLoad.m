@@ -57,11 +57,7 @@ for i = 1:nFiles
         [x, y, pars] = subtract_background(filePath, filePathBG);
     end
     
-    title = strcat(step, '_', pars.(step));
-    
-    title = strrep(title, ' ', '_'); % replace spaces
-    title = strrep(title, ".", '_'); % replace periods
-    title = strrep(title, "'", ''); % replace '
+    title = matlab.lang.makeValidName(strcat(step, '_', pars.(step)));
     
     output_table.(strcat(title, '_x')) = x;
     if slice && isfield(pars, 'z_axis')
