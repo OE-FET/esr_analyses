@@ -19,11 +19,19 @@ end
 
 S.x = x; S.y = y;
 S.style = get_kwarg(varargin, 'style', '');
+S.slider_axis = get_kwarg(varargin, 'slider_axis', []);
+S.slider_unit = get_kwarg(varargin, 'slider_unit', []);
 
 S.fh = gcf;
 S.ax = gca;
 
-plot(S.x, S.y(:,1), S.style);
+plot(S.x, squeeze(S.y(:,1,:)), S.style);
+if ~isempty(S.slider_axis)
+    dim = [0.2 0 0.3 0.3];
+    str = [num2str(S.slider_axis(1)), S.slider_unit];
+    S.a = annotation('textbox', dim, 'String', str, 'FitBoxToText','on');
+    S.a.EdgeColor = 'none';
+end
 xlim([min(S.x) max(S.x)]);
 ylim(1.1*[min(S.y, [], 'all') max(S.y, [], 'all')]);
 grid on;
@@ -41,7 +49,12 @@ function [] = sl_call(varargin)
 cla
 
 slice_number = round(get(h, 'value'));
-plot(S.ax, S.x, S.y(:,slice_number), S.style);
+
+plot(S.ax, S.x, squeeze(S.y(:,slice_number,:)), S.style);
+if ~isempty(S.slider_axis)
+    str = [num2str(S.slider_axis(slice_number)), S.slider_unit];
+    S.a.String = str;
+end
 xlim([min(S.x) max(S.x)]);
 ylim(1.1*[min(S.y, [], 'all') max(S.y, [], 'all')]);
 grid on;
