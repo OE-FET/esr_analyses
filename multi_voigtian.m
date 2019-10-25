@@ -1,5 +1,5 @@
 function [y, l] = multi_voigtian(Sys, Exp, Opt, varargin)
-%MULTI_VOIGTIAN Multiple Pseudo-Voigt peaks with paraeters in Sys, Exp.
+%MULTI_VOIGTIAN Multiple Pseudo-Voigt peaks with parameters in Sys, Exp.
 %
 % 	MULTI_VOIGTIAN is designed to work in conjuction with the easyspin
 %	toolbox. The structures Sys and Exp contain fitting parameters and
@@ -12,7 +12,7 @@ function [y, l] = multi_voigtian(Sys, Exp, Opt, varargin)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-n = get_kwarg(varargin, 'deriv', 1);
+n_deriv = get_kwarg(varargin, 'deriv', 1);
 
 x = linspace(Exp.Range(1), Exp.Range(2), Exp.nPoints);
 l = zeros(Opt.n, length(x));
@@ -21,7 +21,7 @@ for n=1:Opt.n
 
     % calculate indivual voigt functions
     l(n,:) = Sys.Area(n) * pseudo_voigt(x, Sys.B0(n), ...
-        Sys.FWHM_gauss(n), Sys.FWHM_lorentz(n), 'deriv', n);
+        Sys.FWHM_gauss(n), Sys.FWHM_lorentz(n), 'deriv', n_deriv);
 
 end
 
