@@ -5,11 +5,24 @@ classdef nelder_mead_fitobject
         coef0
         coef
         sse
-        independent_fitdata
-        dependent_fitdata
+        xData
+        yData
+        yFit
     end
 
     methods
+        function obj = nelder_mead_fitobject(fitfunc, xData, yData, coef0, coef, sse)
+            
+            obj.fitfunc = fitfunc;
+            obj.xData = xData;
+            obj.yData = yData;
+            obj.coef0 = coef0;
+            obj.coef = coef;
+            obj.sse = sse;
+            obj.yFit = eval_at(obj, obj.xData);
+        
+        end
+            
         function se = standarderror(obj, accur)
             % STANDARDERROR of of fit paramters
             %
@@ -32,11 +45,11 @@ classdef nelder_mead_fitobject
 
             if nargin < 2; accur = 'accurate'; end
 
-            dof     = numel(obj.dependent_fitdata) - numel(obj.coef0);
+            dof     = numel(obj.yData) - numel(obj.coef0);
             sigma_y = obj.sse/dof;
 
             % get jacobian matrix with respect to fit parameters
-            func = @(coef) obj.fitfunc(coef, obj.independent_fitdata);
+            func = @(coef) obj.fitfunc(coef, obj.xData);
             if strcmp(accur, 'quick')
                 % use lsqnonlin with single iteration to get J (quick)
                 [~,~,~,~,~,~,J] = lsqnonlin(func, obj.coef,[],[], optimset('Display', 'off'));
@@ -58,54 +71,50 @@ classdef nelder_mead_fitobject
             import esr_analyses.*
             import esr_analyses.utils.*
 
-            if iscell(obj.independent_fitdata)
-                if ~length(obj.independent_fitdata) == 2
+            if iscell(obj.xData)
+                if ~length(obj.xData) == 2
                     error('Can only plot 2D or 3D data.')
                 end
 
-                X       = obj.independent_fitdata{1};
-                Y       = obj.independent_fitdata{2};
-                zData   = obj.dependent_fitdata;
+                x1       = obj.xData{1};
+                x2       = obj.xData{2};
 
-                x = X(1,:);
-                y = Y(:,1);
+                xx1 = x1(1,:);
+                xx2 = x2(:,1);
                 % get best-fit curve (in a higher resolution version)
-                x_interp        = linspace(min(x), max(x), 2^10);
-                y_interp        = linspace(min(y), max(y), 2^10);
-                [XPlot, YPlot]  = meshgrid(x_interp, y_interp);
-                zFit            = obj.fitfunc(obj.coef, {X, Y});
-                zFitMesh        = obj.fitfunc(obj.coef, {XPlot, YPlot});
+                x_interp        = linspace(min(xx1), max(xx1), 2^10);
+                x2_interp        = linspace(min(xx2), max(xx2), 2^10);
+                [X1Plot, X2Plot] = meshgrid(x_interp, x2_interp);
+                yFit_interp     = eval_at(obj, {x1, x2});
+                yFitMesh         = eval_at(obj, {X1Plot, X2Plot});
 
                 % plot best-fit curve and data
-                Xt = X'; Yt = Y';
+                X1t = transpose(x1); X2t = transpose(x2);
 
                 figure('Name', '3D fit');
                 hold on;
-                h1 = scatter3(Xt(:), Yt(:), zData(:), '.k');
-                h2 = surf(XPlot, YPlot, zFitMesh', 'FaceAlpha', 0.5, 'EdgeColor', 'none');
+                h1 = scatter3(X1t(:), X2t(:), obj.yData(:), '.k');
+                h2 = surf(X1Plot, X2Plot, yFitMesh', 'FaceAlpha', 0.5, 'EdgeColor', 'none');
                 legend('Data', 'Fit', 'Location', 'northeast')
                 axis tight; grid on;
                 view(3);
 
                 figure('Name', '3D fit, x-section');
                 hold on;
-                [h3, yoffsets] = stackplot(x, zData, 'style', '.k');
-                h4 = stackplot(x, zFit, 'yoffsets', yoffsets, 'style', '-r');
+                [h3, yoffsets] = stackplot(xx1, obj.yData, 'style', '.k');
+                h4 = stackplot(xx1, yFit_interp, 'yoffsets', yoffsets, 'style', '-r');
                 legend([h3(1), h4(1)], {'Data', 'Fit'});
                 if nargout > 0
                     h = {h1 h2 h3 h4};
                 end
             else
-                x = obj.independent_fitdata;
-                zData = obj.dependent_fitdata;
-
-                x_interp = linspace(min(x), max(x), 2^10)';
-                zFit = obj.fitfunc(obj.coef, x_interp);
+                x_interp = transpose(linspace(min(obj.xData), max(obj.xData), 2^10));
+                yFit_interp = eval_at(obj, x_interp);
 
                 figure('Name', 'Least-squares fit');
                 hold on;
-                h1 = plot(x, zData, '.k');
-                h2 = plot(x_interp, zFit, '-r');
+                h1 = plot(obj.xData, obj.yData, '.k');
+                h2 = plot(x_interp, yFit_interp, '-r');
                 legend([h1, h2], {'Data', 'Fit'});
                 axis tight; grid on;
                 if nargout > 0
@@ -113,6 +122,9 @@ classdef nelder_mead_fitobject
                 end
             end
 
+        end
+        function y = eval_at(obj, x)
+            y = obj.fitfunc(obj.coef, x);
         end
     end
 end

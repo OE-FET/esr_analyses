@@ -40,13 +40,7 @@ sumofsquares = @(coef) sum(sum( abs(fitfunc(coef, x) - y).^2  ));
 [best_coef, sumofsquares_error, exitflag, output] = fminsearch(sumofsquares, coef0, opt);
 
 % create fitobject structure
-fitres = nelder_mead_fitobject;
-fitres.fitfunc = fitfunc;
-fitres.coef0 = coef0;
-fitres.coef = best_coef;
-fitres.sse = sumofsquares_error;
-fitres.independent_fitdata = x;
-fitres.dependent_fitdata = y;
+fitres = nelder_mead_fitobject(fitfunc, x, y, coef0, best_coef, sumofsquares_error);
 
 % create output structure
 if nargout > 1
