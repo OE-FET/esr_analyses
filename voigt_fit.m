@@ -29,9 +29,9 @@ for i = 1:size(y, 2)
         x0_default = Nmax;
         Area_default = Max * FWHM_default;
     elseif deriv == 1
-        FWHM_default = x(Nmin)-x(Nmax);
-        x0_default = x(Nmax)+FWHM_default/2;
-        Area_default = 2*(Max - Min)*FWHM_default;
+        FWHM_default = x(Nmin) - x(Nmax);
+        x0_default = x(Nmax) + FWHM_default/2;
+        Area_default = 2*(Max - Min) * FWHM_default;
     end
 
     FWHM = get_kwarg(varargin, 'FWHM', FWHM_default);
