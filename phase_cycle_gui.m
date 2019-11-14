@@ -22,7 +22,7 @@ s90 = @(phi) sig_x * sin(phi) + sig_y * cos(phi);
 sig0amp = @(phi) sum(abs(s0(phi) - mean(s0(phi))));
 sig90amp = @(phi) sum(abs(s90(phi) - mean(s90(phi))));
 
-phi_axis = 0:2*pi/200:2*pi;
+phi_axis = -pi:2*pi/1000:pi;
 phi_axis_deg = phi_axis*180/pi;
 s0matrix = s0(phi_axis);
 s90matrix = s90(phi_axis);
