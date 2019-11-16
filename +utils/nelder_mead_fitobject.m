@@ -85,7 +85,7 @@ classdef nelder_mead_fitobject
                 x_interp        = linspace(min(xx1), max(xx1), 2^10);
                 x2_interp        = linspace(min(xx2), max(xx2), 2^10);
                 [X1Plot, X2Plot] = meshgrid(x_interp, x2_interp);
-                yFit_interp     = eval_at(obj, {x1, x2});
+                yFitInterpol     = eval_at(obj, {x1, x2});
                 yFitMesh         = eval_at(obj, {X1Plot, X2Plot});
 
                 % plot best-fit curve and data
@@ -102,7 +102,7 @@ classdef nelder_mead_fitobject
                 figure('Name', '3D fit, x-section');
                 hold on;
                 [h3, yoffsets] = stackplot(xx1, obj.yData, 'style', '.k');
-                h4 = stackplot(xx1, yFit_interp, 'yoffsets', yoffsets, 'style', '-r');
+                h4 = stackplot(xx1, yFitInterpol, 'yoffsets', yoffsets, 'style', '-r');
                 legend([h3(1), h4(1)], {'Data', 'Fit'});
                 if nargout > 0
                     h = {h1 h2 h3 h4};
