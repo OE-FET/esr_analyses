@@ -10,6 +10,9 @@ function [output, output_table] = BatchAnalyses(analysesFunc)
 %   output_table    - table with all fitting results
 %
 
+import esr_analyses.*
+import esr_analyses.utils.*
+
 % Select analyses function, e.g., PowerSatAnalysesVoigtFit
 if nargin < 1
     analysesFunc = @PowerSatAnalysesNum;
