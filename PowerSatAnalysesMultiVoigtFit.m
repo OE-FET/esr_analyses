@@ -33,7 +33,7 @@ close all
 
 if nargin > 0
     [N, varargin] = get_kwarg(varargin, 'N', 2);
-    [var0, varargin] = get_kwarg(varargin, 'var0', nan(N,5));
+    [var0, varargin] = get_kwarg(varargin, 'var0', nan(N, 5));
 else
     N = 2;
     var0 = [];
@@ -65,18 +65,19 @@ if any(isnan(var0), 'all')
     ft = fittype('A * x /sqrt(1+1e7*gmSquaredT1T2*x^2)');
     pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [slice_fit.a, 1], 'Lower', [0, 0]);
 
-    FWHM_lorentz  = slice_fit.FWHM_lorentz;                % in Gauss
-    FWHM_gauss    = slice_fit.FWHM_gauss;                  % in Gauss
+    FWHM_lorentz  = slice_fit.FWHM_lorentz;                   % in Gauss
+    FWHM_gauss    = slice_fit.FWHM_gauss;                     % in Gauss
 
-    A0   = slice_fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw(mid)); % see 'modScaling'
-    B0   = slice_fit.x0;                                   % in Gauss
-    T1T2 = 1e7*pwrst_fit.gmSquaredT1T2 / gmratio^2;        % in sec^2
-    T2   = 2/(gmratio * FWHM_lorentz*1E-4);                % in sec
-    T1   = T1T2/T2;                                        % in sec
+    A0   = slice_fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw(mid))/N;  % see 'modScaling'
+    B0   = slice_fit.x0;                                      % in Gauss
+    T1T2 = 1e7*pwrst_fit.gmSquaredT1T2 / gmratio^2;           % in sec^2
+    T2   = 2/(gmratio * FWHM_lorentz*1E-4);                   % in sec
+    T1   = T1T2/T2;                                           % in sec
 
     auto_var0 = ones(N,1)*[A0/2 B0 T1 T2 FWHM_gauss];      % starting points
 
     % replace NaN values in var0 with our best-guess starting points
+    % keep all starting points provided by the user
     var0(isnan(var0)) = auto_var0(isnan(var0));
 end
 
@@ -153,8 +154,8 @@ Chi = zeros(size(A)); dChi = zeros(size(A));
 NSpin = zeros(size(A)); dNSpin = zeros(size(A));
 
 for i=1:length(A) % calculate for each peak
-    areaDI = modScaling * Bmw .* A;
-    areaDIerror = modScaling * Bmw .* dA;
+    areaDI = modScaling * Bmw .* A(i);
+    areaDIerror = modScaling * Bmw .* dA(i);
 
     % get 'maximum' value, even though all values are equal...
     [Chi(i), dChi(i)]   = max(susceptibility_calc(areaDI, pars, 'dA', areaDIerror));
