@@ -43,7 +43,7 @@ end
 
 assert_powersat_exp(pars)
 
-if N ~= size(var0, 1)
+if any([N, 5] ~= size(var0))
     error('The number of starting points must match the number of Voigtians to fit.');
 end
 
@@ -57,7 +57,7 @@ Bmw = get_mw_fields(pars);
 if any(isnan(var0), 'all')
     % perform slice fit of center spectrum
     mid  = round(length(Bmw)/2);
-    slice_fit  = pseudo_voigt_fit(x, y(:,mid), 'deriv', 1);
+    slice_fit  = pseudo_voigt_fit(x, y(:,2), 'deriv', 1);
     close(gcf); % close figure when done
 
     % perform numerical double integrtion to estimate T1*T2
@@ -89,7 +89,7 @@ end
 Z       = y;
 
 % create single fit function
-func_single = @(v, x) abs(v(1))*esr_voigt_simulation(x{1}, abs(v(2)), ...
+func_single = @(v, x) abs(v(1)) * esr_voigt_simulation(x{1}, abs(v(2)), ...
     abs(v(3)), abs(v(4)), abs(v(5)), x{2}, pars.B0MA*1e4, 1);
 
 % expand to multiple peaks

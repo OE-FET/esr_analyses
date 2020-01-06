@@ -34,10 +34,26 @@ if size(y0) ~= size(y)
     error('Dimensions of fit function do not agree with dimensions of data to fit.');
 end
 
+% use parallel computing if available
+if license('test', 'distrib_computing_toolbox')
+    gcp();  % start parallel pool
+    opt = optimoptions(opt, 'UseParallel', true);  % add UseParallel option
+end
+
 % define sum of squares to minimize
 sumofsquares = @(coef) sum(sum( abs(fitfunc(coef, x) - y).^2  ));
-% run Nelder-Mead fit
-[best_coef, sumofsquares_error, exitflag, output] = fminsearch(sumofsquares, coef0, opt);
+
+% run derivative-free fit
+
+A = [];
+b = [];
+Aeq = [];
+beq = [];
+lb = [];
+ub = [];
+nonlcon = [];
+
+[best_coef, sumofsquares_error, exitflag, output] = patternsearch(sumofsquares, coef0, A, b, Aeq, beq, lb, ub, nonlcon, opt);
 
 % create fitobject structure
 fitres = nelder_mead_fitobject(fitfunc, x, y, coef0, best_coef, sumofsquares_error);

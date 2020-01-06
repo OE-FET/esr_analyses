@@ -75,8 +75,8 @@ Z       = y;
 % create fit function and options
 fitfunc = @(var, x) abs(var(1))*esr_voigt_simulation(x{1}, abs(var(2)), ...
     abs(var(3)), abs(var(4)), abs(var(5)), x{2}, pars.B0MA*1e4, 1);
-opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
-    @optimplotfval, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
+opt = optimoptions('patternsearch', 'FunctionTolerance', 1e-9, 'StepTolerance', 1e-9, ...
+    'PlotFcns', @psplotbestf, 'MaxFunEvals', 1e10, 'MaxIterations', 1e10);
 
 % fit model to data with Nelder Mead algorithm
 fitres   = nelder_mead_fit(fitfunc, {X, Y}, Z, var0, opt);
