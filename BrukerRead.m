@@ -155,7 +155,7 @@ switch extension
         yNum = yNum + length(yType(yType == "CPLX")); % add rows for imaginary parts
         
         for i = 1:yNum
-            y(:, i) = y_raw(i:yNum:end);
+            y.(join(['comp', num2str(i)])) = y_raw(i:yNum:end);
         end
 end
 
@@ -240,15 +240,25 @@ if exist([directory '/' name '.YGF'], 'file')
     end
 
     [par_struct.z_axis, par_struct.z_axis_points] = fread(fid, inf, 'float64');
-
-    % reshape the y-axis into columns using number of data points
-    y = reshape(y, par_struct.XPTS , []);
+    
+    names = fieldnames(y);
+    
+    for k = 1:numel(names)
+        % reshape the y-data into columns using number of data points
+        y.(names{k}) = reshape(y.(names{k}), par_struct.XPTS , []);
+    end
 
 end
 
 
 %%                         Output arguments
 % ========================================================================
+
+% don't output a structure if there is only one dataset
+names = fieldnames(y);
+if length(names) == 1
+     y = y.(names{1});
+end
 
 % Output results according to requests
 switch nargout
