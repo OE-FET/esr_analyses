@@ -16,11 +16,11 @@ function phase_cycle_gui(x, sig_x, sig_y)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-s0 = @(phi) sig_x * cos(phi) + sig_y * sin(phi);
+s0 = @(phi) sig_x * cos(phi) - sig_y * sin(phi);
 s90 = @(phi) sig_x * sin(phi) + sig_y * cos(phi);
 
-sig0amp = @(phi) sum(abs(s0(phi) - mean(s0(phi))));
-sig90amp = @(phi) sum(abs(s90(phi) - mean(s90(phi))));
+sig0amp = @(phi) sum(s0(phi).^2);
+sig90amp = @(phi) sum(s90(phi).^2);
 
 phi_axis = -pi:2*pi/1000:pi;
 phi_axis_deg = phi_axis*180/pi;

@@ -32,13 +32,13 @@ plot_result = get_kwarg(varargin, 'plot', false);
 
 if ~phase_shift
 
-    s90 = @(phi) sig_x * sin(phi) + sig_y * cos(phi);
-    sig90amp = @(phi) sum(abs(s90(phi)) - mean(s90(phi)));
+    s90 = @(phi) sig_x * sin(phi) - sig_y * cos(phi);
+    sig90amp = @(phi) sum(s90(phi).^2);
 
     phase_shift = fminbnd(sig90amp, -pi, pi);
 end
 
-s0 = sig_x * cos(phase_shift) + sig_y * sin(phase_shift);
+s0 = sig_x * cos(phase_shift) - sig_y * sin(phase_shift);
 s90 = sig_x * sin(phase_shift) + sig_y * cos(phase_shift);
 
 if plot_result
