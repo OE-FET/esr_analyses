@@ -6,6 +6,11 @@ function [x_norm, y_norm, pars] = normalise_spectrum(x, y, pars)
 % 	Xepr "normalised aquisition" option. The resulting spectrum is then
 % 	flagged as normlised by setting Pars.Norm = 'True'.
 %
+%   Note: The actual normalisation performed by Xepr and the signal channel
+%         depends on the signal channel / signal processing unit version.
+%         This function DOES NOT check for the signal channel version but 
+%         assumes a SPU which ALWAYS scales for the time constant.
+%
 %   INPUT(S):
 %   x    - magnetic field axis
 %   y    - non-normalised signal intensity
@@ -22,10 +27,10 @@ import esr_analyses.*
 import esr_analyses.utils.*
 
 y_norm = y;
-if strcmp(pars.SctNorm, 'False') == 1 % check if y-axis already has been normalised
-    %--------------------------------------------------------------------
-    y_norm = 4.0134*y/(20*10^(pars.RCAG/20)*pars.AVGS*pars.SPTP*1000);
-    %--------------------------------------------------------------------
+if strcmp(pars.SctNorm, 'False') % check if y-axis already has been normalised
+% -------------------------------------------------------------------------
+    y_norm = 44.5423*y/(20*10^(pars.RCAG/20)*pars.AVGS*1000);
+% -------------------------------------------------------------------------
 end
 
 x_norm=x;
