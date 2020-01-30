@@ -2,9 +2,9 @@ function varargout = stackplot(varargin)
 %STACKPLOT Plots data as in stacked plots.
 %
 % 	SYNTAX:
-% 	[phandle, yoffsets] = STACKPLOT(x, y)
-% 	[phandle, yoffsets] = STACKPLOT(x, y, 'OptionName', OptionValue, ...)
-%   [phandle, yoffsets] = STACKPLOT(ax, ...)
+% 	phandle = STACKPLOT(x, y)
+% 	phandle = STACKPLOT(x, y, 'OptionName', OptionValue, ...)
+%   phandle = STACKPLOT(ax, ...)
 %
 %
 %   INPUT(S):
@@ -23,7 +23,6 @@ function varargout = stackplot(varargin)
 %
 % 	OUTPUT(S):
 %   phandle    - plot handles
-%   yoffsets   - y-offsets used for plotting
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$

@@ -17,7 +17,7 @@ function [out_struct, out_table] = PowerSatAnalysesLorentzFit(varargin)
 %   ...('/path/to/file')              - path to signal data
 %   ...('signal_path', 'bg_path')     - path to signal data, path to
 %                                       background data
-%   ...(x, y, pars)                   - uses given data directly
+%   ...(dset)                         - uses given data set directly
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results
@@ -31,8 +31,8 @@ import esr_analyses.utils.*
 
 close all
 
-[x, y, pars] = load_spectrum_dialog(varargin);
-
+dset = load_spectrum_dialog(varargin);
+[x,y,pars] = dset_to_tuple(dset);
 assert_powersat_exp(pars)
 
 %%                         Calculate MW fields

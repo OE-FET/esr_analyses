@@ -5,15 +5,15 @@ function varargout = stackplot_xepr(varargin)
 %   appropriate legend automatically from pars.
 %
 % 	SYNTAX:
-% 	[phandle, yoffsets] = STACKPLOT_XEPR(x, y, pars)
-% 	[phandle, yoffsets] = STACKPLOT_XEPR(x, y, pars, 'OptionName', OptionValue, ...)
-%   [phandle, yoffsets] = STACKPLOT_XEPR(ax, ...)
+% 	phandle = STACKPLOT_XEPR(dset)
+% 	phandle = STACKPLOT_XEPR(dset, 'OptionName', OptionValue, ...)
+%   phandle = STACKPLOT_XEPR(ax, ...)
 %
 %
 %   INPUT(S):
 %   ax         - Axis handle for plot. If not given, the data is plotted in
 %                the current axis, as returned by gca.
-%   x, y, pars - Xrpr data to plot.
+%   dset       - Xrpr data to plot.
 %   'xoffset'  - Horizontal offset between curves, creates a staggered
 %                plot. Defaults to 0.
 %   'yoffsets' - List of vertical offsets between curves. Automatically
@@ -26,7 +26,6 @@ function varargout = stackplot_xepr(varargin)
 %
 % 	OUTPUT(S):
 %   phandle    - plot handles
-%   yoffsets   - y-offsets used for plotting
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
@@ -35,37 +34,60 @@ import esr_analyses.*
 import esr_analyses.utils.*
 
 if ishghandle(varargin{1}, 'axes')
-    pars  = varargin{4};
+    ax = varargin{1};
+    dset = varargin{2};
+    if nargin > 2
+        opts = varargin(3:end);
+    else
+        opts = {};
+    end
 else
-    pars  = varargin{3};
+    ax = gca;
+    dset = varargin{1};
+    if nargin > 1
+        opts = varargin(2:end);
+    else
+        opts = {};
+    end
 end
 
 %% Plot
 
-[phandle, yoffsets] = stackplot(varargin{:});
+x = dset{:,1};
+pars = dset.Properties.UserData;
 
-ax = gca;
+N = width(dset) - 1;
 
 x_label = sprintf('%s [%s]', pars.XNAM, pars.XUNI);
+y_label = sprintf('%s [%s]', pars.IRNAM{1}, pars.IRUNI{1});
 
-for i = 1:length(pars.z_axis)
-    labels{i} = sprintf('%f %s', pars.z_axis(i), pars.YUNI);
+phandle = [];
+
+for k = 1:N
+    y = dset{:,k+1};
+    
+    subplot(1,N,k)
+    ph_k = stackplot(x, y, opts{:});
+
+    for i = 1:length(pars.z_axis)
+        labels{i} = sprintf('%f %s', pars.z_axis(i), pars.YUNI);
+    end
+
+    legend(ph_k, labels)
+
+    xlabel(x_label, 'Interpreter', 'none');
+    ylabel(y_label);
+    title(dset.Properties.VariableNames{k+1}, 'Interpreter', 'none');
+    
+    phandle = [phandle, ph_k];
 end
 
-legend(phandle, labels)
-
-xlabel(ax, x_label, 'Interpreter', 'none');
-ylabel(ax, 'ESR signal [a.u.]');
-title(ax, pars.TITL, 'Interpreter', 'none');
+sgtitle(pars.TITL, 'Interpreter', 'none');
 
 %% Output
 
-switch nargout
-    case 1
-        varargout{1} = phandle;
-    case 2
-        varargout{1} = phandle;
-        varargout{2} = yoffsets;
+if nargout > 0
+    varargout{1} = phandle;
 end
 
 end

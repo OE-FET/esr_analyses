@@ -1,4 +1,4 @@
-function [x_norm, y_norm, pars] = normalise_spectrum(x, y, pars)
+function [dset] = normalise_spectrum(dset)
 %NORMALISESPECTRUM Normlizes a Bruker EPR spectrum for acquisition parameters.
 %
 % 	ESR data is normalised for receiver gain, number of scans (Ns = 1),
@@ -12,13 +12,10 @@ function [x_norm, y_norm, pars] = normalise_spectrum(x, y, pars)
 %         assumes a SPU which ALWAYS scales for the time constant.
 %
 %   INPUT(S):
-%   x    - magnetic field axis
-%   y    - non-normalised signal intensity
-%   pars - experimental parameters
+%   dset from BrukerRead
 %
 % 	OUTPUT(S):
-% 	x_norm                        - B field [gauss]
-% 	y_norm                        - normalised ESR signal intensity
+% 	normalised dset
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
@@ -26,16 +23,16 @@ function [x_norm, y_norm, pars] = normalise_spectrum(x, y, pars)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-y_norm = y;
+pars = dset.Properties.UserData;
+y = dset{:, 2:end};
+
 if strcmp(pars.SctNorm, 'False') % check if y-axis already has been normalised
-% -------------------------------------------------------------------------
-    y_norm = 44.5423*y/(20*10^(pars.RCAG/20)*pars.AVGS*1000);
-% -------------------------------------------------------------------------
+    % ---------------------------------------------------------------------------
+    dset{:,2:end} = 44.5423 * y ./ (20*10^(pars.RCAG/20) * pars.AVGS * 1000);
+    % ---------------------------------------------------------------------------
 end
 
-x_norm=x;
-
 % Flag spectrum as normalised to prevent second normalisation
-pars.SctNorm = 'True';
+dset.Properties.UserData.SctNorm = 'True';
 
 end

@@ -139,7 +139,7 @@ switch extension
             error(['File ''',name,'.spc'' could not be opened, both *.spc and *.par files are required to open the file.'])
         end
 
-        [y, ~] = fread(fid, inf, 'float');
+        [y_raw, ~] = fread(fid, inf, 'float');
 
     case {'.DTA', '.DSC'}
         fid = fopen( [directory '/' name '.DTA'], 'r', 'ieee-be.l64');
@@ -149,17 +149,19 @@ switch extension
         end
 
         [y_raw, ~] = fread(fid, inf, 'float64');
-        
-        yType = split(par_struct.IKKF, ',');  % type of datasets (REAL, CPLX, etc)
-        yNum = length(yType);  % number of datasets per slice scan
-        yNum = yNum + length(yType(yType == "CPLX")); % add rows for imaginary parts
-        
-        for i = 1:yNum
-            y.(join(['comp', num2str(i)])) = y_raw(i:yNum:end);
-        end
+
 end
 
 fclose(fid);
+
+yNum = length(par_struct.IKKF);  % number of datasets per slice scan
+yNum = yNum + length(par_struct.IKKF(par_struct.IKKF == "CPLX")); % add rows for imaginary parts
+
+y = table();
+
+for i = 1:yNum
+    y.(join(['y', num2str(i)])) = y_raw(i:yNum:end);
+end
 
 
 %%                      Magnetic field / X - axis
@@ -198,8 +200,10 @@ if strcmp(par_struct.EXPT, 'PLS')
 
         z = reshape(y, 2, []);
         clear y;
-        y.real = z(1, :)';
-        y.imag = z(2, :)';
+        y_real = z(1, :)';
+        y_imag = z(2, :)';
+        
+        y = table(y_real, y_imag);
 
     % HYSCORE obviously have Y axis data collection and require splitting
 
@@ -216,6 +220,7 @@ if strcmp(par_struct.EXPT, 'PLS')
         par_struct.YMAX	= par_struct.YMIN + par_struct.YWID - par_struct.YSTEP;
 
         y = (par_struct.YMIN:par_struct.YSTEP:par_struct.YMAX)';
+        y = table(y);
 
         % Format Z-axis
         % =============
@@ -241,12 +246,14 @@ if exist([directory '/' name '.YGF'], 'file')
 
     [par_struct.z_axis, par_struct.z_axis_points] = fread(fid, inf, 'float64');
     
-    names = fieldnames(y);
+    y_reshaped = table();
     
-    for k = 1:numel(names)
+    for k = 1:width(y)
         % reshape the y-data into columns using number of data points
-        y.(names{k}) = reshape(y.(names{k}), par_struct.XPTS , []);
+        y_reshaped.(y.Properties.VariableNames{k}) = reshape(y{:,k}, par_struct.XPTS , []);
     end
+    
+    y = y_reshaped;
 
 end
 
@@ -254,56 +261,60 @@ end
 %%                         Output arguments
 % ========================================================================
 
-% don't output a structure if there is only one dataset
-names = fieldnames(y);
-if length(names) == 1
-     y = y.(names{1});
+dset = [table(x) y];
+
+yUnits = {};
+
+for k = 1:length(par_struct.IKKF)
+    if strcmp(par_struct.IKKF{k}, 'CPLX')
+        yUnits{end+1:end+2} = [par_struct.IRUNI{k}; par_struct.IRUNI{k}];
+    else
+        yUnits{end+1} = par_struct.IRUNI{k};
+    end
 end
+        
+
+dset.Properties.VariableUnits = [{par_struct.XUNI} yUnits];
+dset.Properties.UserData = par_struct;
+
 
 % Output results according to requests
 switch nargout
     case 1
-        varargout{1} = y;
+        varargout{1} = dset;
     case 2
-        varargout{1} = x;
-        varargout{2} = y;
-    case 3
         if strcmp(par_struct.EXPT, 'PLS') && strcmp(par_struct.YTYP, 'IDX')
-            varargout{1} = x;
-            varargout{2} = y;
-            varargout{3} = z;
+            varargout{1} = dset;
+            varargout{2} = z;
         else
-            varargout{1} = x;
-            varargout{2} = y;
+            varargout{1} = dset;
             varargout{3} = par_struct;
         end
 
-    case 4
-        varargout{1} = x;
-        varargout{2} = y;
-        varargout{3} = z;
+    case 3
+        varargout{1} = dset;
+        varargout{2} = z;
         varargout{4} = par_struct;
 
     otherwise
-        varargout{1} = x;
-        varargout{2} = y;
+        varargout{1} = dset;
 end
 
 end
 
-function [info] = param2struct(parameter_list)
+function [par_struct] = param2struct(par_list)
     %% generate info structure
 
-    % get number of remaining rows
-    [N, ~] = size(parameter_list);
+    % get number of rows
+    [N, ~] = size(par_list);
 
-    % preallocate memory for analysed rows, ignore last (empty) row
+    % preallocate memory for analysed rows
     Keep        = zeros(N, 1);
     ParaMatrix	= cell(N, 2);
 
     % separate parameter names from values and save both in array
     for i = 1:N
-        [parameter, value] = strtok(parameter_list(i, :));
+        [parameter, value] = strtok(par_list(i, :));
 
         value = strtrim(value);
         ParaMatrix{i, 1} = parameter;
@@ -326,11 +337,25 @@ function [info] = param2struct(parameter_list)
             Keep(i) = isvar(1);
         end
     end
+
     % delete rows that do not contain aquisition parameters
     ParaMatrix = ParaMatrix(Keep==1, :);
 
     % save all parameters in info structure
     for i = 1:length(ParaMatrix)
-        info.(ParaMatrix{i, 1}) = ParaMatrix{i, 2};
+        par_struct.(ParaMatrix{i, 1}) = ParaMatrix{i, 2};
     end
+    
+    % convert string arrays
+    for name = ["IKKF", "IRFMT", "IRNAM", "IRUNI"]
+        par_struct.(name) = strip(split(par_struct.(name), ','), 'both', "'");
+    end
+    
+    % replace empty units by a.u.
+    for k=1:length(par_struct.IRUNI)
+        if isempty(par_struct.IRUNI{k})
+            par_struct.IRUNI{k} = 'a.u.';
+        end
+    end
+    
 end

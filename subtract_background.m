@@ -1,4 +1,4 @@
-function [x, y, parsS] = subtract_background(varargin)
+function dset = subtract_background(varargin)
 %SUBTRACT_BACKGROUND Subtracts background signal from sample signal.
 %
 % 	If desired, the result is written to a new Bruker ESR file. Experimental
@@ -9,15 +9,15 @@ function [x, y, parsS] = subtract_background(varargin)
 % 	offset in MWFQ.
 %
 % 	INPUT(S):
-%   SUBTRACT_BACKGROUND()           - opens gui to select signal and bg paths
-%   ...('signal_data')              - given signal path & opens a gui to
-%                                     select bg path
-%   ...('signal_data','bg_data')    - given signal & bg paths
+%   SUBTRACT_BACKGROUND()          - opens GUI to select signal and
+%                                    background data files
+%   ...('signal_data')             - given path to signal data & opens a 
+%                                    GUI to select background data file
+%   ...('signal_data','bg_data')   - given signal & bg data files
+%   ...(dsetSig, dsetBg)           - given signal and bg data directly
 %
 %   OUTPUT(S):
-% 	x       - magnetic field axis
-%   y       - normalised & subtracted signal intensity
-%   pars    - experimental parameters
+% 	dset - new dataset
 %
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 
@@ -40,32 +40,42 @@ switch nargin
             fprintf('No background selected.');
             return
         end
+        dsetSig = BrukerRead(File1);
+        dsetBG = BrukerRead(File2);
     case 1
         File1 = varargin{1};
         [SPath,~,~] = fileparts(File1);
         [BName, BPath] = uigetfile([SPath, '*.DTA'], 'Select background data');
         File2 = [BPath, BName];
+        dsetSig = BrukerRead(File1);
+        dsetBG = BrukerRead(File2);
     case 2
-        File1 = varargin{1};
-        File2 = varargin{2};
+        if istable(varargin{1}) && istable(varargin{2})
+            dsetSig = varargin{1};
+            dsetBG = varargin{2};
+        else
+            File1 = varargin{1};
+            File2 = varargin{2};
+            dsetSig = BrukerRead(File1);
+            dsetBG = BrukerRead(File2);
+        end
     otherwise
-        error('Only 0-2 inputs are accepted.');
+        error('Please give either data sets or file paths as input.');
 end
 
-[xS, yS, parsS] = BrukerRead(File1);
-[xB, yB, ParsB] = BrukerRead(File2);
+dsetSig = normalise_spectrum(dsetSig);
+dsetBG = normalise_spectrum(dsetBG);
 
-% normalise, if not yet done
-[xS, yS, parsS] = normalise_spectrum(xS, yS, parsS);
-[xB, yB, ParsB] = normalise_spectrum(xB, yB, ParsB);
+parsS = dsetSig.Properties.UserData;
+parsB = dsetBG.Properties.UserData;
 
 % rescale background for Q-value, modulation amplitude and mw power
 % WARNING: All parameters affect both the signal amplitude and shape.
 % Therefore, be cautious when subtracting a backround signal with
 % significantly different parameters.
-Q_ratio = parsS.QValue/ParsB.QValue;
-B0MA_ratio = parsS.B0MA/ParsB.B0MA;
-Bmw_ratio = sqrt(parsS.MWPW)/sqrt(ParsB.MWPW);
+Q_ratio = parsS.QValue/parsB.QValue;
+B0MA_ratio = parsS.B0MA/parsB.B0MA;
+Bmw_ratio = sqrt(parsS.MWPW)/sqrt(parsB.MWPW);
 ratiosary = [Q_ratio, B0MA_ratio, Bmw_ratio];
 ratiostxt = {'Q-values','Modulation amplitudes','Microwave fields'};
 for ii = 1:length(ratiosary)
@@ -76,10 +86,10 @@ for ii = 1:length(ratiosary)
     end
 end
 
-yB = yB * Q_ratio * B0MA_ratio * Bmw_ratio;
+dsetBG{:,2:end} = dsetBG{:,2:end} * Q_ratio * B0MA_ratio * Bmw_ratio;
 
 %% Compare experimental conditions
-nDiff = compare_pars(parsS, ParsB);
+nDiff = compare_pars(parsS, parsB);
 
 if nDiff > 0
     str = input('Do you want to continue ([y]/n)?', 's');
@@ -90,39 +100,46 @@ end
 
 %% Subtract spectra
 
+dset = dsetSig;
+
 % Compute and correct for the expected resonance centre offset due to
 % differing microwave fields (from ge*bmagn*B = hbar*f)
-B_offset = (parsS.MWFQ - ParsB.MWFQ) * planck/(gfree*bmagn) * 1E4;
+B_offset = (parsS.MWFQ - parsB.MWFQ) * planck/(gfree*bmagn) * 1E4;
 disp(['B_offset = ', num2str(B_offset)]);
-Bstep = xB(2) - xB(1);
+Bstep = dsetSig{1,1} - dsetSig{2,1};
 offsetInterval = round(B_offset/Bstep);
 
-if offsetInterval<0
-    y = yS(1:end + offsetInterval, :) - yB(1 - offsetInterval:end, :);
-    x = xS(1:end + offsetInterval);
-elseif offsetInterval>0
-    y = yS(1 + offsetInterval:end, :) - yB(1:end - offsetInterval, :);
-    x = xS(1 + offsetInterval:end);
+if offsetInterval < 0
+    y = dsetSig{:,2:end}(1:end + offsetInterval, :) - dsetBG{:,2:end}(1 - offsetInterval:end, :);
+    x = dsetSig{:,1}(1:end + offsetInterval, :);
+elseif offsetInterval > 0
+    y = dsetSig{:,2:end}(1 + offsetInterval:end, :) - dsetBG{:,2:end}(1:end - offsetInterval, :);
+    x = dsetSig{:,1}(1 + offsetInterval:end);
 elseif offsetInterval == 0
-    y = yS - yB;
-    x = xS;
+    y = dsetSig{:,2:end} - dsetBG{:,2:end};
+    x = dsetSig{:,1};
 end
 
+n = length(x);
+
+dset{1:n,:} = [x, y];
+dset(n+1:end, :) = [];
+
 %% plot results
-figure('Name','Background subtraction');
-subplot(2, 1, 1);
-hold on
 
-yoffset = max(yS)*0.5;
-% plot background
-sp1 = stackplot(xB + B_offset, yB, 'yoffsets', yoffset, 'style', 'r');
-% plot signal
-sp2 = stackplot(xS, yS, 'yoffsets', yoffset, 'style', 'b');
-hold off;
-legend([sp1(1) sp2(1)],{'background', 'signal'})
+for k=1:width(dset)-1
+    figure('Name','Background subtraction');
+    
+    subplot(2, 1, 1)
 
-% plot signal minus background
-subplot(2, 1, 2)
-stackplot(x, y, 'style', 'b');
+    yoffset = max(dsetSig{:,k+1});
+    % plot background
+    sp1 = stackplot_xepr(dsetBG(:,[1, k+1]), 'yoffsets', yoffset, 'style', 'r');
+    hold on;
+    % plot signal
+    sp2 = stackplot_xepr(gca, dsetSig(:,[1, k+1]), 'yoffsets', yoffset, 'style', 'b');
+    hold off;
+    legend([sp1(1,1) sp2(1,1)], {'background', 'signal'})
+end
 
 end

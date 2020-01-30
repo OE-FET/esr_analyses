@@ -25,15 +25,15 @@ function [s0, s90, phase_shift] = phase_cycle(sig_x, sig_y, varargin)
 %   phase_shift - Phase shift in rad used to calculate the above signals.
 %
 
+import esr_analyses.*
 import esr_analyses.utils.*
 
 phase_shift = get_kwarg(varargin, 'phase', false);
 plot_result = get_kwarg(varargin, 'plot', false);
 
 if ~phase_shift
-
-    s90 = @(phi) sig_x * sin(phi) - sig_y * cos(phi);
-    sig90amp = @(phi) sum(s90(phi).^2);
+    s90 = @(phi) sig_x * sin(phi) + sig_y * cos(phi);
+    sig90amp = @(phi) sum(s90(phi).^2, 'all');
 
     phase_shift = fminbnd(sig90amp, -pi, pi);
 end
@@ -42,17 +42,47 @@ s0 = sig_x * cos(phase_shift) - sig_y * sin(phase_shift);
 s90 = sig_x * sin(phase_shift) + sig_y * cos(phase_shift);
 
 if plot_result
-    x = 1:length(sig_x);
+    
+    fig_name = 'Phase cycling';
+    
+    fh = findobj( 'Type', 'Figure', 'Name', fig_name);
+    if isempty(fh)
+        figure('Name', fig_name);
+    end
+    
+    x = (1:length(sig_x))';
+    
+    yoffsetsX = max(sig_x);
+    yoffsetsY = max(sig_y);
+    yoffsets = max([yoffsetsX; yoffsetsY])*2;
+    
+    hold off;
 
-    subplot(2, 1, 1)
-    plot(x, sig_x, x, sig_y)
-    legend(["Channel X", "Channel Y"])
+    subplot(1, 2, 1)
+    h1 = stackplot(x, sig_x, 'yoffsets', yoffsets, 'style', 'b');
+    hold on;
+    h2 = stackplot(x, sig_y, 'yoffsets', yoffsets, 'style', 'r');
+    legend([h1(1), h2(1)], ["Channel X", "Channel Y"])
     grid on; axis tight;
 
-    subplot(2, 1, 2)
-    plot(x, s0, x, s90)
-    legend(["0 deg", "90 deg"])
+    subplot(1, 2, 2)
+    h1 = stackplot(x, s0, 'yoffsets', yoffsets, 'style', 'b');
+    hold on;
+    h2 = stackplot(x, s90, 'yoffsets', yoffsets, 'style', 'r');
+    legend([h1(1), h2(1)], ["0 deg", "90 deg"])
     grid on; axis tight;
+    
+    sgtitle('Phase cycling')
+    
+    hold off;
+    
+    str = input('Shift by 180 deg? y/[n] ', 's');
+    
+    if strcmp(str, 'y')
+        [s0, s90, phase_shift] = phase_cycle(sig_x, sig_y, 'phase', phase_shift+pi, 'plot', true);
+    end
 end
+
+phase_shift = mod(phase_shift, 2*pi);
 
 end

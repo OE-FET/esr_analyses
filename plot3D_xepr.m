@@ -22,42 +22,50 @@ import esr_analyses.utils.*
 %% Input Analyses
 
 if ishghandle(varargin{1}, 'axes')
-    ax = varargin{1};
-    x  = varargin{2};
-    y  = varargin{3};
-    pars  = varargin{4};
+    ax   = varargin{1};
+    dset = varargin{2};
 else
-    ax = gca;
-    x  = varargin{1};
-    y  = varargin{2};
-    pars  = varargin{3};
+    ax   = gca;
+    dset = varargin{1};
 end
-
-assert_2d_exp(pars)
 
 %% Data preparation
 
-X = ones(size(y)).*x;
-Y = ones(size(y)).*pars.z_axis';
-Z = y;
+x = dset{:,1};
+pars = dset.Properties.UserData;
+assert_2d_exp(dset)
 
-fig_title = pars.TITL;
+N = width(dset) - 1;
+
 x_label = sprintf('%s [%s]', pars.XNAM, pars.XUNI);
 y_label = sprintf('%s [%s]', pars.YNAM, pars.YUNI);
-z_label = 'ESR signal [a.u.]';
 
-%% Plot
-h = plot3(X, Y, Z);
-grid on;
+for k=1:N
+    y = dset{:,k+1};
 
-xlabel(ax, x_label, 'Interpreter', 'none');
-ylabel(ax, y_label, 'Interpreter', 'none');
-zlabel(ax, z_label, 'Interpreter', 'none');
-title(ax, fig_title, 'Interpreter', 'none');
+    X = ones(size(y)).*x;
+    Y = ones(size(y)).*pars.z_axis';
+    Z = y;
+    
+    z_label = sprintf('%s [%s]', pars.IRNAM{k}, pars.IRUNI{k});
+
+    %% Plot
+    subplot(1,N,k)
+    plot3(X, Y, Z);
+    xlabel(x_label, 'Interpreter', 'none');
+    ylabel(y_label, 'Interpreter', 'none');
+    zlabel(z_label, 'Interpreter', 'none');
+    title(dset.Properties.VariableNames{k+1})
+    axis square
+    grid on;
+
+end
+
+sgtitle(pars.TITL, 'Interpreter', 'none');
 
 %% Argout
 if nargout > 0
-    argout = h;
+    argout = ax;
 end
 
 end

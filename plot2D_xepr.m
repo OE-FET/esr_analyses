@@ -4,17 +4,16 @@ function argout = plot2D_xepr(varargin)
 %   In addition to PLOT2D, PLOT2D_XEPR will create axis labels and an
 %   appropriate legend automatically from pars.
 %
-% 	PLOT2D_XEPR(x, y, pars)
-% 	PLOT2D_XEPR(x, y, pars, 'style', style, ...)
+% 	PLOT2D_XEPR(dset)
 %   PLOT2D_XEPR(ax, ...)
 %
 %   INPUT(S):
-%   ax         - Axis handle for plot. If not given, the data is plotted in
-%                the current axis, as returned by gca.
-%   x, y, pars - Xepr data set
+%   ax   - Axis handle for plot. If not given, the data is plotted in
+%          the current axis, as returned by gca.
+%   dset - Xepr data set
 %
 % 	OUTPUT(S):
-%   phandle - image handle
+%   ax - axes handle
 %
 
 import esr_analyses.*
@@ -23,36 +22,43 @@ import esr_analyses.utils.*
 %% Input Analyses
 
 if ishghandle(varargin{1}, 'axes')
-    ax = varargin{1};
-    x  = varargin{2};
-    y  = varargin{3};
-    pars  = varargin{4};
+    ax   = varargin{1};
+    dset = varargin{2};
 else
-    ax = gca;
-    x  = varargin{1};
-    y  = varargin{2};
-    pars  = varargin{3};
+    ax   = gca;
+    dset = varargin{1};
 end
 
-assert_2d_exp(pars)
+x = dset{:,1};
+pars = dset.Properties.UserData;
+assert_2d_exp(dset)
 
-%% Data preparation
-fig_titel = pars.TITL;
+N = width(dset) - 1;
+
 x_label = sprintf('%s [%s]', pars.XNAM, pars.XUNI);
 y_label = sprintf('%s [%s]', pars.YNAM, pars.YUNI);
-color_label = 'ESR signal [a.u.]';
+color_label = sprintf('%s [%s]', pars.IRNAM{1}, pars.IRUNI{1});
 
-%% Plot
-h = plot2D(ax, x, pars.z_axis, y);
-xlabel(ax, x_label, 'Interpreter', 'none');
-ylabel(ax, y_label, 'Interpreter', 'none');
-title(ax, fig_titel, 'Interpreter', 'none');
-cbar = colorbar;
-cbar.Title.String = color_label;
+for k=1:N
+    y = dset{:,k+1};
+
+    %% Plot
+    subplot(1,N,k)
+    plot2D(x, pars.z_axis, y);
+    xlabel(x_label, 'Interpreter', 'none');
+    ylabel(y_label, 'Interpreter', 'none');
+    cbar = colorbar;
+    cbar.Title.String = color_label;
+    title(dset.Properties.VariableNames{k+1})
+    axis square
+
+end
+
+sgtitle(pars.TITL, 'Interpreter', 'none');
 
 %% Argout
 if nargout > 0
-    argout = h;
+    argout = ax;
 end
 
 end

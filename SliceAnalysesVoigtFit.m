@@ -32,7 +32,8 @@ import esr_analyses.utils.*
 
 close all
 
-[x, y, pars] = load_spectrum_dialog(varargin);
+dset = load_spectrum_dialog(varargin);
+[x,y,pars] = dset_to_tuple(dset);
 
 %%                         Calculate MW field
 %%=========================================================================

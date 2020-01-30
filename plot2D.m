@@ -2,7 +2,6 @@ function argout = plot2D(varargin)
 %PLOT2D Plots data as 2D contour plot.
 %
 % 	PLOT2D(x, y, o)
-% 	PLOT2D(x, y, o, 'style', style, ...)
 %   PLOT2D(ax, ...)
 %
 %   INPUT(S):

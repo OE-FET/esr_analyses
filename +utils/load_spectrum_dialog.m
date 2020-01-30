@@ -1,4 +1,4 @@
-function [x, y, pars] = load_spectrum_dialog(argcell)
+function dset = load_spectrum_dialog(argcell)
 %LOAD_SPECTRUM_DIALOG loads a Bruker ESR spectrum and prepares it for
 %further analyuses.
 %
@@ -12,13 +12,10 @@ function [x, y, pars] = load_spectrum_dialog(argcell)
 %   ...('signal_path')             - path to signal data with the option to
 %                                    select background data
 %   ...('signal_path', 'bg_path')  - path to signal, path to background
-%   ...(x, y, pars)                - uses given data directly
+%   ...(dset)                      - uses given data set directly
 %
 %   OUTPUT(S):
-%	x    - magnetic field values
-%   y    - normalised intensity values
-%   pars - experimental parameters
-%
+%	dset
 %
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2019/06/17 10:43 $    $Revision: 1.1 $
@@ -33,22 +30,29 @@ switch argnum
     case 0
         str = input('Would you like to subtract a background signal? y/[n]: ', 's');
         if strcmpi(str,'y')
-            [x, y, pars] = subtract_background;
+            dset = subtract_background;
         else
-            [x, y, pars] = BrukerRead;
+            dset = BrukerRead;
         end
     case 1
-        str = input('Would you like to subtract a background signal? y/[n]: ', 's');
-        if strcmpi(str, 'y')
-            [x, y, pars] = subtract_background(argcell{1});
+        
+        if istable(argcell{1})
+            dset = argcell{1};
+        elseif ischar(argcell{1})
+            str = input('Would you like to subtract a background signal? y/[n]: ', 's');
+            if strcmpi(str, 'y')
+                dset = subtract_background(argcell{1});
+            else
+                dset = BrukerRead(argcell{1});
+            end
         else
-            [x, y, pars] = BrukerRead(argcell{1});
+            error('You must give either a data table or a file path.');
         end
     case 2
-        [x, y, pars] = subtract_background(argcell{1},  argcell{2});
-    case 3
-        x = argcell{1}; y = argcell{2}; pars = argcell{3};
+        dset = subtract_background(argcell{1},  argcell{2});
 end
+
+pars = dset.Proprties.UserData;
 
 % confirm or ask for missing parameters
 pars = get_sample_position(pars);
@@ -61,6 +65,8 @@ if ischar(pars.Temperature)
     pars.Temperature = str2double(strtrim(regexprep(pars.Temperature,'K','')));
 end
 
-[x, y, pars] = normalise_spectrum(x, y, pars);
+dset.Proprties.UserData = pars;
+
+dset = normalise_spectrum(dset);
 
 end

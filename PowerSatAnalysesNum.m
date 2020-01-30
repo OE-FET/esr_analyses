@@ -37,13 +37,9 @@ import esr_analyses.utils.*
 
 close all
 
-[x, y, pars] = load_spectrum_dialog(varargin);
-
+dset = load_spectrum_dialog(varargin);
+[x,y,pars] = dset_to_tuple(dset);
 assert_powersat_exp(pars)
-
-% make sure QValue and QValueErr are given
-pars = get_par(pars, 'QValue');
-pars = get_par(pars, 'QValueErr');
 
 %%                         Calculate MW fields
 %%=========================================================================
