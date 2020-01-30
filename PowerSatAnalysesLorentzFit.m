@@ -13,21 +13,20 @@ function [out_struct, out_table] = PowerSatAnalysesLorentzFit(varargin)
 %   over the sample volume.
 %
 %   INPUT(S):
-%   POWERSATANALYSESLORENTZFIT()      - opens gui to select data
-%   ...('/path/to/file')              - path to signal data
-%   ...('signal_path', 'bg_path')     - path to signal data, path to
-%                                       background data
-%   ...(dset)                         - uses given data set directly
+%	POWERSATANALYSESLORENTZFIT()      - opens GUI for file selection
+%	POWERSATANALYSESLORENTZFIT(dset)  - uses data given by (x,y,pars)
+%	...('sigPath')                    - reads data from file
+%	...('sigPath', 'bgPath')          - reads data and background from file
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results
 %   out_table   - fit results in table format
 %
 
+%   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
+
 import esr_analyses.*
 import esr_analyses.utils.*
-
-%   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 
 close all
 

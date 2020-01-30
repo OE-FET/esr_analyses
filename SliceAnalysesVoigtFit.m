@@ -15,10 +15,10 @@ function [out_struct, out_table] = SliceAnalysesVoigtFit(varargin)
 %   over the sample volume.
 %
 %   INPUT(S):
-%   SLICEANALYSESVOIGTFIT()     - prompts user for spectrum file
-%   ...FIT('Path')              - path to file with ESR data
-%   ...FIT('PathSIG', 'PathBG') - path to signal, path to background
-%   ...FIT(x, y, Pars)          - field, signal, and spectral params
+%	SLICEANALYSESVOIGTFIT()      - opens GUI for file selection
+%	SLICEANALYSESVOIGTFIT(dset)  - uses data given by (x,y,pars)
+%	...('sigPath')               - reads data from file
+%	...('sigPath', 'bgPath')     - reads data and background from file
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results

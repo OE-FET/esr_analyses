@@ -20,10 +20,10 @@ function [out_struct, out_table] = PowerSatAnalysesNum(varargin)
 % 	measurement range is less than 5 times the peak-to-peak linewidth.
 %
 %	INPUTS:
-%	POWERSATANALYSESNUM()         - opens GUI for file selection
-%	POWERSATANALYSESNUM(x,y,pars) - uses data given by (x,y,pars)
-%	...('sigPath')                - reads data from file
-%	...('sigPath', 'bgPath')      - reads data and background from file
+%	POWERSATANALYSESNUM()      - opens GUI for file selection
+%	POWERSATANALYSESNUM(dset)  - uses data given by (x,y,pars)
+%	...('sigPath')             - reads data from file
+%	...('sigPath', 'bgPath')   - reads data and background from file
 %
 %	OUTPUT:
 %	out_struct  - structure containing the measurement data and fit results

@@ -10,10 +10,10 @@ function [argout] = SliceAnalysesNum(varargin)
 % 	measurement range is less than 5 times the peak-to-peak linewidth.
 %
 %	INPUTS:
-%	SLICEANALYSESNUM()         - opens GUI for file selection
-%	SLICEANALYSESNUM(x,y,pars) - uses data given by (x,y,pars)
-%	...('sigPath')             - reads data from file
-%	...('sigPath', 'bgPath')   - reads data and background from file
+%	SLICEANALYSESNUM()        - opens GUI for file selection
+%	SLICEANALYSESNUM(dset)    - uses data given by (x,y,pars)
+%	...('sigPath')            - reads data from file
+%	...('sigPath', 'bgPath')  - reads data and background from file
 %
 %	OUTPUT:
 %	argout  - structure containing the measurement data and fit results

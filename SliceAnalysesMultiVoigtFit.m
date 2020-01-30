@@ -1,5 +1,5 @@
 function [out_struct, coefs_con] = SliceAnalysesMultiVoigtFit(varargin)
-%SLICEANALYSESVOIGTFIT performs normalization and spin-counting of an ESR
+%SLICEANALYSESMULTIVOIGTFIT performs normalization and spin-counting of an ESR
 %signal by fitting it to a voigt function.
 %
 %   Performs a 1D fit of a cw-EPR spectrum to determine spin cohrence time
@@ -15,10 +15,10 @@ function [out_struct, coefs_con] = SliceAnalysesMultiVoigtFit(varargin)
 %   over the sample volume.
 %
 %   INPUT(S):
-%   SLICEANALYSESVOIGTFIT()     - prompts user for spectrum file
-%   ...FIT('Path')              - path to file with ESR data
-%   ...FIT('PathSIG', 'PathBG') - path to signal, path to background
-%   ...FIT(x, y, Pars)          - field, signal, and spectral params
+%   SLICEANALYSESMULTIVOIGTFIT() - prompts user for spectrum file
+%   ...FIT('Path')               - path to file with ESR data
+%   ...FIT('PathSIG', 'PathBG')  - path to signal, path to background
+%   ...FIT(dset)                 - data set from BrukerRead
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results
@@ -33,6 +33,7 @@ function [out_struct, coefs_con] = SliceAnalysesMultiVoigtFit(varargin)
 %
 import esr_analyses.*
 import esr_analyses.utils.*
+
 close all
 
 % Load data
@@ -59,12 +60,12 @@ T1   = 1e-07;                           % in sec, assume not saturated
 T2   = 1/(gmratio * FWHM_lorentz*1E-4); % in sec
 
 % Assign parameters to array
-var0 = ones(N,1)*[A0/2 B0 T2 FWHM_gauss];      
+var0 = ones(N,1)*[A0/2 B0 T2 FWHM_gauss];
 
 
 %% Perform voigt fit ======================================================
 
-% Create single fit function 
+% Create single fit function
 func_single = @(var, x) abs(var(1))*esr_voigt_simulation(x, abs(var(2)), T1, ...
     abs(var(3)), abs(var(4)), Bmw, pars.B0MA*1e4, 1);
 
@@ -79,7 +80,7 @@ opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'MaxFunEvals', 1e10,...
 fitres   = nelder_mead_fit(multi_fit_func, x, y, var0, opt);
 
 % Estimate confidence intervals
-conf_int = standarderror(fitres); 
+conf_int = standarderror(fitres);
 
 % Convert fit results to EPR parameters
 A     = abs(fitres.coef(:,1));
@@ -108,12 +109,12 @@ legend(legend_texts);
 
 % Get g-factor and scaling factor for pseudo-modulation
 pars.GFactor    = b2g(mean(B0)*1e-4, pars.MWFQ);
-modScaling      = pars.B0MA*1e4 * 1e4/8; 
+modScaling      = pars.B0MA*1e4 * 1e4/8;
 
 % Get susceptibility & num. spins
-Chi = zeros(size(A)); 
+Chi = zeros(size(A));
 dChi = zeros(size(A));
-NSpin = zeros(size(A)); 
+NSpin = zeros(size(A));
 dNSpin = zeros(size(A));
 
 for i=1:length(A) % calculate for each peak
@@ -123,7 +124,7 @@ for i=1:length(A) % calculate for each peak
     % get 'maximum' value, even though all values are equal...
     [Chi(i), dChi(i)]   = max(susceptibility_calc(areaDI, pars, 'dA', areaDIerror));
     [NSpin(i), dNSpin(i)] = max(spincounting(areaDI, pars, 'dA', areaDIerror));
-end                                
+end
 
 %% Create output structure ================================================
 out_struct = struct(...
@@ -142,7 +143,7 @@ coefs_con = constrained_fit(x, y, fitres);
 figure('Name','Constrained fit')
 hold on
 plot(x,y,'ko','MarkerSize',1)
-plot(x,fitres.fitfunc(coefs_con,x),'-r'); 
+plot(x,fitres.fitfunc(coefs_con,x),'-r');
 xlabel('Magnetic field [G]')
 ylabel('ESR signal [a.u.]')
 set(gca,'xlim',[min(x) max(x)],'ylim',[min(y) max(y)]);
@@ -179,30 +180,30 @@ end
 function coefs_con = constrained_fit(x, y, fitres)
 
     % Constraints hard-programmed for N = 2 (Voigtians to fit)
-    
+
     coefs = fitres.coef;
-    
+
     % Inequality constraints (none)
     con_problem.Aineq     = [];
     con_problem.bineq     = [];
-    
+
     % Equality constraints
-    con_problem.Aeq       = []; 
-    con_problem.Beq       = []; 
+    con_problem.Aeq       = [];
+    con_problem.Beq       = [];
 %     con_problem.Aeq       = [1 -1 0 0 0 0 0 0]; % equal areas
 %     con_problem.Beq       = 0;                  % equal areas
-    
+
     % Lower bounds
     con_problem.lb        = zeros(size(coefs));
     con_problem.lb(:,2)   = min(x); % No resonance centers outside x-axis
     con_problem.lb(:,3)   = 10^-9;  % min T2
-    
+
     % Upper bounds
     con_problem.ub        = inf(size(coefs));
     con_problem.ub(:,2)   = max(x); % No resonance centers outside x-axis
-    con_problem.ub(:,3)   = 10^-6;  % max T2 
+    con_problem.ub(:,3)   = 10^-6;  % max T2
     con_problem.ub(:,4)   = 10;     % Restrict Brms to be 10 G at max
-    
+
     % Solver, objective function, initial parameter estimates, and fit
     % options
     con_problem.solver    = 'fmincon';
@@ -215,5 +216,5 @@ function coefs_con = constrained_fit(x, y, fitres)
 
     % Perform the fit
     coefs_con = fmincon(con_problem);
-    
+
 end
