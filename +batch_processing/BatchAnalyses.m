@@ -54,15 +54,15 @@ for i = 1:nFiles
     end
             
     if isempty(filePathBG)
-        [x, y, pars] = BrukerRead(filePath);
+        dset = BrukerRead(filePath);
     else
-        [x, y, pars] = subtract_background(filePath, filePathBG);
+        dset = subtract_background(filePath, filePathBG);
     end
     
-    pars.SampleL = global_pars.SampleL;
-    pars.SampleH = global_pars.SampleH;
+    dset.Properties.UserData.SampleL = global_pars.SampleL;
+    dset.Properties.UserData.SampleH = global_pars.SampleH;
     
-    output{i} = analysesFunc(x, y, pars);
+    output{i} = analysesFunc(dset);
     out_analyses = rmfield(output{i}, {'x', 'y', 'pars', 'fitres'});
     if ~exist('output_table', 'var')
         output_table = struct2table(out_analyses);

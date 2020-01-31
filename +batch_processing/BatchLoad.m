@@ -52,18 +52,22 @@ for i = 1:nFiles
     end
             
     if isempty(filePathBG)
-        [x, y, pars] = BrukerRead(filePath);
+        dset = BrukerRead(filePath);
     else
-        [x, y, pars] = subtract_background(filePath, filePathBG);
+        dset = subtract_background(filePath, filePathBG);
     end
+    
+    pars = dset.Properties.UserData;
     
     title = matlab.lang.makeValidName(strcat(step, '_', pars.(step)));
     
-    output_table.(strcat(title, '_x')) = x;
+    steps = repmat(pars.z_axis, width(dset) - 1);
+
+    output_table.(strcat(title, '_x')) = dset{:,1};
     if slice && isfield(pars, 'z_axis')
-        output_table.(strcat(title, '_y')) = y(:, pars.z_axis == slice);
+        output_table.(strcat(title, '_y')) = dset{:,2:end}(:, steps == slice);
     else
-        output_table.(strcat(title, '_y')) = y;
+        output_table.(strcat(title, '_y')) = dset{:,2:end};
     end
 end
 
