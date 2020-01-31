@@ -69,17 +69,18 @@ for k = 1:N
     subplot(1,N,k)
     ph_k = stackplot(x, y, opts{:});
 
-    for i = 1:length(pars.z_axis)
-        labels{i} = sprintf('%f %s', pars.z_axis(i), pars.YUNI);
-    end
-
-    legend(ph_k, labels)
-
-    xlabel(x_label, 'Interpreter', 'none');
+    xlabel(x_label);
     ylabel(y_label);
     title(dset.Properties.VariableNames{k+1}, 'Interpreter', 'none');
     
     phandle = [phandle, ph_k];
+end
+
+if is_2d_exp(dset)
+    for i = 1:length(pars.z_axis)
+        labels{i} = sprintf('%f %s', pars.z_axis(i), pars.YUNI);
+    end
+    legend(ph_k, labels, 'Location', 'best','fontsize',10)
 end
 
 sgtitle(pars.TITL, 'Interpreter', 'none');
