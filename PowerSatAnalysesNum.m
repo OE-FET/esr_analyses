@@ -38,8 +38,13 @@ import esr_analyses.utils.*
 close all
 
 dset = load_spectrum_dialog(varargin{:});
+assert_powersat_exp(dset);
 [x,y,pars] = dset_to_tuple(dset);
-assert_powersat_exp(pars)
+
+yes = input('Would you like to perform a baseline correction? y/[n] ');
+if strcmp(yes, 'y')
+    y = baseline_corr(x, y);
+end
 
 %%                         Calculate MW fields
 %%=========================================================================

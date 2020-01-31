@@ -30,15 +30,18 @@ function [out_struct, coefs_con] = SliceAnalysesMultiVoigtFit(varargin)
 
 %% Initialize =============================================================
 
-%
 import esr_analyses.*
 import esr_analyses.utils.*
 
 close all
 
-% Load data
 dset = load_spectrum_dialog(varargin{:});
 [x,y,pars] = dset_to_tuple(dset);
+
+yes = input('Would you like to perform a baseline correction? y/[n] ','s');
+if strcmp(yes, 'y')
+    y = baseline_corr(x, y);
+end
 
 % Number of Voigtians to fit
 N = 2;

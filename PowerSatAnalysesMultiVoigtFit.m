@@ -39,12 +39,18 @@ else
     var0 = [];
 end
 
-dset = load_spectrum_dialog(varargin);
-[x,y,pars] = dset_to_tuple(dset);
-assert_powersat_exp(pars)
-
 if N ~= size(var0, 1)
     error('The number of starting points must match the number of Voigtians to fit.');
+end
+
+
+dset = load_spectrum_dialog(varargin{:});
+assert_powersat_exp(dset);
+[x,y,pars] = dset_to_tuple(dset);
+
+yes = input('Would you like to perform a baseline correction? y/[n] ');
+if strcmp(yes, 'y')
+    y = baseline_corr(x, y);
 end
 
 %%                         Calculate MW fields
