@@ -17,7 +17,7 @@ function [s0, s90, phase_shift] = phase_cycle(sig_x, sig_y, varargin)
 %   phase - Phase offset in rad to use. If not given, the appropriate
 %           phase will be determined by minimizing the out-of-phase signal.
 %   plot  - If true, the original and phase-corrected signals will be
-%           plotted.
+%           plotted. Defaults to true.
 %
 %   OUTPUT(S):
 %   s0          - In-phase signal from lock-in.
@@ -29,7 +29,7 @@ import esr_analyses.*
 import esr_analyses.utils.*
 
 phase_shift = get_kwarg(varargin, 'phase', false);
-plot_result = get_kwarg(varargin, 'plot', false);
+plot_result = get_kwarg(varargin, 'plot', true);
 
 if ~phase_shift
     s90 = @(phi) sig_x * sin(phi) + sig_y * cos(phi);
@@ -76,10 +76,11 @@ if plot_result
     
     hold off;
     
-    str = input('Shift by 180 deg? y/[n] ', 's');
+    rad = input('Apply correction? [0 deg] ');
     
-    if strcmp(str, 'y')
-        [s0, s90, phase_shift] = phase_cycle(sig_x, sig_y, 'phase', phase_shift+pi, 'plot', true);
+    if ~isempty(rad)
+        rad = rad*pi/180;
+        [s0, s90, phase_shift] = phase_cycle(sig_x, sig_y, 'phase', phase_shift+rad, 'plot', true);
     end
 end
 
