@@ -3,9 +3,9 @@ function [res] = is_powersat_exp(input)
 %False otherwise.
 
 if istable(input)
-    pars = intput.Properties.UserData;
+    pars = input.Properties.UserData;
 elseif isstruct(input)
-    pars = intput;
+    pars = input;
 else
     error('Either dataset table or parameter structure required.')
 end
