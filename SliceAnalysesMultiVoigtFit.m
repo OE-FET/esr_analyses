@@ -37,7 +37,7 @@ import esr_analyses.utils.*
 close all
 
 % Load data
-dset = load_spectrum_dialog(varargin);
+dset = load_spectrum_dialog(varargin{:});
 [x,y,pars] = dset_to_tuple(dset);
 
 % Number of Voigtians to fit

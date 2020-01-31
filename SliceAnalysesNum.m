@@ -26,7 +26,7 @@ import esr_analyses.utils.*
 
 close all
 
-dset = load_spectrum_dialog(varargin);
+dset = load_spectrum_dialog(varargin{:});
 [x,y,pars] = dset_to_tuple(dset);
 
 %%                         Perform numercial analyses

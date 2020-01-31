@@ -1,4 +1,4 @@
-function dset = load_spectrum_dialog(argcell)
+function dset = load_spectrum_dialog(varargin)
 %LOAD_SPECTRUM_DIALOG loads a Bruker ESR spectrum and prepares it for
 %further analyuses.
 %
@@ -24,9 +24,7 @@ function dset = load_spectrum_dialog(argcell)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-argnum = length(argcell);
-
-switch argnum
+switch nargin
     case 0
         str = input('Would you like to subtract a background signal? y/[n]: ', 's');
         if strcmpi(str,'y')
@@ -36,23 +34,23 @@ switch argnum
         end
     case 1
         
-        if istable(argcell{1})
-            dset = argcell{1};
-        elseif ischar(argcell{1})
+        if istable(varargin{1})
+            dset = varargin{1};
+        elseif ischar(varargin{1})
             str = input('Would you like to subtract a background signal? y/[n]: ', 's');
             if strcmpi(str, 'y')
-                dset = subtract_background(argcell{1});
+                dset = subtract_background(varargin{1});
             else
-                dset = BrukerRead(argcell{1});
+                dset = BrukerRead(varargin{1});
             end
         else
             error('You must give either a data table or a file path.');
         end
     case 2
-        dset = subtract_background(argcell{1},  argcell{2});
+        dset = subtract_background(varargin{1},  varargin{2});
 end
 
-pars = dset.Proprties.UserData;
+pars = dset.Properties.UserData;
 
 % confirm or ask for missing parameters
 pars = get_sample_position(pars);
@@ -65,7 +63,7 @@ if ischar(pars.Temperature)
     pars.Temperature = str2double(strtrim(regexprep(pars.Temperature,'K','')));
 end
 
-dset.Proprties.UserData = pars;
+dset.Properties.UserData = pars;
 
 dset = normalise_spectrum(dset);
 
