@@ -3,15 +3,15 @@ function [ycorr, ybaseline] = baseline_corr(x, y, method)
 %
 %   [ycorr, ybaseline] = BASELINE_CORR(x, y) performs a baseline fit on the
 %   input data. The baseline region can be be selected through a GUI, and
-%   the baseline is fitted as a spline through the smoothed data. Adjust
-%   the number points to smooth over according to the noise in the data.
+%   the baseline is fitted as a spline or third order polynomial.
 %
 %   INPUT(S):
 %   x - x-axis values
 %   y - y-axis values
-%   method - If 'all', all points in the specified interval will be used to
-%   determine the baseline. If method == 'interval', only the endpoints and
-%   centre point will be used. Default: 'interval'.
+%   method - If 'poly', all points in the specified interval will be used 
+%   to determine the a polymial baseline of 3rd order. If method == 'spline',
+%   only the endpoints and centre point will be used to fit a spline.
+%   Default: 'poly'.
 %
 %   OUTPUT(S):
 %   ycorr - baseline-corrected spectrum
@@ -30,7 +30,7 @@ if nargin < 2
 end
 
 if nargin < 3
-    method = 'interval';
+    method = 'poly';
 end
 
 if length(x)~=length(y)
@@ -105,12 +105,13 @@ while ~ok
     end
 
     %% perform baseline fit
-    if strcmp(method, 'all')
+    if strcmp(method, 'poly')
         % average over 10 points for smoothing before fit
         avgpts  = round(N/100); % 1/100 of length of data
         ysmooth = smoothdata(y, 'movmean', avgpts);
-        ybaseline = interp1(x(mask), ysmooth(mask, :), x, 'makima');
-    elseif strcmp(method, 'interval')
+        polycoef = polyfit(x(mask), ysmooth(mask, :), 3);
+        ybaseline = polyval(polycoef, x);
+    elseif strcmp(method, 'spline')
         ybaseline = interp1(xpts, ypts, x, 'spline');
     end
 
