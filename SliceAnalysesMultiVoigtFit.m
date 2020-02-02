@@ -1,4 +1,4 @@
-function [out_struct, coefs_con] = SliceAnalysesMultiVoigtFit(varargin)
+function [out_struct, out_table] = SliceAnalysesMultiVoigtFit(varargin)
 %SLICEANALYSESMULTIVOIGTFIT performs normalization and spin-counting of an ESR
 %signal by fitting it to a voigt function.
 %
@@ -33,7 +33,7 @@ function [out_struct, coefs_con] = SliceAnalysesMultiVoigtFit(varargin)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-close all
+%close all
 
 dset = load_spectrum_dialog(varargin{:});
 [x,y,pars] = dset_to_tuple(dset);
@@ -93,11 +93,11 @@ Brms  = abs(fitres.coef(:,4));
 
 dA    = full(abs(conf_int(1:N)));
 dB0   = full(abs(conf_int(N+1:2*N)));
-dT2   = full(abs(conf_int(3*N+1:3*N)));
-dBrms = full(abs(conf_int(4*N+1:4*N)));
+dT2   = full(abs(conf_int(2*N+1:3*N)));
+dBrms = full(abs(conf_int(3*N+1:4*N)));
 
 % Plot
-p = plot(fitres);
+plot(fitres);
 xlabel('Magnetic field [G]')
 ylabel('ESR signal [a.u.]')
 legend_texts = ['Data', 'Fit' cell(1,N)];
@@ -124,39 +124,41 @@ for i=1:length(A) % calculate for each peak
     areaDI = modScaling * Bmw .* A(i);
     areaDIerror = modScaling * Bmw .* dA(i);
 
-    % get 'maximum' value, even though all values are equal...
-    [Chi(i), dChi(i)]   = max(susceptibility_calc(areaDI, pars, 'dA', areaDIerror));
-    [NSpin(i), dNSpin(i)] = max(spincounting(areaDI, pars, 'dA', areaDIerror));
+    [Chi(i), dChi(i)]   = susceptibility_calc(areaDI, pars, 'dA', areaDIerror);
+    [NSpin(i), dNSpin(i)] = spincounting(areaDI, pars, 'dA', areaDIerror);
 end
 
 %% Create output structure ================================================
 out_struct = struct(...
     'x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
-    'A', A, 'dA', dA, 'B0', B0, 'dB0', dB0, 'T2', T2, 'dT2', dT2, ...
-    'Brms', Brms, 'dBrms', dBrms, 'Chi', Chi(1), 'dChi', dChi(1), ...
+    'A', transpose(A), 'dA', dA, 'B0', transpose(B0), 'dB0', dB0, ...
+    'T2', transpose(T2), 'dT2', dT2, ...
+    'Brms', transpose(Brms), 'dBrms', dBrms, 'Chi', Chi(1), 'dChi', dChi(1), ...
     'NSpin', NSpin(1), 'dNSpin', dNSpin(1));
+
+out_table = splitvars(struct2table(rmfield(out_struct,{'x' 'y' 'pars' 'fitres'}),'AsArray',1));
 
 
 %% Perform constrained fit=================================================
 
-% Fit model w/ parameter constraints
-coefs_con = constrained_fit(x, y, fitres);
-
-% Plot constrained fit
-figure('Name','Constrained fit')
-hold on
-plot(x,y,'ko','MarkerSize',1)
-plot(x,fitres.fitfunc(coefs_con,x),'-r');
-xlabel('Magnetic field [G]')
-ylabel('ESR signal [a.u.]')
-set(gca,'xlim',[min(x) max(x)],'ylim',[min(y) max(y)]);
-legend_texts = ['Data', 'Fit' cell(1,N)];
-for i=1:N
-    c = coefs_con(i,:);
-    plot(x, func_single(c, x));
-    legend_texts{i+2} = ['Peak ' num2str(i)];
-end
-legend(legend_texts);
+% % Fit model w/ parameter constraints
+% coefs_con = constrained_fit(x, y, fitres);
+% 
+% % Plot constrained fit
+% figure('Name','Constrained fit')
+% hold on
+% plot(x,y,'ko','MarkerSize',1)
+% plot(x,fitres.fitfunc(coefs_con,x),'-r');
+% xlabel('Magnetic field [G]')
+% ylabel('ESR signal [a.u.]')
+% set(gca,'xlim',[min(x) max(x)],'ylim',[min(y) max(y)]);
+% legend_texts = ['Data', 'Fit' cell(1,N)];
+% for i=1:N
+%     c = coefs_con(i,:);
+%     plot(x, func_single(c, x));
+%     legend_texts{i+2} = ['Peak ' num2str(i)];
+% end
+% legend(legend_texts);
 
 end
 
