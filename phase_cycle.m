@@ -35,7 +35,7 @@ if ~phase_shift
     s90 = @(phi) sig_x * sin(phi) + sig_y * cos(phi);
     sig90amp = @(phi) sum(s90(phi).^2, 'all');
 
-    phase_shift = fminbnd(sig90amp, -pi, pi);
+    phase_shift = fminbnd(sig90amp, -pi, pi) + pi;
 end
 
 s0 = sig_x * cos(phase_shift) - sig_y * sin(phase_shift);
