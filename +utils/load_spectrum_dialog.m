@@ -59,7 +59,7 @@ switch nargin
             error(err_msg)
         end
     case 3
-        if isvector(varargin{1}) && isvector(varargin{2}) && isstruct(varargin{3})
+        if ismatrix(varargin{1}) && ismatrix(varargin{2}) && isstruct(varargin{3})
             x    = varargin{1};
             y    = varargin{2};
             pars = varargin{3};

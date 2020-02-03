@@ -29,20 +29,18 @@ function [out_struct, out_table] = PowerSatAnalysesMultiVoigtFit(varargin)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-%close all
+close all
 
 if nargin > 0
     [N, varargin] = get_kwarg(varargin, 'N', 2);
     [var0, varargin] = get_kwarg(varargin, 'var0', nan(N, 5));
+    if N ~= size(var0, 1)
+        error('The number of starting points must match the number of Voigtians to fit.');
+    end
 else
     N = 2;
     var0 = [];
 end
-
-if N ~= size(var0, 1)
-    error('The number of starting points must match the number of Voigtians to fit.');
-end
-
 
 dset = load_spectrum_dialog(varargin{:});
 assert_powersat_exp(dset);
