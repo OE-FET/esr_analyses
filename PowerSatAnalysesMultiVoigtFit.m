@@ -1,4 +1,4 @@
-function [argout] = PowerSatAnalysesMultiVoigtFit(varargin)
+function [out_struct, out_table] = PowerSatAnalysesMultiVoigtFit(varargin)
 %POWERSATANALYSESMUTLIVOIGTFIT Analyses of CW-ESR power saturation measurements
 %
 %   This function is equivelent to PowerSatAnalysesVoigtFit but fits
@@ -29,7 +29,7 @@ function [argout] = PowerSatAnalysesMultiVoigtFit(varargin)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-close all
+%close all
 
 if nargin > 0
     [N, varargin] = get_kwarg(varargin, 'N', 2);
@@ -173,11 +173,13 @@ end
 
 % create output structure
 
-argout = struct(...
+out_struct = struct(...
     'x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
-    'B0', B0, 'dB0', dB0, 'T1', T1, 'dT1', dT1, 'T2', T2, 'dT2', dT2, ...
-    'Brms', Brms, 'dBrms', dBrms, 'Chi', Chi, 'dChi', dChi, ...
-    'NSpin', NSpin, 'dNSpin', dNSpin);
+    'B0', B0.', 'dB0', dB0.', 'T1', T1.', 'dT1', dT1.', 'T2', T2.',...
+    'dT2', dT2.','Brms', Brms.', 'dBrms', dBrms.', 'Chi', Chi.',...
+    'dChi', dChi.','NSpin', NSpin.', 'dNSpin', dNSpin.');
+
+out_table = struct2table(out_struct,'AsArray',true);
 
 end
 
