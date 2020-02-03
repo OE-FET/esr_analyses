@@ -45,7 +45,7 @@ switch nargin
     case 1
         File1 = varargin{1};
         [SPath,~,~] = fileparts(File1);
-        [BName, BPath] = uigetfile([SPath, '*.DTA'], 'Select background data');
+        [BName, BPath] = uigetfile(fullfile(SPath, '*.DTA'), 'Select background data');
         File2 = [BPath, BName];
         dsetSig = BrukerRead(File1);
         dsetBG = BrukerRead(File2);
