@@ -12,10 +12,10 @@ if nargin < 2
         % Display data
         stackplot_xepr(dset);
         % Ask user for components to analyse
-        slice = input(sprintf('Data set contains %i components. Please select which one you would like to use.\nYou can select multiple components as a vector.\nDefaults to [1]: ', n));
+        slice = input(sprintf('Data set contains %i components. Please select which one you would like to use.\nYou can select multiple components as a vector.\nDefaults to [1,2]: ', n));
     end
     if isempty(slice)
-        slice = 1;
+        slice = [1,2];
     end
 end
 
