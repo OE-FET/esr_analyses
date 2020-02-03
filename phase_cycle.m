@@ -52,21 +52,17 @@ if plot_result
     
     x = (1:length(sig_x))';
     
-    yoffsetsX = max(sig_x);
-    yoffsetsY = max(sig_y);
-    yoffsets = max([yoffsetsX; yoffsetsY])*2;
-    
     hold off;
 
     subplot(1, 2, 1)
-    h1 = stackplot(x, sig_x, 'yoffsets', yoffsets, 'style', 'b');
+    [h1, yoffsets] = stackplot(x, sig_x, 'style', 'b');
     hold on;
     h2 = stackplot(x, sig_y, 'yoffsets', yoffsets, 'style', 'r');
     legend([h1(1), h2(1)], ["Channel X", "Channel Y"])
     grid on; axis tight;
 
     subplot(1, 2, 2)
-    h1 = stackplot(x, s0, 'yoffsets', yoffsets, 'style', 'b');
+    [h1, yoffsets] = stackplot(x, s0, 'style', 'b');
     hold on;
     h2 = stackplot(x, s90, 'yoffsets', yoffsets, 'style', 'r');
     legend([h1(1), h2(1)], ["0 deg", "90 deg"])
@@ -80,14 +76,14 @@ if plot_result
     
     if isempty(rad)
         phase_shift = mod(phase_shift, 2*pi);
-        fprintf('\nphase shift = %.2f deg\n\n', phase_shift*180/pi);
+        fprintf('\nphase shift = %.1f deg\n\n', phase_shift*180/pi);
     else
         rad = rad*pi/180;
         [s0, s90, phase_shift] = phase_cycle(sig_x, sig_y, 'phase', phase_shift+rad, 'plot', true);
     end
 else
     phase_shift = mod(phase_shift, 2*pi);
-    fprintf('\nphase shift = %.2f deg\n\n', phase_shift*180/pi);
+    fprintf('\nphase shift = %.1f deg\n\n', phase_shift*180/pi);
 end
 
 
