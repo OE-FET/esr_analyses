@@ -35,7 +35,7 @@ if ~phase_shift
     s90 = @(phi) sig_x * sin(phi) + sig_y * cos(phi);
     sig90amp = @(phi) sum(s90(phi).^2, 'all');
 
-    phase_shift = fminbnd(sig90amp, -pi, pi) + pi;
+    phase_shift = fminbnd(sig90amp, -pi, pi);
 end
 
 s0 = sig_x * cos(phase_shift) - sig_y * sin(phase_shift);
@@ -78,12 +78,17 @@ if plot_result
     
     rad = input('Apply correction? [0 deg] ');
     
-    if ~isempty(rad)
+    if isempty(rad)
+        phase_shift = mod(phase_shift, 2*pi);
+        fprintf('\nphase shift = %.2f deg\n\n', phase_shift*180/pi);
+    else
         rad = rad*pi/180;
         [s0, s90, phase_shift] = phase_cycle(sig_x, sig_y, 'phase', phase_shift+rad, 'plot', true);
     end
+else
+    phase_shift = mod(phase_shift, 2*pi);
+    fprintf('\nphase shift = %.2f deg\n\n', phase_shift*180/pi);
 end
 
-phase_shift = mod(phase_shift, 2*pi);
 
 end
