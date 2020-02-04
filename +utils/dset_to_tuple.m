@@ -14,8 +14,10 @@ if nargin < 2
         % Ask user for components to analyse
         slice = input(sprintf('Data set contains %i components. Please select which one you would like to use.\nYou can select multiple components as a vector.\nDefaults to [1,2]: ', n));
     end
-    if isempty(slice)
+    if isempty(slice) && n > 1
         slice = [1,2];
+    elseif isempty(slice)
+        slice = 1;
     end
 end
 
