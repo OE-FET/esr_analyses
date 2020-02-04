@@ -297,7 +297,9 @@ switch nargout
             varargout{2} = z;
             varargout{3} = par_struct;
         else
-            error('Need a pulsed experiment to return a zaxis.')
+            varargout{1} = x;
+            varargout{2} = y;
+            varargout{3} = par_struct;
         end
 
     otherwise
