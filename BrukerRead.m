@@ -292,9 +292,13 @@ switch nargout
         end
 
     case 3
-        varargout{1} = dset;
-        varargout{2} = z;
-        varargout{4} = par_struct;
+        if strcmp(par_struct.EXPT, 'PLS') && strcmp(par_struct.YTYP, 'IDX')
+            varargout{1} = dset;
+            varargout{2} = z;
+            varargout{4} = par_struct;
+        else
+            error('Need a pulsed experiment to return a zaxis.')
+        end
 
     otherwise
         varargout{1} = dset;
