@@ -267,9 +267,9 @@ yUnits = {};
 
 for k = 1:length(par_struct.IKKF)
     if strcmp(par_struct.IKKF{k}, 'CPLX')
-        yUnits{end+1:end+2} = [par_struct.IRUNI{k}; par_struct.IRUNI{k}];
+        yUnits(end+1:end+2) = {par_struct.IRUNI{k}; par_struct.IRUNI{k}};
     else
-        yUnits{end+1} = par_struct.IRUNI{k};
+        yUnits(end+1) = {par_struct.IRUNI{k}};
     end
 end
         
