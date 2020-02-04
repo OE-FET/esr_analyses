@@ -288,14 +288,14 @@ switch nargout
             varargout{2} = z;
         else
             varargout{1} = dset;
-            varargout{3} = par_struct;
+            varargout{2} = par_struct;
         end
 
     case 3
         if strcmp(par_struct.EXPT, 'PLS') && strcmp(par_struct.YTYP, 'IDX')
             varargout{1} = dset;
             varargout{2} = z;
-            varargout{4} = par_struct;
+            varargout{3} = par_struct;
         else
             error('Need a pulsed experiment to return a zaxis.')
         end
