@@ -298,7 +298,7 @@ switch nargout
             varargout{3} = par_struct;
         else
             varargout{1} = x;
-            varargout{2} = y;
+            varargout{2} = y{:,:};
             varargout{3} = par_struct;
         end
 
