@@ -1,4 +1,4 @@
-function [s0, s90, phase_shift] = phase_cycle(sig_x, sig_y, varargin)
+function [s0, s90, phase_shift] = phase_cycle(schannel_x, channel_y, varargin)
 %PHASE_CYCLE
 %
 %   Takes x- and y-channels from a lock-in amplifier and cycles them by the
@@ -7,9 +7,9 @@ function [s0, s90, phase_shift] = phase_cycle(sig_x, sig_y, varargin)
 %   determined automatically.
 %
 %   SYNTAX:
-%   [s0, s90, phase_shift] = phase_cycle(sig_x, sig_y)
-%   [s0, s90, phase_shift] = phase_cycle(sig_x, sig_y, 'phase', phase)
-%   [s0, s90, phase_shift] = phase_cycle(sig_x, sig_y, 'plot', true)
+%   [s0, s90, phase_shift] = phase_cycle(schannel_x, channel_y)
+%   [s0, s90, phase_shift] = phase_cycle(schannel_x, channel_y, 'phase', phase)
+%   [s0, s90, phase_shift] = phase_cycle(schannel_x, channel_y, 'plot', true)
 %
 %   INPUT(S):
 %   sig_x - X-channel from lock-in.
@@ -30,16 +30,17 @@ import esr_analyses.utils.*
 
 phase_shift = get_kwarg(varargin, 'phase', false);
 plot_result = get_kwarg(varargin, 'plot', true);
+x = get_kwarg(varargin, 'x', (1:length(schannel_x))');
 
 if ~phase_shift
-    s90 = @(phi) sig_x * sin(phi) + sig_y * cos(phi);
+    s90 = @(phi) schannel_x * sin(phi) + channel_y * cos(phi);
     sig90amp = @(phi) sum(s90(phi).^2, 'all');
 
     phase_shift = fminbnd(sig90amp, -pi, pi);
 end
 
-s0 = sig_x * cos(phase_shift) - sig_y * sin(phase_shift);
-s90 = sig_x * sin(phase_shift) + sig_y * cos(phase_shift);
+s0 = schannel_x * cos(phase_shift) - channel_y * sin(phase_shift);
+s90 = schannel_x * sin(phase_shift) + channel_y * cos(phase_shift);
 
 if plot_result
     
@@ -49,15 +50,13 @@ if plot_result
     if isempty(fh)
         figure('Name', fig_name);
     end
-    
-    x = (1:length(sig_x))';
-    
+
     hold off;
 
     subplot(1, 2, 1)
-    [h1, yoffsets] = stackplot(x, sig_x, 'style', 'b');
+    [h1, yoffsets] = stackplot(x, schannel_x, 'style', 'b');
     hold on;
-    h2 = stackplot(x, sig_y, 'yoffsets', yoffsets, 'style', 'r');
+    h2 = stackplot(x, channel_y, 'yoffsets', yoffsets, 'style', 'r');
     legend([h1(1), h2(1)], ["Channel X", "Channel Y"])
     grid on; axis tight;
 
@@ -79,7 +78,7 @@ if plot_result
         fprintf('\nphase shift = %.1f deg\n\n', phase_shift*180/pi);
     else
         rad = rad*pi/180;
-        [s0, s90, phase_shift] = phase_cycle(sig_x, sig_y, 'phase', phase_shift+rad, 'plot', true);
+        [s0, s90, phase_shift] = phase_cycle(schannel_x, channel_y, 'phase', phase_shift+rad, 'plot', true, 'x', x);
     end
 else
     phase_shift = mod(phase_shift, 2*pi);
