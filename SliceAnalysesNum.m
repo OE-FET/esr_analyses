@@ -39,7 +39,7 @@ end
 
 pars.GFactor = gfactor_determination(x, y, pars, 'plot', 'y');
 
-intArea = double_int_num(x, y, 'baseline', 'y');
+intArea = double_int_num(x, y, 'baseline', false);
 dA = intArea*pars.QValueErr/pars.QValue;
 
 [Chi, dChi]     = susceptibility_calc(intArea, pars, 'dA', dA);

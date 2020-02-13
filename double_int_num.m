@@ -7,14 +7,14 @@ function [IArea, yInt1, yCorr, yInt2] = double_int_num(x, y, varargin)
 %
 %   SYNTAX:
 %   [IArea, Int1, yCorr, Int2] = DOUBLE_INT_NUM(x, y)
-%   [IArea, Int1, yCorr, Int2] = DOUBLE_INT_NUM(x, y, 'baseline', 'n')
+%   [IArea, Int1, yCorr, Int2] = DOUBLE_INT_NUM(x, y, 'baseline', false)
 %
 %   INPUT(S):
 %   x - vector with magnetic field
 %   y - vector with ESR signal intensity
 %
 %   OPTIONAL:
-%   'baseline' - Perform a base-line correction? 'y' (default) or 'n'
+%   'baseline' - Perform a base-line correction? true (default) or false
 %
 %   OUTPUT(S):
 %   IArea - double-integrated signal
@@ -28,10 +28,10 @@ import esr_analyses.*
 import esr_analyses.utils.*
 
 % default to baseline correction if not specified
-baseline = get_kwarg(varargin, 'baseline', 'y');
+baseline = get_kwarg(varargin, 'baseline', true);
 
 % perform smoothing upon request
-if strcmp(baseline, 'y')
+if baseline
     % create a new figure
     figure();
     % plot spectrum
@@ -52,7 +52,7 @@ yInt1 = cumtrapz(x, y);
 yCorr = y;
 
 % perform baseline correction upon request
-if strcmp(baseline, 'y')
+if baseline
     % plot result from first integration
     stackplot(x, yInt1);
     str = input('Would you like to perform a polynomial base-line correction y/[n]?', 's');
@@ -70,7 +70,7 @@ end
 yInt2 = cumtrapz(x, yInt1);
 
 % plot result for visual check
-if strcmp(baseline, 'y')
+if baseline
     stackplot(x, yInt2);
     pause(0.2);
 end

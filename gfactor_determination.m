@@ -17,7 +17,7 @@ function [g_sample, B_res]= gfactor_determination(x, y, pars, varargin)
 %
 %   SYNTAX:
 %   [g_sample, B_res] = GFACTOR_DETERMINATION(x, y, pars)
-%   [g_sample, B_res] = GFACTOR_DETERMINATION(x, y, pars, 'plot', 'y')
+%   [g_sample, B_res] = GFACTOR_DETERMINATION(x, y, pars, 'plot', true)
 %
 %   INPUT(S):
 %   x        - Magnetic field in Gauss
@@ -36,11 +36,11 @@ function [g_sample, B_res]= gfactor_determination(x, y, pars, varargin)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-plotting = get_kwarg(varargin, 'plot', 'n');
+plotting = get_kwarg(varargin, 'plot', false);
 
 %% Resonance center from maximum of 1st integral as first guess
 % integrate spectrum
-[~, Int1] = double_int_num(x, y, 'baseline', 'n');
+[~, Int1] = double_int_num(x, y, 'baseline', false);
 % find resonance peak at maximum
 [~, II] = max(Int1,[],1);
 B_res   = x(II);
@@ -73,22 +73,27 @@ end
 % convert to g-factor
 g_sample = b2g(B_res*1e-4, pars.MWFQ);
 
-if plotting == 'y'
+if plotting
     for k = 1:dim(2)
-        disp(['sample g = ', num2str(g_sample(k)), ', g_shift = ', ...
+        disp(['sample g = ', num2str(g_sample(k), '%.6f'), ', g_shift = ', ...
             num2str(round((g_sample(k)-gfree)*1e6)), ' ppm']);
     end
 end
 
 % plot the result
-if plotting == 'y'
-    figure(); hold on;
+if plotting
+    figure();
     [~, yoffsets] = stackplot(x, y);
     xL = xlim; yL = ylim;
-    stackplot(B_res', zeros(length(B_res), 1)', 'yoffsets', yoffsets, 'style', 'ro');
+    hold on;
+    stackplot(transpose(B_res), zeros(1, length(B_res)), 'yoffsets', yoffsets, 'style', 'ko')
     stackplot(x, zeros(size(y)), 'yoffsets', yoffsets, 'style', 'k-');
     xlim(gca, xL); ylim(gca, yL);
     hold off;
+    
+    % reverse stacking order
+    chi = get(gca, 'Children');
+    set(gca, 'Children',flipud(chi));
 end
 
 end
