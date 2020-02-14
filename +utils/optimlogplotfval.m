@@ -42,14 +42,14 @@ if iteration == 0
     title(getString(message('MATLAB:optimfun:funfun:optimplots:TitleCurrentFunctionValue',sprintf('%g',fval))),'interp','none');
     xlabel(getString(message('MATLAB:optimfun:funfun:optimplots:LabelIteration')),'interp','none');
     set(plotfval,'Tag','optimplotfval');
-    ylabel(getString(message('MATLAB:optimfun:funfun:optimplots:LabelFunctionValue')),'interp','none')
+    ylabel('Least squares error','interp','none')
     set(gca, 'YScale', 'log');
 else
     plotfval = findobj(get(gca,'Children'),'Tag','optimplotfval');
     newX = [get(plotfval,'Xdata') iteration];
     newY = [get(plotfval,'Ydata') fval];
     set(plotfval,'Xdata',newX, 'Ydata',newY);
-    set(get(gca,'Title'),'String',getString(message('MATLAB:optimfun:funfun:optimplots:TitleCurrentFunctionValue',sprintf('%g',fval))));
+    set(get(gca,'Title'),'String', sprintf('Current fit error: %g',fval));
 end
 
 function plotvector(iteration,fval)
