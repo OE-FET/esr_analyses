@@ -3,7 +3,7 @@ function [out_struct, out_table] = PowerSatAnalysesMultiVoigtFit(varargin)
 %
 %   This function is equivelent to PowerSatAnalysesVoigtFit but fits
 %   multiple Voigtians instead of a single one. The number of Voigtians can
-%   be given as a keyword argument 'N' and defaults to two.
+%   be given as a keyword argument 'N' and defaults to one.
 %
 %   Starting points may be given as a keyword argument 'var0'. var0 must be
 %   a Nx5 matrix with each row containing the starting points for one
@@ -32,7 +32,7 @@ import esr_analyses.utils.*
 close all
 
 if nargin > 0
-    [N, varargin] = get_kwarg(varargin, 'N', 2);
+    [N, varargin] = get_kwarg(varargin, 'N', 1);
     [var0, varargin] = get_kwarg(varargin, 'var0', nan(N, 5));
     if N ~= size(var0, 1)
         error('The number of starting points must match the number of Voigtians to fit.');
