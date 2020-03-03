@@ -38,7 +38,7 @@ if length(x)~=length(y)
 end
 
 % get spectrum size
-N = length(x);
+[nPoints, nDataSets] = size(y);
 
 %% select area for baseline fit
 
@@ -63,7 +63,7 @@ while ~ok
         '\n Press the Enter key when done.\n'])
 
     % open GUI for input & accept points until user presses Enter
-    mask = false(N, 1);
+    mask = false(nPoints, 1);
     xpts = [];
     ypts = [];
     yLim = get(gca, 'YLim');
@@ -105,14 +105,17 @@ while ~ok
     end
 
     %% perform baseline fit
-    if strcmp(method, 'poly')
-        % average over 10 points for smoothing before fit
-        avgpts  = round(N/100); % 1/100 of length of data
-        ysmooth = smoothdata(y, 'movmean', avgpts);
-        polycoef = polyfit(x(mask), ysmooth(mask, :), 3);
-        ybaseline = polyval(polycoef, x);
-    elseif strcmp(method, 'spline')
-        ybaseline = interp1(xpts, ypts, x, 'spline');
+    ybaseline = zeros(size(y));
+    for i=1:nDataSets
+        if strcmp(method, 'poly')
+            % average over 10 points for smoothing before fit
+            avgpts  = round(nPoints/100); % 1/100 of length of data
+            ysmooth = smoothdata(y(:,i), 'movmean', avgpts);
+            [p,S,mu] = polyfit(x(mask), ysmooth(mask,:),3);
+            ybaseline(:,i) = polyval(p,x,S,mu);
+        elseif strcmp(method, 'spline')
+            ybaseline(:,i) = interp1(xpts, ypts(:,i), x, 'spline');
+        end
     end
 
     % make yfit a column if it is a row vector
