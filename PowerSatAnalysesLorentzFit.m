@@ -52,7 +52,7 @@ mid  = round(length(Bmw)/2);
 slice_fit  = lorentz_fit(x, y(:,mid), 'deriv', 1);
 
 % perform numerical double-integration to estimate T1*T2
-DI = double_int_num(x, y, 'baseline', 'n');
+DI = double_int_num(x, y, 'baseline', false);
 ft = fittype('A * x /sqrt(1+1e7*gmSquaredT1T2*x^2)');
 pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [slice_fit.a, 1], 'Lower', [0, 0]);
 

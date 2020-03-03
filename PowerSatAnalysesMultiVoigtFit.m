@@ -65,7 +65,7 @@ if any(isnan(var0), 'all')
     close(gcf); % close figure when done
 
     % perform numerical double integrtion to estimate T1*T2
-    DI = double_int_num(x, y, 'baseline', 'n');
+    DI = double_int_num(x, y, 'baseline', false);
     ft = fittype('A * x /sqrt(1+1e7*gmSquaredT1T2*x^2)');
     pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [slice_fit.a, 1], 'Lower', [0, 0]);
 
@@ -78,7 +78,7 @@ if any(isnan(var0), 'all')
     T2   = 2/(gmratio * FWHM_lorentz*1E-4);                   % in sec
     T1   = T1T2/T2;                                           % in sec
 
-    auto_var0 = ones(N,1)*[A0/2 B0 T1 T2 FWHM_gauss];      % starting points
+    auto_var0 = ones(N,1)*[A0/N B0 T1 T2 FWHM_gauss];         % starting points
 
     % replace NaN values in var0 with our best-guess starting points
     % keep all starting points provided by the user
@@ -148,6 +148,8 @@ for i=1:N
 end
 
 legend(plot_handles, legend_texts);
+
+axis tight;
 
 %%                      Susceptibility Calculation
 %%=========================================================================
