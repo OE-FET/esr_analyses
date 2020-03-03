@@ -130,7 +130,7 @@ dset(n+1:end, :) = [];
 for k=1:width(dset)-1
     figure('Name','Background subtraction');
     
-    subplot(2, 1, 1)
+    subplot(2, k, k)
 
     yoffset = max(dsetSig{:,k+1});
     % plot background
