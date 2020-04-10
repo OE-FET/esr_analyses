@@ -15,10 +15,8 @@ function [out_struct, out_table] = SliceAnalysesMultiVoigtFit(varargin)
 %   over the sample volume.
 %
 %   INPUT(S):
-%   SLICEANALYSESMULTIVOIGTFIT() - prompts user for spectrum file
-%   ...FIT('Path')               - path to file with ESR data
-%   ...FIT('PathSIG', 'PathBG')  - path to signal, path to background
-%   ...FIT(dset)                 - data set from BrukerRead
+%   SLICEANALYSESMULTIVOIGTFIT(..., 'N', 3)       - fits three Voigtians
+%   SLICEANALYSESMULTIVOIGTFIT(..., 'var0', var0) - gives starting points
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results
@@ -64,7 +62,8 @@ T2   = 1/(gmratio * FWHM_lorentz*1E-4); % in sec
 
 % Assign parameters to array
 var0 = ones(N,1)*[A0/2 B0 T2 FWHM_gauss];
-
+var0(1,2) = g2b(2.0043,pars.MWFQ)*10^4;
+var0(2,2) = g2b(2.0035,pars.MWFQ)*10^4;
 
 %% Perform voigt fit ======================================================
 
@@ -81,6 +80,12 @@ opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'MaxFunEvals', 1e10,...
 
 % Fit model to data with Nelder Mead algorithm (unconstrained fit)
 fitres   = nelder_mead_fit(multi_fit_func, x, y, var0, opt);
+
+% If the first fit returned the peaks in the opposite order, flip the
+% array
+if fitres.coef(1,2) > fitres.coef(2,2)
+    fitres.coef = flipud(fitres.coef);
+end
 
 % Estimate confidence intervals
 conf_int = standarderror(fitres);
@@ -139,10 +144,10 @@ out_struct = struct(...
 out_table = splitvars(struct2table(rmfield(out_struct,{'x' 'y' 'pars' 'fitres'}),'AsArray',1));
 
 
-%% Perform constrained fit=================================================
-
+% %% Perform constrained fit=================================================
+% 
 % % Fit model w/ parameter constraints
-% coefs_con = constrained_fit(x, y, fitres);
+% coefs_con = constrained_fit(x, y, fitres, pars.MWFQ);
 % 
 % % Plot constrained fit
 % figure('Name','Constrained fit')
@@ -182,12 +187,14 @@ function y = to_multi(func_single, variables, x)
 end
 
 %% Constrained fit function ===============================================
-function coefs_con = constrained_fit(x, y, fitres)
+function coefs_con = constrained_fit(x, y, fitres,mwfq)
+    import esr_analyses.* %#ok<*NSTIMP>
+    import esr_analyses.utils.*
 
     % Constraints hard-programmed for N = 2 (Voigtians to fit)
 
-    coefs = fitres.coef;
-
+    coefs = abs(fitres.coef);
+    
     % Inequality constraints (none)
     con_problem.Aineq     = [];
     con_problem.bineq     = [];
@@ -199,15 +206,28 @@ function coefs_con = constrained_fit(x, y, fitres)
 %     con_problem.Beq       = 0;                  % equal areas
 
     % Lower bounds
-    con_problem.lb        = zeros(size(coefs));
-    con_problem.lb(:,2)   = min(x); % No resonance centers outside x-axis
-    con_problem.lb(:,3)   = 10^-9;  % min T2
+    con_problem.lb        = zeros(1,numel(coefs));
+    con_problem.lb(3:4)   = min(x); % No resonance centers outside x-axis
+    con_problem.lb(5:6)   = 10^-9;  % min T2
 
     % Upper bounds
-    con_problem.ub        = inf(size(coefs));
-    con_problem.ub(:,2)   = max(x); % No resonance centers outside x-axis
-    con_problem.ub(:,3)   = 10^-6;  % max T2
-    con_problem.ub(:,4)   = 10;     % Restrict Brms to be 10 G at max
+    con_problem.ub        = inf(1,numel(coefs));
+    con_problem.ub(3:4)   = max(x); % No resonance centers outside x-axis
+    con_problem.ub(5:6)   = 10^-6;  % max T2
+    con_problem.ub(7:8)   = 10;     % Restrict Brms to be 10 G at max
+    
+    % Nonlinear constraints -> set g factors to be within some distance of
+    % each other
+    function [c, ceq] = nonlincon(coefs)
+        dgMax = 7.50e-4;
+        dgMin = 7.40e-4;
+        b0s = coefs(3:4)*10^-4;
+        dif = abs(diff(esr_analyses.b2g(b0s,mwfq)));
+        c(1)  = dif - dgMax;
+        c(2)  = dgMin - dif;
+        ceq   = [];
+    end
+    con_problem.nonlcon   = @nonlincon;
 
     % Solver, objective function, initial parameter estimates, and fit
     % options
@@ -215,9 +235,9 @@ function coefs_con = constrained_fit(x, y, fitres)
     con_problem.objective = @(coefs) sum((y-fitres.fitfunc(coefs,x)).^2);
     con_problem.x0        = coefs;
     con_problem.options   = optimoptions('fmincon', 'ConstraintTolerance',...
-                            1e-14,'MaxFunctionEvaluations',1e14, ...
-                            'MaxIterations',1e14,'OptimalityTolerance',...
-                            1e-18, 'StepTolerance',1e-18,'Display','final-detailed');
+                            1e-9,'MaxFunctionEvaluations',1e10, ...
+                            'MaxIterations',1e10,'OptimalityTolerance',...
+                            1e-9, 'StepTolerance',1e-9,'Display','iter-detailed');
 
     % Perform the fit
     coefs_con = fmincon(con_problem);
