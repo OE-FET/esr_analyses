@@ -30,12 +30,12 @@ import esr_analyses.utils.*
 
 %% Initialize
 % Transpose x and Bmw if necessary and check if dimensions match
-if isempty(diff(x,1,2)) | all(diff(x,1,2) == 0)
+if isempty(diff(x,1,2)) || all(diff(x,1,2) == 0)
     % the columns of x contain the magnetic field steps -> transpose
     x = x';
 end
 
-if isempty(diff(Bmw,1,1)) | all(diff(Bmw,1,1) == 0)
+if isempty(diff(Bmw,1,1)) || all(diff(Bmw,1,1) == 0)
     % the columns of Bmw contain the MW field steps -> transpose
     Bmw = Bmw';
 end
