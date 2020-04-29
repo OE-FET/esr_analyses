@@ -52,8 +52,12 @@ else
     Pmw = pars.MWPW;
 end
 
-% get g-factor from pars
-sample_g = pars.GFactor;
+% get g-factor error from pars
+if isfield(pars, 'GFactorErr')
+    g_error = pars.GFactorErr;
+else
+    g_error = 0;
+end
 
 % cavity and MW bridge calibration factors
 k = 200/(pars.BridgeCalib * pars.ConvFact);
@@ -62,12 +66,13 @@ k = 200/(pars.BridgeCalib * pars.ConvFact);
 norm = (pars.QValue * sqrt(Pmw) * pars.B0MA * position_correction);
 
 % -------------------------------------------------------------------------
-Chi = mu0* k * doubleIntArea .* sample_g.^2 .* bmagn^2 ./ (3 * ...
+Chi = mu0* k * doubleIntArea .* pars.GFactor.^2 .* bmagn^2 ./ (3 * ...
     planck * pars.MWFQ  * norm);
 % -------------------------------------------------------------------------
 
 if nargout > 1
-    dChi = dA .* Chi./doubleIntArea + pars.QValueErr .* Chi./pars.QValue;
+    dChi = dA .* Chi./doubleIntArea + pars.QValueErr .* Chi./pars.QValue + ...
+        g_error .* Chi ./ pars.GFactor;
 end
 
 end

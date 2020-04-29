@@ -54,6 +54,13 @@ else
     Pmw = pars.MWPW;
 end
 
+% get g-factor error from pars
+if isfield(pars, 'GFactorErr')
+    g_error = pars.GFactorErr;
+else
+    g_error = 0;
+end
+
 % cavity and MW bridge calibration factors
 k = 200/(pars.BridgeCalib * pars.ConvFact);
 
@@ -66,7 +73,8 @@ NSpin = k * doubleIntArea ./ (pars.QValue * sqrt(Pmw) * pars.B0MA * ...
 % -------------------------------------------------------------------------
 
 if nargout > 1
-    dNSpin = pars.QValueErr .* NSpin./pars.QValue + dA .* NSpin ./ doubleIntArea;
+    dNSpin = pars.QValueErr .* NSpin./pars.QValue + dA .* NSpin ./ doubleIntArea + ...
+        g_error .* NSpin ./ pars.GFactor;
 end
 
 end

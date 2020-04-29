@@ -106,8 +106,9 @@ ylabel(h{3}(1).Parent, 'ESR signal [a.u.]')
 
 %%                      Susceptibility Calculation
 %%=========================================================================
-pars.GFactor   = b2g(B0*1e-4, pars.MWFQ);
-modScaling     = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
+pars.GFactor    = b2g(B0*1e-4, pars.MWFQ);
+pars.GFactorErr = dB0 * b2g(B0*1e-4, pars.MWFQ) / B0;
+modScaling      = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
 
 areaDI = modScaling * Bmw .* A;
 areaDIerror = modScaling * Bmw .* dA;

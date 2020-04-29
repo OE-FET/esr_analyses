@@ -128,8 +128,9 @@ axis tight;
 
 %%                      Susceptibility Calculation
 %%=========================================================================
-pars.GFactor   = mean(b2g(B0*1e-4, pars.MWFQ));
-modScaling     = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
+g_factors     = b2g(B0*1e-4, pars.MWFQ);
+g_factor_errs = dB0 .* b2g(B0*1e-4, pars.MWFQ) ./ B0;
+modScaling      = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
 
 Chi = zeros(size(A)); dChi = zeros(size(A));
 NSpin = zeros(size(A)); dNSpin = zeros(size(A));
@@ -139,6 +140,7 @@ for i=1:length(A) % calculate for each peak
     areaDIerror = modScaling * Bmw .* dA(i);
 
     % get 'maximum' value, even though all values are equal...
+    pars.GFactor = g_factors(i); pars.GFactorErr = g_factor_errs(i);
     [Chi(i), dChi(i)]   = susceptibility_calc(areaDI, pars, 'dA', areaDIerror);
     [NSpin(i), dNSpin(i)] = spincounting(areaDI, pars, 'dA', areaDIerror);
 end

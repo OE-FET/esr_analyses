@@ -113,8 +113,9 @@ ylabel(h{3}(1).Parent, 'ESR signal [a.u.]')
 
 %%                      Susceptibility Calculation
 %%=========================================================================
-pars.GFactor   = b2g(B0*1e-4, pars.MWFQ);
-modScaling     = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
+pars.GFactor    = b2g(B0*1e-4, pars.MWFQ);
+pars.GFactorErr = dB0 * b2g(B0*1e-4, pars.MWFQ) / B0;
+modScaling      = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
 
 areaDI = modScaling * Bmw .* A;
 areaDIerror = modScaling * Bmw .* dA;
@@ -129,7 +130,8 @@ areaDIerror = modScaling * Bmw .* dA;
 
 out_struct = struct(...
     'x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
-    'B0', B0, 'dB0', dB0, 'T1', T1, 'dT1', dT1, 'T2', T2, 'dT2', dT2, ...
+    'B0', B0, 'dB0', dB0, 'g', pars.GFactor, 'dg', pars.GFactorErr, ...
+    'T1', T1, 'dT1', dT1, 'T2', T2, 'dT2', dT2, ...
     'Brms', Brms, 'dBrms', dBrms, 'Chi', Chi(1), 'dChi', dChi(1), ...
     'NSpin', NSpin(1), 'dNSpin', dNSpin(1));
 
