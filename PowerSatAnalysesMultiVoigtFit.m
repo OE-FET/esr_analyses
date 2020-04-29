@@ -117,14 +117,6 @@ dBrms = full(abs(conf_int(4*N+1:5*N)));
 %%                           Plot results
 %%=========================================================================
 
-h = plot(fitres);
-
-xlabel(h{1}(1).Parent, 'Magnetic field [G]')
-ylabel(h{1}(1).Parent, 'Microwave field [T]')
-zlabel(h{1}(1).Parent, 'ESR signal [a.u.]')
-
-close(h{3}(1).Parent.Parent)
-
 % use custom stackplot showing individual peaks instead of plot(fitres)
 figure();hold on;
 p = {};
@@ -143,6 +135,8 @@ for i=1:N
 end
 
 legend(plot_handles, legend_texts);
+xlabel('Magnetic field [G]')
+ylabel('ESR signal [a.u.]')
 
 axis tight;
 
