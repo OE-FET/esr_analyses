@@ -70,7 +70,7 @@ opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
     @optimplotfval, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
-fitres   = nelder_mead_fit(fitfunc, x, y', var0, opt);
+fitres   = nelder_mead_fit(fitfunc, x, y, var0, opt);
 conf_int = standarderror(fitres); % estimate confidence intervals
 
 A     = abs(fitres.coef(1));
