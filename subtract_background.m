@@ -89,14 +89,14 @@ end
 dsetBG{:,2:end} = dsetBG{:,2:end} * Q_ratio * B0MA_ratio * Bmw_ratio;
 
 %% Compare experimental conditions
-nDiff = compare_pars(parsS, parsB);
+compare_pars(parsS, parsB);
 
-if nDiff > 0
-    str = input('Do you want to continue ([y]/n)?', 's');
-    if strcmpi(str, 'n')
-        error('Aborted.');
-    end
-end
+% if nDiff > 0
+%     str = input('Do you want to continue ([y]/n)?', 's');
+%     if strcmpi(str, 'n')
+%         error('Aborted.');
+%     end
+% end
 
 %% Subtract spectra
 
