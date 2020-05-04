@@ -28,6 +28,23 @@ function [yn] = esr_lorentz_simulation(x, B0, T1, T2, Bmw, modAmp, n)
 import esr_analyses.*
 import esr_analyses.utils.*
 
+
+%% Initialize
+% Transpose x and Bmw if necessary and check if dimensions match
+if isempty(diff(x,1,2)) | all(diff(x,1,2) == 0)
+    % the columns of x contain the magnetic field steps -> transpose
+    x = x';
+end
+
+if isempty(diff(Bmw,1,1)) | all(diff(Bmw,1,1) == 0)
+    % the columns of Bmw contain the MW field steps -> transpose
+    Bmw = Bmw';
+end
+
+if size(Bmw) ~= size(x)
+    error("Dimensions of x and Bmw do not match.")
+end
+
 % internally, we use SI units ONLY
 
 % convert Gauss to Tesla
