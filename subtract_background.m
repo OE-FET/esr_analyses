@@ -122,8 +122,8 @@ end
 
 n = length(x);
 
+dset{:,:} = nan(size(dset{:,:}));
 dset{1:n,:} = [x, y];
-dset(n+1:end, :) = [];
 
 %% plot results
 
