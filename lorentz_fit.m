@@ -60,13 +60,13 @@ for i = 1:size(y, 2)
     % Plot fit with data.
     figure(f1);
     subplot(2, 1, 1);
-    plot(xData, yData, '.', x, yfit, '-');
+    plot(xData, yData, '.', xData, yfit, '-');
     legend('Experiment', 'Lorentz Fit', 'Location', 'SouthWest');
     axis tight; grid on;
 
     % Plot residuals.
     subplot(2, 1, 2);
-    h = plot(xData, yData-yfit, '.', xData, zeros(1, length(x)), '-');
+    h = plot(xData, yData-yfit, '.', xData, zeros(1, length(xData)), '-');
     legend(h, 'Residuals', 'Zero Line', 'Location', 'NorthEast');
     axis tight; grid on;
 
