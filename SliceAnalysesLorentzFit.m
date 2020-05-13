@@ -29,9 +29,6 @@ function [out_struct, out_table] = SliceAnalysesLorentzFit(varargin)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-close all
-
-
 dset = load_spectrum_dialog(varargin{:});
 [x,y,pars] = dset_to_tuple(dset);
 

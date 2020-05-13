@@ -35,8 +35,6 @@ function [out_struct, out_table] = PowerSatAnalysesNum(varargin)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-close all
-
 dset = load_spectrum_dialog(varargin{:});
 assert_powersat_exp(dset);
 [x,y,pars] = dset_to_tuple(dset);

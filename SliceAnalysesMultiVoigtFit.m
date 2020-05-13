@@ -29,10 +29,9 @@ function [out_struct, out_table] = SliceAnalysesMultiVoigtFit(varargin)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-close all
-
 [N, varargin] = get_kwarg(varargin, 'N', 2);
 [var0, varargin] = get_kwarg(varargin, 'var0', nan(N, 4));
+
 if N ~= size(var0, 1)
     error('The number of starting points must match the number of Voigtians to fit.');
 end
