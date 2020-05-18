@@ -122,7 +122,7 @@ end
 
 n = length(x);
 
-dset{:,:} = nan(size(dset{:,:}));
+dset = dsetSig;
 dset{1:n,:} = [x, y];
 
 %% plot results

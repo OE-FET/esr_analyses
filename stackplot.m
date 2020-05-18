@@ -93,7 +93,7 @@ ymax = max(max(yNew)) + abs(0.5*max(max(y)));
 try
     axis([min(min(xNew)) max(max(xNew)) ymin ymax]);
 catch
-    axis tight
+    set(ax, 'XLimSpec', 'Tight');
 end
 
 %% Output

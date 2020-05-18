@@ -48,9 +48,10 @@ for k=1:N
     ylabel(y_label, 'Interpreter', 'none');
     title(dset.Properties.VariableNames{k+1})
     axis square
-
+    grid on;
 end
 
+set(ax, 'XLimSpec', 'Tight');
 sgtitle(pars.TITL, 'Interpreter', 'none');
 
 %% Argout
