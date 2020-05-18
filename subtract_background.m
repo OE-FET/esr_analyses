@@ -100,8 +100,6 @@ compare_pars(parsS, parsB);
 
 %% Subtract spectra
 
-dset = dsetSig;
-
 % Compute and correct for the expected resonance centre offset due to
 % differing microwave fields (from ge*bmagn*B = hbar*f)
 B_offset = (parsS.MWFQ - parsB.MWFQ) * planck/(gfree*bmagn) * 1E4;
