@@ -127,11 +127,14 @@ dset{1:n,:} = [x, y];
 
 %% plot results
 
+dsetBG{:,1} = dsetBG{:,1} - B_offset;  % overwrite for plotting
+
+
 for k=1:width(dset)-1
     figure('Name','Background subtraction');
     
-    subplot(2, k, k)
-
+    subplot(1, k, k)
+    
     yoffset = max(dsetSig{:,k+1});
     % plot background
     sp1 = stackplot_xepr(dsetBG(:,[1, k+1]), 'yoffsets', yoffset, 'style', 'r');
@@ -140,6 +143,7 @@ for k=1:width(dset)-1
     sp2 = stackplot_xepr(gca, dsetSig(:,[1, k+1]), 'yoffsets', yoffset, 'style', 'b');
     hold off;
     legend([sp1(1,1) sp2(1,1)], {'background', 'signal'})
+    
 end
 
 end

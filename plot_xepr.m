@@ -51,12 +51,12 @@ for k=1:N
     grid on;
 end
 
-set(ax, 'XLimSpec', 'Tight');
+set(gca, 'XLimSpec', 'Tight');
 sgtitle(pars.TITL, 'Interpreter', 'none');
 
 %% Argout
 if nargout > 0
-    argout = ax;
+    argout = gca;
 end
 
 end
