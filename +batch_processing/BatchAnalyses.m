@@ -89,6 +89,7 @@ for i = 1:nFiles
     
     if i ~= nFiles
         input('Press enter to continue.');
+        close all
     end
 end
 
