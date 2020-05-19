@@ -96,13 +96,13 @@ classdef nelder_mead_fitobject
                 h1 = scatter3(X1t(:), X2t(:), obj.yData(:), '.k');
                 h2 = surf(X1Plot, X2Plot, yFitMesh', 'FaceAlpha', 0.5, 'EdgeColor', 'none');
                 legend('Data', 'Fit', 'Location', 'northeast')
-                axis tight; grid on;
+                set(gca, 'XLimSpec', 'Tight'); grid on;
                 view(3);
 
                 figure('Name', '3D fit, x-section');
                 hold on;
-                [h3, yoffsets] = stackplot(xx1, obj.yData, 'style', '.k');
-                h4 = stackplot(xx1, yFitInterpol, 'yoffsets', yoffsets, 'style', '-r');
+                [h3, yoffsets] = stackplot(xx1, obj.yData);
+                h4 = stackplot(xx1, yFitInterpol, 'yoffsets', yoffsets);
                 legend([h3(1), h4(1)], {'Data', 'Fit'});
                 if nargout > 0
                     h = {h1 h2 h3 h4};
@@ -113,10 +113,10 @@ classdef nelder_mead_fitobject
 
                 figure('Name', 'Least-squares fit');
                 hold on;
-                h1 = plot(obj.xData, obj.yData, '.k');
-                h2 = plot(x_interp, yFit_interp, '-r');
+                h1 = plot(obj.xData, obj.yData);
+                h2 = plot(x_interp, yFit_interp);
                 legend([h1, h2], {'Data', 'Fit'});
-                axis tight; grid on;
+                set(gca, 'XLimSpec', 'Tight'); grid on;
                 if nargout > 0
                     h = {h1 h2};
                 end
