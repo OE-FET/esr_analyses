@@ -69,9 +69,6 @@ for i = 1:nFiles
 
     dset.Properties.UserData.SampleL = global_pars.SampleL;
     dset.Properties.UserData.SampleH = global_pars.SampleH;
-    % use a default QValueErr of 100 if none is given
-    dset.Properties.UserData.QValueErr = get_par(dset.Properties.UserData, ...
-                                                 'QValueErr', 100);
 
     try
         output{i} = analysesFunc(dset);
