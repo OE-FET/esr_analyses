@@ -20,7 +20,8 @@ bckgrndStrQ = input('Would you like to subtract background spectra? [y]/n ', 's'
 
 global Path
 
-[fileNames, Path] = uigetfile([Path, '*.DSC'], 'Please select ESR data files.', 'MultiSelect', 'on');
+[fileNames, Path] = uigetfile([Path, '*.DSC'], ...
+    'Please select ESR data files.', 'MultiSelect', 'on');
 
 if ~iscell(fileNames)
     fileNames = {fileNames};
@@ -38,15 +39,25 @@ for i = 1:nFiles
     filePath = [Path fileNames{i}];
     filePathBG = [];
 
-    if strcmp(bckgrndStrQ, 'y')
-        filePathBG1 = regexprep(filePath,'Vg_(\S+)(\.)','Vg_00.');
-        filePathBG2 = regexprep(filePath,'Vg_(\S+)(\.)','Vg_0.');
-        if exist(filePathBG1, 'file') == 2
-            filePathBG = filePathBG1;
-        elseif exist(filePathBG2, 'file') == 2
-            filePathBG = filePathBG2;
+    if ~strcmp(bckgrndStrQ, 'n')
+        filePathBGcandidates = {'Vg_00.', 'Vg_0.'};
+        
+        for candidate=filePathBGcandidates
+            filePathBGcandidate = regexprep(filePath, 'Vg_(\S+)(\.)', ...
+                candidate{1});
+            if exist(filePathBGcandidate, 'file') == 2
+                filePathBG = filePathBGcandidate;
+                break
+            end
+        end
+  
+        if filePathBG
+            disp('Background file for:');
+            disp(filePath);
+            disp(filePathBG);
         else
-            disp('Error: no background file found for \n');
+            disp('Error: no background file found for');
+            disp(filePath);
         end
     end
 
@@ -58,16 +69,21 @@ for i = 1:nFiles
 
     dset.Properties.UserData.SampleL = global_pars.SampleL;
     dset.Properties.UserData.SampleH = global_pars.SampleH;
+    % use a default QValueErr of 100 if none is given
+    dset.Properties.UserData.QValueErr = get_par(dset.Properties.UserData, ...
+                                                 'QValueErr', 100);
 
     try
         output{i} = analysesFunc(dset);
     catch ME
         errors{i} = ME;
-        warning('Analyses failed for ')
+        warning(strcat('Analyses failed for ', fileNames{i}))
         disp(ME)
+        continue
     end
 
     out_analyses = rmfield(output{i}, {'x', 'y', 'pars', 'fitres'});
+
     if ~exist('output_table', 'var')
         output_table = struct2table(out_analyses);
     else
@@ -90,6 +106,7 @@ if nargin==2
             end
         end
     end
+    cols = rmmissing(cols);
     prepend_table = array2table(cols, 'VariableNames', names);
 end
 
