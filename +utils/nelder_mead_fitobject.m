@@ -1,10 +1,11 @@
-classdef nelder_mead_fitobject
+classdef nelder_mead_fitobject < handle
 
     properties
         fitfunc
         coef0
         coef
         sse
+        J
         xData
         yData
         yFit
@@ -22,50 +23,58 @@ classdef nelder_mead_fitobject
             obj.yFit = eval_at(obj, obj.xData);
         
         end
+        
+        function J = jacobian(obj, accur)
             
-        function se = standarderror(obj, accur)
-            % STANDARDERROR of of fit paramters
-            %
-            % We calculate the standard-error (SE) of fit parameters as
-            %
-            %   SE = sqrt( sigma_y * inv(H) )
-            %
-            % where 'sqrt(sigma_y)' is the standard deviation of residuals
-            % and 'H' is the Hessian. 'sigma_y' can be calculated as
-            %
-            %   sigma_y = RSS / dof
-            %
-            % where 'RSS' is the resiual sum-of-squares and 'dof' is the
-            % number of degrees-of-freedom in the fitting problem. The
-            % Hessian can be estimated from the Jacobian 'J' of the fit
-            % function with respect to the fitting parameters as H ~ J'*J.
-
             import esr_analyses.*
             import esr_analyses.utils.*
+            
+            if isempty(obj.J)
 
-            if nargin < 2; accur = 'accurate'; end
+                if nargin < 2; accur = 'accurate'; end
 
-            dof     = numel(obj.yData) - numel(obj.coef0);
-            sigma_y = obj.sse/dof;
-
-            % get jacobian matrix with respect to fit parameters
-            func = @(coef) obj.fitfunc(coef, obj.xData);
-            if strcmp(accur, 'quick')
-                % use lsqnonlin with single iteration to get J (quick)
-                [~,~,~,~,~,~,J] = lsqnonlin(func, obj.coef,[],[], optimset('Display', 'off'));
-            elseif strcmp(accur, 'accurate')
-                % use jacobianest from spinach toolbox (accurate but slow)
-                J = jacobianest(func, obj.coef);
+                % get jacobian matrix with respect to fit parameters
+                func = @(coef) obj.fitfunc(coef, obj.xData);
+                if strcmp(accur, 'quick')
+                    % use lsqnonlin with single iteration to get J (quick)
+                    [~,~,~,~,~,~,obj.J] = lsqnonlin(func, obj.coef,[],[], optimset('Display', 'off'));
+                elseif strcmp(accur, 'accurate')
+                    % use jacobianest from spinach toolbox (accurate but slow)
+                    obj.J = jacobianest(func, obj.coef);
+                end
+                J = obj.J;
             end
-            % decomposition J = Q*R with upper triangular matrix R and unitary matrix Q
-            [~, R] = qr(J, 0);
-            % diagnonal of covariance matrix Sigma = sigma_y*inv(J'*J)
-            diag_sigma = sigma_y * sum(inv(R).^2, 2);
-            % diag_sigma = sigma_y*inv(J'*J);
-            % parameter standrad errors
-            se = sqrt(diag_sigma)';
-            se = full(se); % convert sparse to full matrix
         end
+        
+        function ci = confint(obj, varargin)
+            % CONFINT of fit paramters
+            %
+            %   Returns the 95% confidence intervals for fit coefficients.
+            %
+            
+            import esr_analyses.utils.*
+            
+            jacobian(obj);
+
+            % calculate residuals
+            resid = obj.yData - obj.yFit;
+            
+            alpha = get_kwarg(varargin, 'alpha', 0.05);
+            ci = nlparci(obj.coef, resid, 'jacobian', obj.J, 'alpha', alpha);
+
+        end
+        
+        function se = standarderror(obj, varargin)
+            % CONFINT of fit paramters
+            %
+            %   Returns the 95% confidence intervals for fit coefficients.
+            %
+
+            ci = confint(obj);
+            se = diff(ci,1,2)/2;
+
+        end
+        
         function h = plot(obj)
 
             import esr_analyses.*
@@ -123,6 +132,7 @@ classdef nelder_mead_fitobject
             end
 
         end
+        
         function y = eval_at(obj, x)
             y = obj.fitfunc(obj.coef, x);
         end
