@@ -110,8 +110,8 @@ classdef nelder_mead_fitobject < handle
 
                 figure('Name', '3D fit, x-section');
                 hold on;
-                [h3, yoffsets] = stackplot(xx1, obj.yData);
-                h4 = stackplot(xx1, yFitInterpol, 'yoffsets', yoffsets);
+                [h3, yoffsets] = stackplot(xx1, obj.yData, 'style', 'b');
+                h4 = stackplot(xx1, yFitInterpol, 'yoffsets', yoffsets, 'style', 'r');
                 legend([h3(1), h4(1)], {'Data', 'Fit'});
                 if nargout > 0
                     h = {h1 h2 h3 h4};
