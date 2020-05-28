@@ -55,7 +55,7 @@ T2    = 1/(gmratio * FWHM*1E-4); % in sec
 
 var0  = [A0 B0 T2];              % starting points
 
-%%                          Perform voigt fit
+%%                          Perform lorentz fit
 %%=========================================================================
 
 % create fit function and options
