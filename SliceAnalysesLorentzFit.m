@@ -83,6 +83,7 @@ h = plot(fitres);
 
 xlabel(h{1}(1).Parent, 'Magnetic field [G]')
 ylabel(h{1}(1).Parent, 'ESR signal [a.u.]')
+title(h{1}(1).Parent, pars.TITL, 'interpreter', 'none')
 
 %%                      Susceptibility Calculation
 %%=========================================================================

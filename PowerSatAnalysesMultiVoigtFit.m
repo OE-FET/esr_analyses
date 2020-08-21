@@ -140,6 +140,7 @@ end
 legend(plot_handles, legend_texts);
 xlabel('Magnetic field [G]')
 ylabel('ESR signal [a.u.]')
+title(pars.TITL, 'interpreter', 'none')
 
 axis tight;
 

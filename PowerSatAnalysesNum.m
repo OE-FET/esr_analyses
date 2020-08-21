@@ -120,12 +120,14 @@ if gm^2*T1T2*Bmw(end) < 1e-3  % no saturation
 
     xlabel(h.Parent, 'Microwave field [T]')
     ylabel(h.Parent, 'ESR signal area [a.u.]')
+    title(pars.TITL, 'interpreter', 'none')
 
     hold on; plot(Bmw, doubleIntAreas, 'ko', 'DisplayName', 'data');
 else
     h = plot(fitres);
     xlabel(h{1}.Parent, 'Microwave field [T]')
     ylabel(h{1}.Parent, 'ESR signal area [a.u.]')
+    title(h{1}.Parent, pars.TITL, 'interpreter', 'none')
     set(h{1}, 'Marker', 'o');
 end
 

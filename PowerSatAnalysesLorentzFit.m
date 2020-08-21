@@ -101,6 +101,9 @@ zlabel(h{1}(1).Parent, 'ESR signal [a.u.]')
 xlabel(h{3}(1).Parent, 'Magnetic field [G]')
 ylabel(h{3}(1).Parent, 'ESR signal [a.u.]')
 
+title(h{1}(1).Parent, pars.TITL, 'interpreter', 'none')
+title(h{3}(1).Parent, pars.TITL, 'interpreter', 'none')
+
 %%                      Susceptibility Calculation
 %%=========================================================================
 pars.GFactor    = b2g(B0*1e-4, pars.MWFQ);
