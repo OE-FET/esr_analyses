@@ -36,7 +36,7 @@ if is_powersat_exp(pars) % don't normalise for MWPW in power saturation measurem
     dset{:, 2:end} = dset{:, 2:end} / (pars.QValue * pars.B0MA);
 else
     pars_norm.MWPW = 1;
-    dset{:, 2:end} = dset{:, 2:end} / (pars.QValue * sqrt(pars.MWPW) * pars.B0MA );
+    dset{:, 2:end} = dset{:, 2:end} / (pars.QValue * sqrt(pars.MWPW) * pars.B0MA);
 end
 
 
