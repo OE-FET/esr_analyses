@@ -52,7 +52,7 @@ slice_fit  = pseudo_voigt_fit(x, y(:,mid), 'deriv', 1);
 % Numerically double-integrate and then fit the 2D spectrum to estimate T1*T2
 DI = double_int_num(x, y, 'baseline', false);
 norm = 1e9;
-ft = fittype('A * 1e9 * x /sqrt(1+1e9*gmSquaredT1T2*x^2)');
+ft = fittype(sprintf('A * 1e9 * x /sqrt(1 + %e * gmSquaredT1T2 * x^2)', norm));
 pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [slice_fit.a, 1], 'Lower', [0, 0]);
 
 FWHM_lorentz  = slice_fit.FWHM_lorentz;                % in Gauss
