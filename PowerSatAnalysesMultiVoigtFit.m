@@ -59,8 +59,8 @@ if any(isnan(var0), 'all')
 
     % perform numerical double integrtion to estimate T1*T2
     DI = double_int_num(x, y, 'baseline', false);
-    norm = 1e4;
-    ft = fittype(sprintf('A * 1e9 * x /sqrt(1 + %e * gmSquaredT1T2 * x^2)', norm));
+    scaling = 1e4;
+    ft = fittype(sprintf('A * 1e9 * x /sqrt(1 + %e * gmSquaredT1T2 * x^2)', scaling));
     pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [slice_fit.a, 1], 'Lower', [0, 0]);
 
     FWHM_lorentz  = slice_fit.FWHM_lorentz;                  % in Gauss
@@ -68,7 +68,7 @@ if any(isnan(var0), 'all')
 
     A0   = slice_fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw(mid))/N; % see 'modScaling'
     B0   = slice_fit.x0;                                     % in Gauss
-    T1T2 = norm*pwrst_fit.gmSquaredT1T2 / gmratio^2;          % in sec^2
+    T1T2 = scaling*pwrst_fit.gmSquaredT1T2 / gmratio^2;          % in sec^2
     T2   = 2/(gmratio * FWHM_lorentz*1E-4);                  % in sec
     T1   = T1T2/T2;                                          % in sec
     
