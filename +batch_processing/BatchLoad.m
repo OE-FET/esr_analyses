@@ -24,22 +24,22 @@ global Path
 [fileNames, Path] = uigetfile([Path, '*.DSC'], ...
     'Please select ESR data files.', 'MultiSelect', 'on');
 
-    
+
 if ~iscell(fileNames)
     fileNames = {fileNames};
 end
-    
+
 nFiles = numel(fileNames);
 output_table = table;
 
 for i = 1:nFiles
-    
-    filePath = [Path fileNames{i}];    
+
+    filePath = [Path fileNames{i}];
     filePathBG = [];
-    
+
     if ~strcmp(bckgrndStrQ, 'n')
         filePathBGcandidates = {'Vg_00.', 'Vg_0.'};
-        
+
         for candidate=filePathBGcandidates
             filePathBGcandidate = regexprep(filePath, 'Vg_(\S+)(\.)', candidate{1});
             if exist(filePathBGcandidate, 'file') == 2
@@ -47,7 +47,7 @@ for i = 1:nFiles
                 break
             end
         end
-  
+
         if filePathBG
             disp('Background file:');
             disp(filePathBG);
@@ -56,17 +56,16 @@ for i = 1:nFiles
             disp(filePath);
         end
     end
-            
+
     if isempty(filePathBG)
         dset = BrukerRead(filePath);
     else
         dset = subtract_background(filePath, filePathBG);
     end
-    
+
     pars = dset.Properties.UserData;
-    
+
     title = matlab.lang.makeValidName(strcat(fileNames{i}));
-    
 
     if isfield(pars, 'y_axis')
         steps = repmat(pars.y_axis, width(dset) - 1);

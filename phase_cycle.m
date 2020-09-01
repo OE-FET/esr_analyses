@@ -43,9 +43,9 @@ s0 = schannel_x * cos(phase_shift) - channel_y * sin(phase_shift);
 s90 = schannel_x * sin(phase_shift) + channel_y * cos(phase_shift);
 
 if plot_result
-    
+
     fig_name = 'Phase cycling';
-    
+
     fh = findobj( 'Type', 'Figure', 'Name', fig_name);
     if isempty(fh)
         figure('Name', fig_name);
@@ -66,13 +66,13 @@ if plot_result
     h2 = stackplot(x, s90, 'yoffsets', yoffsets, 'style', 'r');
     legend([h1(1), h2(1)], ["0 deg", "90 deg"])
     grid on; axis tight;
-    
+
     sgtitle('Phase cycling')
-    
+
     hold off;
-    
+
     rad = input('Apply correction? [0 deg] ');
-    
+
     if isempty(rad)
         phase_shift = mod(phase_shift, 2*pi);
         fprintf('\nphase shift = %.1f deg\n\n', phase_shift*180/pi);

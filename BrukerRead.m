@@ -28,7 +28,7 @@ function varargout = BrukerRead(varargin)
 %
 %   dset = BrukerRead
 %          GUI load a file, return as a table
-%                   
+%
 %
 %   [x, y, pars] = BrukerRead('/path/to/file.DTA')
 %                  load x,y and info of file.DTA to the workspace
@@ -123,7 +123,7 @@ if strcmp(pars.XTYP, 'IDX')  % indexed data
 elseif strcmp(pars.XTYP, 'IGD')  % data points saved in file
     % if exist, load .YGF , convert to usable matrix
     fid = fopen( [directory '/' name '.XGF'], 'r', 'ieee-be.l64');
-    
+
     if fid < 0
         error('*.XGF file expected but not found.')
     end
@@ -141,7 +141,7 @@ if strcmp(pars.YTYP, 'IDX')  % indexed data
 elseif strcmp(pars.YTYP, 'IGD')  % data points saved in file
     % if exist, load .YGF , convert to usable matrix
     fid = fopen( [directory '/' name '.YGF'], 'r', 'ieee-be.l64');
-    
+
     if fid < 0
         error('*.YGF file expected but not found.')
     end
@@ -159,7 +159,7 @@ if strcmp(pars.ZTYP, 'IDX')  % indexed data
 elseif strcmp(pars.ZTYP, 'IGD')  % data points saved in file
     % if exist, load .ZGF , convert to usable matrix
     fid = fopen( [directory '/' name '.ZGF'], 'r', 'ieee-be.l64');
-    
+
     if fid < 0
         error('*.ZGF file expected but not found.')
     end
@@ -265,17 +265,17 @@ function [par_struct] = param2struct(par_list)
     for i = 1:length(ParaMatrix)
         par_struct.(ParaMatrix{i, 1}) = ParaMatrix{i, 2};
     end
-    
+
     % convert string arrays
     for name = ["IKKF", "IRFMT", "IRNAM", "IRUNI"]
         par_struct.(name) = strip(split(par_struct.(name), ','), 'both', "'");
     end
-    
+
     % replace empty units by a.u.
     for k=1:length(par_struct.IRUNI)
         if isempty(par_struct.IRUNI{k})
             par_struct.IRUNI{k} = 'a.u.';
         end
     end
-    
+
 end

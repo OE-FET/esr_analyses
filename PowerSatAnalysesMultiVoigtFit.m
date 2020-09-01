@@ -71,9 +71,9 @@ if any(isnan(var0), 'all')
     T1T2 = scaling*pwrst_fit.gmSquaredT1T2 / gmratio^2;          % in sec^2
     T2   = 2/(gmratio * FWHM_lorentz*1E-4);                  % in sec
     T1   = T1T2/T2;                                          % in sec
-    
+
     auto_var0 = ones(N,1) * [A0/N B0 T1 T2 FWHM_gauss];      % starting points
-    
+
     % wiggle all starting points apart from B0
     wiggle = 1 + (rand(size(auto_var0))-0.5)/100;
     auto_var0 = wiggle .* auto_var0;
@@ -159,7 +159,7 @@ for i=1:length(A) % calculate for each peak
     areaDIerror = modScaling * Bmw .* dA(i);
 
     % get 'maximum' value, even though all values are equal...
-    pars.GFactor = g_factors(i); pars.GFactorErr = g_factor_errs(i); 
+    pars.GFactor = g_factors(i); pars.GFactorErr = g_factor_errs(i);
     [Chi(i), dChi(i)]   = max(susceptibility_calc(areaDI, pars, 'dA', areaDIerror));
     [NSpin(i), dNSpin(i)] = max(spincounting(areaDI, pars, 'dA', areaDIerror));
 end

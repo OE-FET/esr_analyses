@@ -8,7 +8,7 @@ function [dset] = normalise_spectrum(dset)
 %
 %   Note: The actual normalisation performed by Xepr and the signal channel
 %         depends on the signal channel / signal processing unit version.
-%         This function DOES NOT check for the signal channel version but 
+%         This function DOES NOT check for the signal channel version but
 %         assumes a SPU which ALWAYS scales for the time constant.
 %
 %   INPUT(S):

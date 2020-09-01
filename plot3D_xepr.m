@@ -46,7 +46,7 @@ for k=1:N
     X = ones(size(y)).*x;
     Y = ones(size(y)).*pars.y_axis';
     Z = y;
-    
+
     z_label = sprintf('%s [%s]', pars.IRNAM{k}, pars.IRUNI{k});
 
     %% Plot

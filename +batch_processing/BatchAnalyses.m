@@ -4,7 +4,7 @@ function [output, output_table, errors] = BatchAnalyses(analysesFunc, col_names)
 %   INPUTS(S):
 %   analysesFunc - Handle of function to use for analyses, e.g.,
 %                  '@PowerSatAnalysesVoigtFit'.
-%   col_names    - Cell array with names of parameters that should be 
+%   col_names    - Cell array with names of parameters that should be
 %                  prepended to the returned table.
 %
 %   OUTPU(S):
@@ -41,7 +41,7 @@ for i = 1:nFiles
 
     if ~strcmp(bckgrndStrQ, 'n')
         filePathBGcandidates = {'Vg_00.', 'Vg_0.'};
-        
+
         for candidate=filePathBGcandidates
             filePathBGcandidate = regexprep(filePath, 'Vg_(\S+)(\.)', ...
                 candidate{1});
@@ -50,7 +50,7 @@ for i = 1:nFiles
                 break
             end
         end
-  
+
         if filePathBG
             disp('Background file for:');
             disp(filePath);
@@ -86,7 +86,7 @@ for i = 1:nFiles
     else
         output_table = [output_table; struct2table(out_analyses)];  %#ok
     end
-    
+
     if i ~= nFiles
         input('Press enter to continue.');
         close all

@@ -90,7 +90,7 @@ if plotting
     stackplot(x, zeros(size(y)), 'yoffsets', yoffsets, 'style', 'k-');
     xlim(gca, xL); ylim(gca, yL);
     hold off;
-    
+
     % reverse stacking order
     chi = get(gca, 'Children');
     set(gca, 'Children',flipud(chi));

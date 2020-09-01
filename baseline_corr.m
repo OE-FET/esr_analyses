@@ -8,7 +8,7 @@ function [ycorr, ybaseline] = baseline_corr(x, y, method)
 %   INPUT(S):
 %   x - x-axis values
 %   y - y-axis values
-%   method - If 'poly', all points in the specified interval will be used 
+%   method - If 'poly', all points in the specified interval will be used
 %   to determine the a polymial baseline of 3rd order. If method == 'spline',
 %   only the endpoints and centre point will be used to fit a spline.
 %   Default: 'poly'.

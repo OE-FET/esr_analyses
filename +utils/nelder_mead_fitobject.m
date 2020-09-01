@@ -13,7 +13,7 @@ classdef nelder_mead_fitobject < handle
 
     methods
         function obj = nelder_mead_fitobject(fitfunc, xData, yData, coef0, coef, sse)
-            
+
             obj.fitfunc = fitfunc;
             obj.xData = xData;
             obj.yData = yData;
@@ -21,14 +21,14 @@ classdef nelder_mead_fitobject < handle
             obj.coef = coef;
             obj.sse = sse;
             obj.yFit = eval_at(obj, obj.xData);
-        
+
         end
-        
+
         function J = jacobian(obj, accur)
-            
+
             import esr_analyses.*
             import esr_analyses.utils.*
-            
+
             if isempty(obj.J)
 
                 if nargin < 2; accur = 'accurate'; end
@@ -45,25 +45,25 @@ classdef nelder_mead_fitobject < handle
                 J = obj.J;
             end
         end
-        
+
         function ci = confint(obj, varargin)
             % CONFINT of fit paramters
             %
             %   Returns the 95% confidence intervals for fit coefficients.
             %
-            
+
             import esr_analyses.utils.*
-            
+
             jacobian(obj);
 
             % calculate residuals
             resid = obj.yData - obj.yFit;
-            
+
             alpha = get_kwarg(varargin, 'alpha', 0.05);
             ci = nlparci(obj.coef, resid, 'jacobian', obj.J, 'alpha', alpha);
 
         end
-        
+
         function se = standarderror(obj, varargin)
             % CONFINT of fit paramters
             %
@@ -74,7 +74,7 @@ classdef nelder_mead_fitobject < handle
             se = diff(ci,1,2)/2;
 
         end
-        
+
         function h = plot(obj)
 
             import esr_analyses.*
@@ -132,7 +132,7 @@ classdef nelder_mead_fitobject < handle
             end
 
         end
-        
+
         function y = eval_at(obj, x)
             y = obj.fitfunc(obj.coef, x);
         end

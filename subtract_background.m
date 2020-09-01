@@ -11,7 +11,7 @@ function dset = subtract_background(varargin)
 % 	INPUT(S):
 %   SUBTRACT_BACKGROUND()          - opens GUI to select signal and
 %                                    background data files
-%   ...('signal_data')             - given path to signal data & opens a 
+%   ...('signal_data')             - given path to signal data & opens a
 %                                    GUI to select background data file
 %   ...('signal_data','bg_data')   - given signal & bg data files
 %   ...(dsetSig, dsetBg)           - given signal and bg data directly
@@ -130,9 +130,9 @@ dsetBG{:,1} = dsetBG{:,1} - B_offset;  % overwrite for plotting
 
 for k=1:width(dset)-1
     figure('Name','Background subtraction');
-    
+
     subplot(1, k, k)
-    
+
     yoffset = max(dsetSig{:,k+1});
     % plot background
     sp1 = stackplot_xepr(dsetBG(:,[1, k+1]), 'yoffsets', yoffset, 'style', 'r');
@@ -141,7 +141,7 @@ for k=1:width(dset)-1
     sp2 = stackplot_xepr(gca, dsetSig(:,[1, k+1]), 'yoffsets', yoffset, 'style', 'b');
     hold off;
     legend([sp1(1,1) sp2(1,1)], {'background', 'signal'})
-    
+
 end
 
 end

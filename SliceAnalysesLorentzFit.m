@@ -1,5 +1,5 @@
 function [out_struct, out_table] = SliceAnalysesLorentzFit(varargin)
-%SLICEANALYSESVLORENTZFIT performs normalization and spin-counting of an 
+%SLICEANALYSESVLORENTZFIT performs normalization and spin-counting of an
 %ESR signal by fitting it to a Lorentz function.
 %
 %   Performs a 1D fit of a cw-EPR spectrum to determine spin cohrence time

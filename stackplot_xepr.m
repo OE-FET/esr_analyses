@@ -65,14 +65,14 @@ phandle = [];
 
 for k = 1:N
     y = dset{:,k+1};
-    
+
     subplot(1,N,k)
     ph_k = stackplot(x, y, opts{:});
 
     xlabel(x_label);
     ylabel(y_label);
     title(dset.Properties.VariableNames{k+1}, 'Interpreter', 'none');
-    
+
     phandle = [phandle, ph_k];
 end
 
