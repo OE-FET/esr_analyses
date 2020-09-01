@@ -10,7 +10,7 @@ else
     error('Either dataset table or parameter structure required.')
 end
 
-if isfield(pars,'YNAM') && isfield(pars, 'z_axis')
+if isfield(pars,'YNAM') && isfield(pars, 'y_axis')
     res = true;
 else
     res = false;

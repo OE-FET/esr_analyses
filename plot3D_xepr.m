@@ -44,7 +44,7 @@ for k=1:N
     y = dset{:,k+1};
 
     X = ones(size(y)).*x;
-    Y = ones(size(y)).*pars.z_axis';
+    Y = ones(size(y)).*pars.y_axis';
     Z = y;
     
     z_label = sprintf('%s [%s]', pars.IRNAM{k}, pars.IRUNI{k});

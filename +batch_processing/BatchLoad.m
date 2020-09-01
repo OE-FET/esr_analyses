@@ -67,12 +67,13 @@ for i = 1:nFiles
     
     title = matlab.lang.makeValidName(strcat(fileNames{i}));
     
-    if isfield(pars, 'z_axis')
-        steps = repmat(pars.z_axis, width(dset) - 1);
+
+    if isfield(pars, 'y_axis')
+        steps = repmat(pars.y_axis, width(dset) - 1);
     end
 
     output_table.(strcat(title, '_x')) = dset{:,1};
-    if slice && isfield(pars, 'z_axis')
+    if slice && isfield(pars, 'y_axis')
         output_table.(strcat(title, '_y')) = dset{:,2:end}(:, steps == slice);
     else
         output_table.(strcat(title, '_y')) = dset{:,2:end};

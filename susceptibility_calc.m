@@ -47,7 +47,7 @@ end
 
 % get MW power(s)
 if is_powersat_exp(pars)
-    Pmw = pars.z_axis*1e-3; % MW Power in W
+    Pmw = pars.y_axis*1e-3; % MW Power in W
 else
     Pmw = pars.MWPW;
 end

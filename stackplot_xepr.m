@@ -77,8 +77,8 @@ for k = 1:N
 end
 
 if is_2d_exp(dset)
-    for i = 1:length(pars.z_axis)
-        labels{i} = sprintf('%f %s', pars.z_axis(i), pars.YUNI);
+    for i = 1:length(pars.y_axis)
+        labels{i} = sprintf('%f %s', pars.y_axis(i), pars.YUNI);
     end
     legend(ph_k, labels, 'Location', 'best','fontsize',10)
 end

@@ -44,7 +44,7 @@ for k=1:N
 
     %% Plot
     subplot(1,N,k)
-    plot2D(x, pars.z_axis, y);
+    plot2D(x, pars.y_axis, y);
     xlabel(x_label, 'Interpreter', 'none');
     ylabel(y_label, 'Interpreter', 'none');
     cbar = colorbar;
