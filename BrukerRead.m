@@ -1,64 +1,39 @@
 function varargout = BrukerRead(varargin)
-%BRUKERREAD Load Bruker BE3ST files (.DTA / .DSC or .spc/.par).
+%BRUKERREAD Load Bruker BE3ST files (.DTA / .DSC / .YGF).
 %
 %   BRUKERREAD()
 %   BRUKERREAD('/path/to/file')
-%   [x, y] = BRUKERREAD(...)
-%   [x, y, Pars] = BRUKERREAD(...)
-%   [x, y, z] = BRUKERREAD(...)
-%   [x, y, z, Pars] = BRUKERREAD(...)
+%   dset = BRUKERREAD(...)
+%   [x, o, pars] = BRUKERREAD(...)
 %
 %   BRUKERREAD when run without any inputs, opens a GUI so that the user can
 %   open the file themselves. BRUKERREAD can also accept a path to a file as
 %   an input if the path is put in 'quotes' and the extension (.DTA) is left
 %   off.
 %
-%   BRUKERREAD now also works with Bruker .spc/.par from EMX machines -
-%   thanks to Muege Aksoyoglu (Uni. Freiburg, DE) who kindly donated some
-%   .spc/.par files for testing
-%
-%   BRUKERREAD outputs a x matrix (magnetic field / time), a y matrix
-%   (intensity) and an optional info field.
-%
-%   BRUKERREAD is fully functional and extensively tested with cw experiments
-%   and 3 dimensional cw experiments where there is an additional .YGF file -
-%   such as power saturation experiments. BRUKERREAD provides functionality
-%   for pulsed experiments, it has been extensively tested with field swept
-%   echoes, fourier induced decays and PELDOR traces. HYSCORE and ENDOR
-%   functionality was added in version 13.01 but has had little testing.
-%   Other complex pulsed experiments are untested and may have varying
-%   results but should yield complete arrays. Please email me if you come
-%   across any errors.
-%
 %   Inputs:
 %   input1     - a string input to the path of a file
 %
 %   Outputs:
-%   output0    - plot
-%                A new figure showing the data
 %   output1    - x axis
 %                Magnetic field / time
-%   output2    - y axis
+%   output2    - o axis
 %                Intensity
 %   output3    - information
 %                Array of information about the loaded file
-%   output4    - z axis
-%                For 3 dimensional pulsed experiments - such as HYSCORE,
-%                then the intensity is in the 3rd "z" dimension
 %
 %   Example:
 %   [x, y, pars] = BrukerRead
 %                  GUI load a file
 %
+%   dset = BrukerRead
+%          GUI load a file, return as a table
+%                   
+%
 %   [x, y, pars] = BrukerRead('/path/to/file.DTA')
 %                  load x,y and info of file.DTA to the workspace
 %
-%   MODIFICATIONS
-%   This version of BrukerRead automatically detects which parameters have
-%   been saved and reads them out. This is done by the function param2struct
-%   at the end of the file. Modification by Sam Schott, Oct 2016.
 %
-
 %%                         Input arguments
 % ========================================================================
 
@@ -71,7 +46,7 @@ global Path
 switch nargin
     case 0
         if Path==0; Path=[]; end
-        [file, directory] = uigetfile({'*.DTA;*.spc', 'Bruker File (*.DTA,*.spc)'; '*.*', 'All Files (*.*)'}, 'Load Bruker file', Path);
+        [file, directory] = uigetfile({'*.DTA;', 'Bruker File (*.DTA)'; '*.*', 'All Files (*.*)'}, 'Load Bruker file', Path);
         Path = directory;
         % if user cancels command nothing happens
         if isequal(file, 0) || isequal(directory, 0)
@@ -81,36 +56,24 @@ switch nargin
 
         % File name/path manipulation
         address = [directory, file];
-        [~, name, extension] = fileparts(address);
+        [~, name, ~] = fileparts(address);
 
     case 1
         address = varargin{1};
-        [directory, name, extension] = fileparts(address);
+        [directory, name, ~] = fileparts(address);
 
 end
 
 
-%%                         Parameter files
+%%                         Parameter file
 % ========================================================================
 
-% Load .dsc/.par file
-switch extension
-    case '.spc'
-        file_par = [directory '/' name '.par'];
-        fid = fopen(file_par, 'r');
+% Load .dsc file
+file_dsc = [directory '/' name '.DSC'];
+fid = fopen(file_dsc, 'r');
 
-        if fid < 0
-            error('Both *.spc and *.par files are required to open the file.')
-        end
-
-    case {'.DTA', '.DSC'}
-        file_dsc = [directory '/' name '.DSC'];
-        fid = fopen(file_dsc, 'r');
-
-        if fid < 0
-            error('Both *.DSC and *.DTA files are required to open the file.')
-        end
-
+if fid < 0
+    error('Both *.DSC and *.DTA files are required to open the file.')
 end
 
 % Get characters from file
@@ -124,184 +87,135 @@ lines = strsplit(string, '\n');
 parameter_list = char(lines);
 
 % Do basic reading of parameter file
-par_struct = param2struct(parameter_list);
+pars = param2struct(parameter_list);
 
 
-%%                            Data files
+%%                            Data file
 % ========================================================================
 
-% Load .dta/.spc file
-switch extension
-    case '.spc'
-        fid   = fopen( [directory '/' name '.spc'], 'r');
+% Load .dta file
+fid = fopen( [directory '/' name '.DTA'], 'r', 'ieee-be.l64');
 
-        if fid < 0
-            error(['File ''',name,'.spc'' could not be opened, both *.spc and *.par files are required to open the file.'])
-        end
-
-        [y_raw, ~] = fread(fid, inf, 'float');
-
-    case {'.DTA', '.DSC'}
-        fid = fopen( [directory '/' name '.DTA'], 'r', 'ieee-be.l64');
-
-        if fid < 0
-            error(['File ''', name, '.DTA'' could not be opened, both *.DTA and *.DSC files are required to open the file.'])
-        end
-
-        [y_raw, ~] = fread(fid, inf, 'float64');
-
+if fid < 0
+    error(['File ''', name, '.DTA'' could not be opened, both *.DTA and *.DSC files are required to open the file.'])
 end
+
+[dta, ~] = fread(fid, inf, 'float64'); % TODO: add support for other formats
 
 fclose(fid);
 
-yNum = length(par_struct.IKKF);  % number of datasets per slice scan
-yNum = yNum + length(par_struct.IKKF(par_struct.IKKF == "CPLX")); % add rows for imaginary parts
+yNum = length(pars.IKKF);  % number of datasets per slice scan
+yNumCplx = length(pars.IKKF(pars.IKKF == "CPLX"));
 
-y = table();
+yNumTotal = yNum + yNumCplx;
 
-for i = 1:yNum
-    y.(join(['y', num2str(i)])) = y_raw(i:yNum:end);
+o = [];
+
+for i = 1:yNumTotal
+    o = [o dta(i:yNumTotal:end)];
 end
 
-
-%%                      Magnetic field / X - axis
+%%                             X-Axes
 % ========================================================================
 
-switch extension
-    case '.spc'
-
-        MagField.min      = par_struct.HCF - (par_struct.HSW / 2);
-        MagField.max      = par_struct.HCF + (par_struct.HSW / 2);
-        MagField.sampling = par_struct.HSW / par_struct.ANZ;
-
-        x = (MagField.min:MagField.sampling:MagField.max)';
-
-    case {'.DTA', '.DSC'}
-
-        par_struct.XSTEP	= par_struct.XWID / par_struct.XPTS;
-        par_struct.XMAX	= par_struct.XMIN + par_struct.XWID - par_struct.XSTEP;
-
-        x = (par_struct.XMIN:par_struct.XSTEP:par_struct.XMAX)';
-
-end
-
-
-%%                          Data / Y - axis
-% ========================================================================
-
-% Some work required for Pulsed experiments, cw experiments fine
-
-if strcmp(par_struct.EXPT, 'PLS')
-
-    % PELDOR, FSE and FID require splitting into real and imaginary
-    % channels, these should have no Y axis data.
-
-    if strcmp(par_struct.YTYP, 'NODATA')
-
-        z = reshape(y, 2, []);
-        clear y;
-        y_real = z(1, :)';
-        y_imag = z(2, :)';
-        
-        y = table(y_real, y_imag);
-
-    % HYSCORE obviously have Y axis data collection and require splitting
-
-    elseif strcmp(par_struct.YTYP, 'IDX')
-
-        z = y;
-        clear y
-
-        % Create Y-axis
-        % =============
-
-        % Create other Y points
-        par_struct.YSTEP	= par_struct.YWID / par_struct.YPTS;
-        par_struct.YMAX	= par_struct.YMIN + par_struct.YWID - par_struct.YSTEP;
-
-        y = (par_struct.YMIN:par_struct.YSTEP:par_struct.YMAX)';
-        y = table(y);
-
-        % Format Z-axis
-        % =============
-
-        z = reshape(z, size(y, 1), []);
-
+if strcmp(pars.XTYP, 'IDX')  % indexed data
+    x = linspace(pars.XMIN, pars.XMIN + pars.XWID, pars.XPTS)';
+elseif strcmp(pars.XTYP, 'IGD')  % data points saved in file
+    % if exist, load .YGF , convert to usable matrix
+    fid = fopen( [directory '/' name '.XGF'], 'r', 'ieee-be.l64');
+    
+    if fid < 0
+        error('*.XGF file expected but not found.')
     end
+
+    x = fread(fid, inf, 'float64');
+else
+    x = [];
 end
 
-
-%%                         YGF files / Z - axis
+%%                             Y-Axes
 % ========================================================================
 
-% search directory for .YGF file
-if exist([directory '/' name '.YGF'], 'file')
-
+if strcmp(pars.YTYP, 'IDX')  % indexed data
+    y = linspace(pars.YMIN, pars.YMIN + pars.YWID, pars.YPTS)';
+elseif strcmp(pars.YTYP, 'IGD')  % data points saved in file
     % if exist, load .YGF , convert to usable matrix
     fid = fopen( [directory '/' name '.YGF'], 'r', 'ieee-be.l64');
-
+    
     if fid < 0
-        error('BrukerRead: a *.YGF file was found in the folder but could not be opened. BrukerRead will now abort. Please remove the file from the folder or check its permissions.')
+        error('*.YGF file expected but not found.')
     end
 
-    [par_struct.z_axis, par_struct.z_axis_points] = fread(fid, inf, 'float64');
-    
-    y_reshaped = table();
-    
-    for k = 1:width(y)
-        % reshape the y-data into columns using number of data points
-        y_reshaped.(y.Properties.VariableNames{k}) = reshape(y{:,k}, par_struct.XPTS , []);
-    end
-    
-    y = y_reshaped;
-
+    y = fread(fid, inf, 'float64');
+else
+    y = [];
 end
 
+%%                             Z-Axes
+% ========================================================================
+
+if strcmp(pars.ZTYP, 'IDX')  % indexed data
+    z = linspace(pars.ZMIN, pars.ZMIN + pars.ZWID, pars.ZPTS)';
+elseif strcmp(pars.ZTYP, 'IGD')  % data points saved in file
+    % if exist, load .ZGF , convert to usable matrix
+    fid = fopen( [directory '/' name '.ZGF'], 'r', 'ieee-be.l64');
+    
+    if fid < 0
+        error('*.ZGF file expected but not found.')
+    end
+
+    z = fread(fid, inf, 'float64');
+else
+    z = [];
+end
+
+%%                         Reshape data
+% ========================================================================
+
+dset = table();
+
+for i=1:size(o, 2)
+
+    if ~isempty(z)
+        dset.(join(['o', num2str(i)])) = reshape(o(:,i), length(x), length(y),  length(z));
+    elseif ~isempty(y)
+        dset.(join(['o', num2str(i)])) = reshape(o(:,i), length(x),  length(y));
+    else
+        dset.(join(['o', num2str(i)])) = o(:,i)';
+    end
+
+end
 
 %%                         Output arguments
 % ========================================================================
 
-dset = [table(x) y];
+dset = [table(x) dset];
 
 yUnits = {};
 
-for k = 1:length(par_struct.IKKF)
-    if strcmp(par_struct.IKKF{k}, 'CPLX')
-        yUnits(end+1:end+2) = {par_struct.IRUNI{k}; par_struct.IRUNI{k}};
+for k = 1:length(pars.IKKF)
+    if strcmp(pars.IKKF{k}, 'CPLX')
+        yUnits(end+1:end+2) = {pars.IRUNI{k}; pars.IRUNI{k}};
     else
-        yUnits(end+1) = {par_struct.IRUNI{k}};
+        yUnits(end+1) = {pars.IRUNI{k}};
     end
 end
-        
 
-dset.Properties.VariableUnits = [{par_struct.XUNI} yUnits];
-dset.Properties.UserData = par_struct;
+pars.x_axis = x;
+pars.y_axis = y;
+pars.z_axis = z;
 
+dset.Properties.VariableUnits = [{pars.XUNI} yUnits];
+dset.Properties.UserData = pars;
 
 % Output results according to requests
 switch nargout
     case 1
         varargout{1} = dset;
-    case 2
-        if strcmp(par_struct.EXPT, 'PLS') && strcmp(par_struct.YTYP, 'IDX')
-            varargout{1} = dset;
-            varargout{2} = z;
-        else
-            varargout{1} = dset;
-            varargout{2} = par_struct;
-        end
-
     case 3
-        if strcmp(par_struct.EXPT, 'PLS') && strcmp(par_struct.YTYP, 'IDX')
-            varargout{1} = dset;
-            varargout{2} = z;
-            varargout{3} = par_struct;
-        else
-            varargout{1} = x;
-            varargout{2} = y{:,:};
-            varargout{3} = par_struct;
-        end
-
+        varargout{1} = x;
+        varargout{2} = dset{:,:};
+        varargout{3} = pars;
     otherwise
         varargout{1} = dset;
 end
