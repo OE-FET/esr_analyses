@@ -214,7 +214,7 @@ switch nargout
         varargout{1} = dset;
     case 3
         varargout{1} = x;
-        varargout{2} = dset{:,:};
+        varargout{2} = dset{:,2:end};
         varargout{3} = pars;
     otherwise
         varargout{1} = dset;
