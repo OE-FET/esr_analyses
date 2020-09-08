@@ -23,15 +23,15 @@ function varargout = BrukerRead(varargin)
 %                Array of information about the loaded file
 %
 %   Example:
-%   [x, y, pars] = BrukerRead
+%   [x, o, pars] = BrukerRead
 %                  GUI load a file
 %
 %   dset = BrukerRead
 %          GUI load a file, return as a table
 %
 %
-%   [x, y, pars] = BrukerRead('/path/to/file.DTA')
-%                  load x,y and info of file.DTA to the workspace
+%   [x, o, pars] = BrukerRead('/path/to/file.DTA')
+%                  load x,o and info of file.DTA to the workspace
 %
 %
 %%                         Input arguments
