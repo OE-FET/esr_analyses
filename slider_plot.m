@@ -13,7 +13,7 @@ function [S] = slider_plot(x, y, varargin)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-if length(x) ~= length(y)
+if size(x,1) ~= size(y,1)
     error('x and y data must have the same length.')
 end
 
@@ -36,10 +36,13 @@ xlim([min(S.x) max(S.x)]);
 ylim(1.1*[min(S.y, [], 'all') max(S.y, [], 'all')]);
 grid on;
 
+minor_step_percent = round(1/size(S.y, 2),3);
+major_step_percent = round(1/size(S.y, 2),3);
+
 S.sl = uicontrol('style', 'slide', ...
                  'unit', 'pix', ...
                  'min', 1, 'max', size(S.y, 2), 'val', 1, ...
-                 'sliderstep', [1/size(S.y, 2) 1/size(S.y, 2)], ...
+                 'sliderstep', [minor_step_percent 4*major_step_percent], ...
                  'callback', {@sl_call, S});
 end
 

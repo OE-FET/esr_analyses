@@ -33,7 +33,7 @@ if nargin < 3
     method = 'poly';
 end
 
-if length(x)~=length(y)
+if size(x,1) ~= size(y,1)
     error("'x' and 'y' must have the same length.");
 end
 
