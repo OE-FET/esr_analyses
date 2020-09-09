@@ -181,7 +181,7 @@ for i=1:size(o, 2)
     elseif ~isempty(y)
         dset.(join(['o', num2str(i)])) = reshape(o(:,i), length(x),  length(y));
     else
-        dset.(join(['o', num2str(i)])) = o(:,i)';
+        dset.(join(['o', num2str(i)])) = o(:,i);
     end
 
 end
