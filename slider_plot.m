@@ -36,13 +36,15 @@ xlim([min(S.x) max(S.x)]);
 ylim(1.1*[min(S.y, [], 'all') max(S.y, [], 'all')]);
 grid on;
 
-minor_step_percent = round(1/size(S.y, 2),3);
-major_step_percent = round(1/size(S.y, 2),3);
+n_plots = size(S.y, 2);
+
+minor_step_percent = 1/(n_plots - 1);
+major_step_percent = 1/(n_plots - 1);
 
 S.sl = uicontrol('style', 'slide', ...
                  'unit', 'pix', ...
-                 'min', 1, 'max', size(S.y, 2), 'val', 1, ...
-                 'sliderstep', [minor_step_percent 4*major_step_percent], ...
+                 'min', 1, 'max', n_plots, 'val', 1, ...
+                 'sliderstep', [minor_step_percent major_step_percent], ...
                  'callback', {@sl_call, S});
 end
 
