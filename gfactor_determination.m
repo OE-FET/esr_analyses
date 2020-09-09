@@ -48,7 +48,8 @@ B_res   = x(II);
 %% g-factor from zero crossing, higher accuracy
 % look at 0.4 Gauss interval around B_sample
 dim = size(y);
-pm = max(0.4, 5*pars.XSTEP);
+step = pars.XWID/pars.XPTS;
+pm = max(0.4, 5*step);
 Interval= [B_res-pm, B_res+pm];
 
 for k=1:dim(2)
