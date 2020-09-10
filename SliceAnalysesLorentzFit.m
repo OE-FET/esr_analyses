@@ -37,9 +37,9 @@ if strcmp(yes, 'y')
     y = baseline_corr(x, y);
 end
 
-%%                         Calculate MW field
+%%                   Assume that we are not in saturation
 %%=========================================================================
-Bmw = get_mw_fields(pars);
+Bmw = 1e-6;
 
 %%                      Get starting points for fit
 %%=========================================================================
