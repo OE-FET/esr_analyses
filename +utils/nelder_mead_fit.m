@@ -36,6 +36,22 @@ end
 
 % define sum of squares to minimize
 sumofsquares = @(coef) sum(sum( abs(fitfunc(coef, x) - y).^2  ));
+
+% define our own plot function to call at each iteration
+
+function stop = plot_func(coef, optimValues, ~)
+    stop = false;
+    x_slice = x{1}(1,:)';
+    [~, yoffsets] = stackplot(x_slice, y, 'style', 'k.');
+    hold on;
+    stackplot(gca, x_slice, fitfunc(coef, x), 'yoffsets', yoffsets, 'style', 'r');
+    set(get(gca,'Title'), 'String', sprintf('Current fit error: %g', optimValues.fval));
+    hold off;
+end
+
+opt_plot_func = optimset('PlotFcns', @plot_func);
+opt = optimset(opt, opt_plot_func);
+
 % run Nelder-Mead fit
 [best_coef, sumofsquares_error, exitflag, output] = fminsearch(sumofsquares, coef0, opt);
 

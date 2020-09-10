@@ -91,7 +91,7 @@ classdef nelder_mead_fitobject < handle
                 xx1 = x1(1,:);
                 xx2 = x2(:,1);
                 % get best-fit curve (in a higher resolution version)
-                x_interp        = linspace(min(xx1), max(xx1), 2^10);
+                x_interp         = linspace(min(xx1), max(xx1), 2^10);
                 x2_interp        = linspace(min(xx2), max(xx2), 2^10);
                 [X1Plot, X2Plot] = meshgrid(x_interp, x2_interp);
                 yFitInterpol     = eval_at(obj, {x1, x2});
