@@ -57,18 +57,9 @@ for k=1:dim(2)
     x_slice = x(Slice);
     y_slice = y(Slice,k);
 
-    % find last value > 0 (B1)
-    B1 = x_slice(sum(y_slice>0));
-    % find first value < 0 (B2)
-    B2 = x_slice(sum(y_slice>0)+1);
-
-    % calculate intersect with x-axis
-    I1 = y_slice(sum(y_slice>0));
-    I2 = y_slice(sum(y_slice>0)+1);
-
-    m = (I2-I1) / (B2-B1);
-    c = I1 - m*B1;
-    B_res(k) = -c/m;
+    %polynomial fit of slice area
+    p = polyfit(x_slice, y_slice, 1);
+    B_res(k) = -p(2)/p(1);
 end
 
 % convert to g-factor
