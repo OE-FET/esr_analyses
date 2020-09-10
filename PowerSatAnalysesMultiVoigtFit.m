@@ -68,7 +68,7 @@ if any(isnan(var0), 'all')
 
     A0   = slice_fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw(mid))/N; % see 'modScaling'
     B0   = slice_fit.x0;                                     % in Gauss
-    T1T2 = scaling*pwrst_fit.gmSquaredT1T2 / gmratio^2;          % in sec^2
+    T1T2 = scaling*pwrst_fit.gmSquaredT1T2 / gmratio^2;      % in sec^2
     T2   = 2/(gmratio * FWHM_lorentz*1E-4);                  % in sec
     T1   = T1T2/T2;                                          % in sec
 
@@ -96,11 +96,10 @@ func_single = @(v, x) abs(v(1))*esr_voigt_simulation(x{1}, abs(v(2)), ...
     abs(v(3)), abs(v(4)), abs(v(5)), x{2}, pars.B0MA*1e4, 1);
 
 % expand to multiple peaks
-multi_fit_func = @(v, x) to_multi(func_single, v, x);
+multi_fit_func = @(v, x) to_multi(func_single, N, v, x);
 
 % set fit options
-opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
-    @optimplotfval, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
+opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
 fitres   = nelder_mead_fit(multi_fit_func, {X, Y}, Z, var0, opt);
@@ -180,9 +179,7 @@ out_table = struct2table(out_struct,'AsArray',true);
 
 end
 
-function y = to_multi(func_single, variables, x)
-
-[N, ~] = size(variables);
+function y = to_multi(func_single, N, variables, x)
 
 result1 = func_single(variables(1,:), x);
 shape = num2cell(size(result1));

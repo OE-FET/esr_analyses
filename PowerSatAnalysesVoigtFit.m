@@ -31,11 +31,11 @@ import esr_analyses.utils.*
 
 dset = load_spectrum_dialog(varargin{:});
 assert_powersat_exp(dset);
-[x,y,pars] = dset_to_tuple(dset);
+[x,o,pars] = dset_to_tuple(dset);
 
 yes = input('Would you like to perform a baseline correction? y/[n] ', 's');
 if strcmp(yes, 'y')
-    y = baseline_corr(x, y);
+    o = baseline_corr(x, o);
 end
 
 %%                         Calculate MW fields
@@ -47,22 +47,22 @@ Bmw = get_mw_fields(pars);
 
 % perform slice fit of center spectrum
 mid  = round(length(Bmw)/2);
-slice_fit  = pseudo_voigt_fit(x, y(:,mid), 'deriv', 1);
+slice_fit  = pseudo_voigt_fit(x, o(:,mid), 'deriv', 1);
 
 % Numerically double-integrate and then fit the 2D spectrum to estimate T1*T2
-DI = double_int_num(x, y, 'baseline', false);
+DI = double_int_num(x, o, 'baseline', false);
 scaling = 1e4;
 ft = fittype(sprintf('A * 1e9 * x /sqrt(1 + %e * gmSquaredT1T2 * x^2)', scaling));
 pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [slice_fit.a, 1], 'Lower', [0, 0]);
 
-FWHM_lorentz  = slice_fit.FWHM_lorentz;                % in Gauss
-FWHM_gauss    = slice_fit.FWHM_gauss;                  % in Gauss
+FWHM_lorentz  = slice_fit.FWHM_lorentz;                  % in Gauss
+FWHM_gauss    = slice_fit.FWHM_gauss;                    % in Gauss
 
-A0   = slice_fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw(mid)); % see 'modScaling'
-B0   = slice_fit.x0;                                   % in Gauss
-T1T2 = scaling*pwrst_fit.gmSquaredT1T2 / gmratio^2;       % in sec^2
-T2   = 2/(gmratio * FWHM_lorentz*1E-4);                % in sec
-T1   = T1T2/T2;                                        % in sec
+A0   = slice_fit.a/(pars.B0MA * 1e4 * 1e4/8 * Bmw(mid)); % see 'modScaling'
+B0   = slice_fit.x0;                                     % in Gauss
+T1T2 = scaling*pwrst_fit.gmSquaredT1T2 / gmratio^2;      % in sec^2
+T2   = 2/(gmratio * FWHM_lorentz*1E-4);                  % in sec
+T1   = T1T2/T2;                                          % in sec
 % RLC 21/09/19 Note: Bad fits are often attributable to inaccurate
 % estimates of T1. If your fits are off then change the order-of-magnitude
 % for this estimation parameter.
@@ -72,8 +72,8 @@ var0 = [A0 B0 T1 T2 FWHM_gauss];                       % starting points
 %%=========================================================================
 
 % grid data for fitting algorithm
-[X, Y]  = meshgrid(x, Bmw);
-Z       = y;
+[X, O]  = meshgrid(x, Bmw);
+Z       = o;
 
 % create fit function and options
 fitfunc = @(var, x) abs(var(1))*esr_voigt_simulation(x{1}, abs(var(2)), ...
@@ -82,7 +82,7 @@ opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
     @optimplotfval, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
-fitres   = nelder_mead_fit(fitfunc, {X, Y}, Z, var0, opt);
+fitres   = nelder_mead_fit(fitfunc, {X, O}, Z, var0, opt);
 conf_int = standarderror(fitres, 'accurate'); % estimate confidence intervals
 
 A     = abs(fitres.coef(1));
@@ -130,13 +130,13 @@ areaDIerror = modScaling * Bmw .* dA;
 % create output structure
 
 out_struct = struct(...
-    'x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
+    'x', x, 'o', o, 'pars', pars, 'fitres', fitres, ...
     'B0', B0, 'dB0', dB0, 'g', pars.GFactor, 'dg', pars.GFactorErr, ...
     'T1', T1, 'dT1', dT1, 'T2', T2, 'dT2', dT2, ...
     'Brms', Brms, 'dBrms', dBrms, 'Chi', Chi(1), 'dChi', dChi(1), ...
     'NSpin', NSpin(1), 'dNSpin', dNSpin(1));
 
-out_table = struct2table(rmfield(out_struct, {'x', 'y', 'pars', 'fitres'}));
+out_table = struct2table(rmfield(out_struct, {'x', 'o', 'pars', 'fitres'}));
 
 disp(out_table);
 

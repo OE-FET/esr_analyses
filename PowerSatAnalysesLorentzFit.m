@@ -30,11 +30,11 @@ import esr_analyses.utils.*
 
 dset = load_spectrum_dialog(varargin{:});
 assert_powersat_exp(dset);
-[x,y,pars] = dset_to_tuple(dset);
+[x,o,pars] = dset_to_tuple(dset);
 
 yes = input('Would you like to perform a baseline correction? y/[n] ', 's');
 if strcmp(yes, 'y')
-    y = baseline_corr(x, y);
+    o = baseline_corr(x, o);
 end
 
 %%                         Calculate MW fields
@@ -46,10 +46,10 @@ Bmw = get_mw_fields(pars);
 
 % perform slice fit of center spectrum
 mid  = round(length(Bmw)/2);
-slice_fit  = lorentz_fit(x, y(:,mid), 'deriv', 1);
+slice_fit  = lorentz_fit(x, o(:,mid), 'deriv', 1);
 
 % perform numerical double-integration to estimate T1*T2
-DI = double_int_num(x, y, 'baseline', false);
+DI = double_int_num(x, o, 'baseline', false);
 scaling = 1e4;
 ft = fittype(sprintf('A * 1e9 * x /sqrt(1 + %e * gmSquaredT1T2 * x^2)', scaling));
 pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [slice_fit.a, 1], 'Lower', [0, 0]);
@@ -68,16 +68,15 @@ var0 = [A0 B0 T1 T2];                                  % starting points
 
 % grid data for fitting algorithm
 [X, Y]  = meshgrid(x, Bmw);
-Z       = y;
+O       = o;
 
 % create fit function and options
 fitfunc = @(var, x) abs(var(1))*esr_lorentz_simulation(x{1}, abs(var(2)), ...
     abs(var(3)), abs(var(4)), x{2}, pars.B0MA*1e4, 1);
-opt = optimset('TolFun', 1e-5, 'TolX', 1e-5, 'PlotFcns', ...
-    @optimplotfval, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
+opt = optimset('TolFun', 1e-5, 'TolX', 1e-5, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
-fitres   = nelder_mead_fit(fitfunc, {X, Y}, Z, var0, opt);
+fitres   = nelder_mead_fit(fitfunc, {X, Y}, O, var0, opt);
 conf_int = standarderror(fitres, 'quick'); % rough estimate of confidence intervals
 
 A     = abs(fitres.coef(1));
@@ -123,11 +122,12 @@ areaDIerror = modScaling * Bmw .* dA;
 % create output structure
 
 out_struct = struct(...
-    'x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
-    'B0', B0, 'dB0', dB0, 'T1', T1, 'dT1', dT1, 'T2', T2, 'dT2', dT2, ...
+    'x', x, 'o', o, 'pars', pars, 'fitres', fitres, ...
+    'B0', B0, 'dB0', dB0, 'g', pars.GFactor, 'dg', pars.GFactorErr, ...
+    'T1', T1, 'dT1', dT1, 'T2', T2, 'dT2', dT2, ...
     'Chi', Chi(1), 'dChi', dChi(1), 'NSpin', NSpin(1), 'dNSpin', dNSpin(1));
 
-out_table = struct2table(rmfield(out_struct, {'x', 'y', 'pars', 'fitres'}));
+out_table = struct2table(rmfield(out_struct, {'x', 'o', 'pars', 'fitres'}));
 
 disp(out_table);
 
