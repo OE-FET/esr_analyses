@@ -23,6 +23,7 @@ function varargout = stackplot(varargin)
 %
 % 	OUTPUT(S):
 %   phandle    - plot handles
+%   offsets    - offsets used
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
@@ -32,7 +33,9 @@ import esr_analyses.utils.*
 
 %% Input Analyses
 
-if ishghandle(varargin{1}, 'axes')
+existing_axes = ishghandle(varargin{1}, 'axes');
+
+if existing_axes
     ax = varargin{1};
     x  = varargin{2};
     y  = varargin{3};
@@ -90,10 +93,13 @@ grid on;
 
 ymin = min(min(yNew)) - abs(0.5*max(max(y)));
 ymax = max(max(yNew)) + abs(0.5*max(max(y)));
-try
-    axis([min(min(xNew)) max(max(xNew)) ymin ymax]);
-catch
-    set(ax, 'XLimSpec', 'Tight');
+
+if ~existing_axes
+    try
+        axis([min(min(xNew)) max(max(xNew)) ymin ymax]);
+    catch
+        set(ax, 'XLimSpec', 'Tight');
+    end
 end
 
 %% Output
