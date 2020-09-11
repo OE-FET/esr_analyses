@@ -19,6 +19,7 @@ function [out_struct, out_table] = SliceAnalysesVoigtFit(varargin)
 %	SLICEANALYSESVOIGTFIT(dset)  - uses data given by (x,y,pars)
 %	...('sigPath')               - reads data from file
 %	...('sigPath', 'bgPath')     - reads data and background from file
+%   ...(dset, 'plot', false)     - turns of plots during fit
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results
@@ -29,6 +30,8 @@ function [out_struct, out_table] = SliceAnalysesVoigtFit(varargin)
 
 import esr_analyses.*
 import esr_analyses.utils.*
+
+[plotting, varargin] = get_kwarg(varargin, 'plot', true);
 
 dset = load_spectrum_dialog(varargin{:});
 [x,y,pars] = dset_to_tuple(dset);
@@ -67,7 +70,7 @@ opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
     @optimplotfval, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
-fitres   = nelder_mead_fit(fitfunc, x, y, var0, opt);
+fitres   = nelder_mead_fit(fitfunc, x, y, var0, opt, 'plot', plotting);
 conf_int = standarderror(fitres); % estimate confidence intervals
 
 A     = abs(fitres.coef(1));

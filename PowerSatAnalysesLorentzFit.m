@@ -17,6 +17,7 @@ function [out_struct, out_table] = PowerSatAnalysesLorentzFit(varargin)
 %	POWERSATANALYSESLORENTZFIT(dset)  - uses data given by (x,y,pars)
 %	...('sigPath')                    - reads data from file
 %	...('sigPath', 'bgPath')          - reads data and background from file
+%   ...(dset, 'plot', false)          - turns of plots during fit
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results
@@ -27,6 +28,8 @@ function [out_struct, out_table] = PowerSatAnalysesLorentzFit(varargin)
 
 import esr_analyses.*
 import esr_analyses.utils.*
+
+[plotting, varargin] = get_kwarg(varargin, 'plot', true);
 
 dset = load_spectrum_dialog(varargin{:});
 assert_powersat_exp(dset);
@@ -76,7 +79,7 @@ fitfunc = @(var, x) abs(var(1))*esr_lorentz_simulation(x{1}, abs(var(2)), ...
 opt = optimset('TolFun', 1e-5, 'TolX', 1e-5, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
-fitres   = nelder_mead_fit(fitfunc, {X, Y}, O, var0, opt);
+fitres   = nelder_mead_fit(fitfunc, {X, Y}, O, var0, opt, 'plot', plotting);
 conf_int = standarderror(fitres, 'quick'); % rough estimate of confidence intervals
 
 A     = abs(fitres.coef(1));

@@ -15,8 +15,9 @@ function [out_struct, out_table] = PowerSatAnalysesMultiVoigtFit(varargin)
 %   the fit!
 %
 %   INPUT(S):
-%   POWERSATANALYSESVOIGTFIT(..., 'N', 3)       - fits three Voigtians
-%   POWERSATANALYSESVOIGTFIT(..., 'var0', var0) - gives starting points
+%   POWERSATANALYSESMUTLIVOIGTFIT(..., 'N', 3)        - fits three Voigtians
+%   POWERSATANALYSESMUTLIVOIGTFIT(..., 'var0', var0)  - gives starting points
+%   POWERSATANALYSESMUTLIVOIGTFIT(..., 'plot', false) - turns off plots during fit
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results
@@ -102,7 +103,7 @@ multi_fit_func = @(v, x) to_multi(func_single, N, v, x);
 opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
-fitres   = nelder_mead_fit(multi_fit_func, {X, Y}, Z, var0, opt);
+fitres   = nelder_mead_fit(multi_fit_func, {X, Y}, Z, var0, opt, 'plot', plotting);
 conf_int = standarderror(fitres, 'quick')'; % estimate confidence intervals
 
 A     = abs(fitres.coef(:,1));

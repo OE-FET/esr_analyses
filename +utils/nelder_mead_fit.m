@@ -1,4 +1,4 @@
-function [fitres, output] = nelder_mead_fit(fitfunc, x, y, coef0, opt)
+function [fitres, output] = nelder_mead_fit(fitfunc, x, y, coef0, opt, varargin)
 %NELDER_MEAD_FIT performs derivative-free non-linear least squares fitting.
 %
 %   SYNTAX:
@@ -28,6 +28,8 @@ function [fitres, output] = nelder_mead_fit(fitfunc, x, y, coef0, opt)
 import esr_analyses.*
 import esr_analyses.utils.*
 
+plotting = get_kwarg(varargin, 'plot', true);
+
 % check correct dimensions of fit function
 y0 = fitfunc(coef0, x);
 if size(y0) ~= size(y)
@@ -49,8 +51,13 @@ function stop = plot_func(coef, optimValues, ~)
     hold off;
 end
 
-opt_plot_func = optimset('PlotFcns', @plot_func);
-opt = optimset(opt, opt_plot_func);
+if plotting
+    opt_plot_func = optimset('PlotFcns', @plot_func);
+    opt = optimset(opt, opt_plot_func);
+else
+    opt_plot_func = optimset('Display', 'iter');
+    opt = optimset(opt, opt_plot_func);
+end
 
 % run Nelder-Mead fit
 [best_coef, sumofsquares_error, exitflag, output] = fminsearch(sumofsquares, coef0, opt);

@@ -15,8 +15,9 @@ function [out_struct, out_table] = SliceAnalysesMultiVoigtFit(varargin)
 %   the fit!
 %
 %   INPUT(S):
-%   SLICEANALYSESMUTLIVOIGTFIT(..., 'N', 3)       - fits three Voigtians
-%   SLICEANALYSESMUTLIVOIGTFIT(..., 'var0', var0) - gives starting points
+%   SLICEANALYSESMUTLIVOIGTFIT(..., 'N', 3)         - fits three Voigtians
+%   SLICEANALYSESMUTLIVOIGTFIT(..., 'var0', var0)   - gives starting points
+%   SLICEANALYSESMUTLIVOIGTFIT(dset, 'plot', false) - turns of plots during fit
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results
@@ -31,6 +32,7 @@ import esr_analyses.utils.*
 
 [N, varargin] = get_kwarg(varargin, 'N', 2);
 [var0, varargin] = get_kwarg(varargin, 'var0', nan(N, 4));
+[plotting, varargin] = get_kwarg(varargin, 'plot', true);
 
 if N ~= size(var0, 1)
     error('The number of starting points must match the number of Voigtians to fit.');
@@ -86,7 +88,7 @@ opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
     @optimplotfval, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
-fitres   = nelder_mead_fit(multi_fit_func, x, y', var0, opt);
+fitres   = nelder_mead_fit(multi_fit_func, x, y', var0, opt, 'plot', plotting);
 conf_int = standarderror(fitres, 'quick')'; % estimate confidence intervals
 
 A     = abs(fitres.coef(:,1));
