@@ -32,6 +32,8 @@ import esr_analyses.utils.*
 
 [N, varargin] = get_kwarg(varargin, 'N', 2);
 [var0, varargin] = get_kwarg(varargin, 'var0', nan(N, 5));
+[plotting, varargin] = get_kwarg(varargin, 'plot', true);
+
 if N ~= size(var0, 1)
     error('The number of starting points must match the number of Voigtians to fit.');
 end
@@ -53,21 +55,22 @@ Bmw = get_mw_fields(pars);
 %%=========================================================================
 
 if any(isnan(var0), 'all')
-    % perform slice fit of center spectrum
-    mid  = round(length(Bmw)/2);
-    slice_fit  = pseudo_voigt_fit(x, y(:,mid), 'deriv', 1);
-    close(gcf); % close figure when done
 
     % perform numerical double integrtion to estimate T1*T2
     DI = double_int_num(x, y, 'baseline', false);
     scaling = 1e4;
     ft = fittype(sprintf('A * 1e9 * x /sqrt(1 + %e * gmSquaredT1T2 * x^2)', scaling));
-    pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [slice_fit.a, 1], 'Lower', [0, 0]);
+    pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [1, 1], 'Lower', [0, 0]);
+    
+    % perform slice fit of non-saturated spectrum
+    index = sum(Bmw.^2 * scaling*pwrst_fit.gmSquaredT1T2 < 0.5);
+    index = max(1, index);
+    slice_fit  = pseudo_voigt_fit(x, y(:,index), 'deriv', 1);
 
     FWHM_lorentz  = slice_fit.FWHM_lorentz;                  % in Gauss
     FWHM_gauss    = slice_fit.FWHM_gauss;                    % in Gauss
 
-    A0   = slice_fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw(mid))/N; % see 'modScaling'
+    A0   = slice_fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw(index)); % see 'modScaling'
     B0   = slice_fit.x0;                                     % in Gauss
     T1T2 = scaling*pwrst_fit.gmSquaredT1T2 / gmratio^2;      % in sec^2
     T2   = 2/(gmratio * FWHM_lorentz*1E-4);                  % in sec

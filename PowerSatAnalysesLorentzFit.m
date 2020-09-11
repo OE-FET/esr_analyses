@@ -47,24 +47,25 @@ Bmw = get_mw_fields(pars);
 %%                      Get starting points for fit
 %%=========================================================================
 
-% perform slice fit of center spectrum
-mid  = round(length(Bmw)/2);
-slice_fit  = lorentz_fit(x, o(:,mid), 'deriv', 1);
-
 % perform numerical double-integration to estimate T1*T2
 DI = double_int_num(x, o, 'baseline', false);
 scaling = 1e4;
 ft = fittype(sprintf('A * 1e9 * x /sqrt(1 + %e * gmSquaredT1T2 * x^2)', scaling));
-pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [slice_fit.a, 1], 'Lower', [0, 0]);
+pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [1, 1], 'Lower', [0, 0]);
 
-FWHM = slice_fit.FWHM;                                 % in Gauss
-A0   = slice_fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw(mid)); % see 'modScaling'
-B0   = slice_fit.x0;                                   % in Gauss
-T1T2 = scaling*pwrst_fit.gmSquaredT1T2 / gmratio^2;    % in sec^2
-T2   = 2/(gmratio * FWHM*1E-4);                        % in sec
-T1   = T1T2/T2;                                        % in sec
+% perform slice fit of non-saturated spectrum
+index = sum(Bmw.^2 * scaling*pwrst_fit.gmSquaredT1T2 < 0.5);
+index = max(1, index);
+slice_fit  = lorentz_fit(x, o(:,index), 'deriv', 1);
 
-var0 = [A0 B0 T1 T2];                                  % starting points
+FWHM = slice_fit.FWHM;                                   % in Gauss
+A0   = slice_fit.a/(pars.B0MA*1e4 * 1e4/8 * Bmw(index)); % see 'modScaling'
+B0   = slice_fit.x0;                                     % in Gauss
+T1T2 = scaling*pwrst_fit.gmSquaredT1T2 / gmratio^2;      % in sec^2
+T2   = 2/(gmratio * FWHM*1E-4);                          % in sec
+T1   = T1T2/T2;                                          % in sec
+
+var0 = [A0 B0 T1 T2];                                    % starting points
 
 %%                          Perform Lorentz fit
 %%=========================================================================
