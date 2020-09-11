@@ -14,10 +14,17 @@ function [out_struct, out_table] = PowerSatAnalysesMultiVoigtFit(varargin)
 %   Convergance may be bad. Take care to choose good starting points for
 %   the fit!
 %
-%   INPUT(S):
-%   POWERSATANALYSESMUTLIVOIGTFIT(..., 'N', 3)        - fits three Voigtians
-%   POWERSATANALYSESMUTLIVOIGTFIT(..., 'var0', var0)  - gives starting points
-%   POWERSATANALYSESMUTLIVOIGTFIT(..., 'plot', false) - turns off plots during fit
+%   INPUT SYNTAX:
+%	POWERSATANALYSESMUTLIVOIGTFIT()          - opens GUI for file selection
+%	POWERSATANALYSESMUTLIVOIGTFIT(dset)      - uses data given by dset
+%	POWERSATANALYSESMUTLIVOIGTFIT(x,o,pars)  - uses data given by [x,o,pars]
+%	...('sigPath')                           - reads data from file
+%	...('sigPath', 'bgPath')                 - reads data and background from file
+%
+%   KEYWORD INPUT(S):
+%   N       - number of voigtians to fit
+%   var0    - starting points
+%   plot    - if true, plot data and best fit at each iteration
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results

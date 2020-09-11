@@ -14,12 +14,14 @@ function [out_struct, out_table] = PowerSatAnalysesVoigtFit(varargin)
 %   field amplitude over the sample volume.
 %
 %   INPUT SYNTAX:
-%	POWERSATANALYSESVOIGTFIT()      - opens GUI for file selection
-%	POWERSATANALYSESVOIGTFIT(dset)  - uses data given by (x,y,pars)
-%	...('sigPath')                  - reads data from file
-%	...('sigPath', 'bgPath')        - reads data and background from file
-%	...('sigPath', 'bgPath')        - reads data and background from file
-%   ...(dset, 'plot', false)        - turns of plots during fit
+%	POWERSATANALYSESVOIGTFIT()          - opens GUI for file selection
+%	POWERSATANALYSESVOIGTFIT(dset)      - uses data given by dset
+%	POWERSATANALYSESVOIGTFIT(x,o,pars)  - uses data given by [x,o,pars]
+%	...('sigPath')                      - reads data from file
+%	...('sigPath', 'bgPath')            - reads data and background from file
+%
+%   KEYWORD INPUT(S):
+%   plot        - if true, plot data and best fit at each iteration
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results

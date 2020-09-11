@@ -19,9 +19,10 @@ function [out_struct, out_table] = PowerSatAnalysesNum(varargin)
 % 	shapes, such as Lorentzians, if the SNR ratio is small or the
 % 	measurement range is less than 5 times the peak-to-peak linewidth.
 %
-%	INPUTS:
+%   INPUT SYNTAX:
 %	POWERSATANALYSESNUM()      - opens GUI for file selection
-%	POWERSATANALYSESNUM(dset)  - uses data given by (x,y,pars)
+%	POWERSATANALYSESNUM(dset)  - uses data given by dset
+%	...(x,o,pars)              - uses data given by [x,o,pars]
 %	...('sigPath')             - reads data from file
 %	...('sigPath', 'bgPath')   - reads data and background from file
 %

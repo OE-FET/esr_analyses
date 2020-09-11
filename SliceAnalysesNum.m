@@ -9,11 +9,12 @@ function [argout] = SliceAnalysesNum(varargin)
 % 	shapes, such as Lorentzians, if the SNR ratio is small or the
 % 	measurement range is less than 5 times the peak-to-peak linewidth.
 %
-%	INPUTS:
-%	SLICEANALYSESNUM()        - opens GUI for file selection
-%	SLICEANALYSESNUM(dset)    - uses data given by (x,y,pars)
-%	...('sigPath')            - reads data from file
-%	...('sigPath', 'bgPath')  - reads data and background from file
+%   INPUT SYNTAX:
+%	SLICEANALYSESNUM()       - opens GUI for file selection
+%	SLICEANALYSESNUM(dset)   - uses data given by dset
+%	...(x,o,pars)            - uses data given by [x,o,pars]
+%	...('sigPath')           - reads data from file
+%	...('sigPath', 'bgPath') - reads data and background from file
 %
 %	OUTPUT:
 %	argout  - structure containing the measurement data and fit results

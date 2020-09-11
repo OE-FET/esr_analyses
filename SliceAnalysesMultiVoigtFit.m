@@ -14,10 +14,17 @@ function [out_struct, out_table] = SliceAnalysesMultiVoigtFit(varargin)
 %   Convergance may be bad. Take care to choose good starting points for
 %   the fit!
 %
-%   INPUT(S):
-%   SLICEANALYSESMUTLIVOIGTFIT(..., 'N', 3)         - fits three Voigtians
-%   SLICEANALYSESMUTLIVOIGTFIT(..., 'var0', var0)   - gives starting points
-%   SLICEANALYSESMUTLIVOIGTFIT(dset, 'plot', false) - turns of plots during fit
+%   INPUT SYNTAX:
+%	SLICEANALYSESMUTLIVOIGTFIT()      - opens GUI for file selection
+%	SLICEANALYSESMUTLIVOIGTFIT(dset)  - uses data given by dset
+%	...(x,o,pars)                     - uses data given by [x,o,pars]
+%	...('sigPath')                    - reads data from file
+%	...('sigPath', 'bgPath')          - reads data and background from file
+%
+%   KEYWORD INPUT(S):
+%   N       - number of voigtians to fit
+%   var0    - starting points
+%   plot    - if true, plot data and best fit at each iteration
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results
@@ -89,7 +96,7 @@ opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
 
 % fit model to data with Nelder Mead algorithm
 fitres   = nelder_mead_fit(multi_fit_func, x, y', var0, opt, 'plot', plotting);
-conf_int = standarderror(fitres, 'quick')'; % estimate confidence intervals
+conf_int = standarderror(fitres, 'quick'); % estimate confidence intervals
 
 A     = abs(fitres.coef(:,1));
 B0    = abs(fitres.coef(:,2));
@@ -131,7 +138,7 @@ axis tight;
 %%                      Susceptibility Calculation
 %%=========================================================================
 g_factors     = b2g(B0*1e-4, pars.MWFQ);
-g_factor_errs = dB0 .* b2g(B0*1e-4, pars.MWFQ) ./ B0;
+g_factor_errs = dB0 .* g_factors ./ B0;
 modScaling      = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
 
 Chi = zeros(size(A)); dChi = zeros(size(A));

@@ -14,12 +14,12 @@ function [out_struct, out_table] = SliceAnalysesVoigtFit(varargin)
 %   the Bruker DSC file and is used when calculating the MW field amplitude
 %   over the sample volume.
 %
-%   INPUT(S):
+%   INPUT SYNTAX:
 %	SLICEANALYSESVOIGTFIT()      - opens GUI for file selection
-%	SLICEANALYSESVOIGTFIT(dset)  - uses data given by (x,y,pars)
+%	SLICEANALYSESVOIGTFIT(dset)  - uses data given by dset
+%	...(x,o,pars)                - uses data given by [x,o,pars]
 %	...('sigPath')               - reads data from file
 %	...('sigPath', 'bgPath')     - reads data and background from file
-%   ...(dset, 'plot', false)     - turns of plots during fit
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results
