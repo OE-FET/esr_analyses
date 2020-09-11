@@ -104,7 +104,7 @@ opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'MaxFunEvals', 1e10, 'MaxIter', 1e1
 
 % fit model to data with Nelder Mead algorithm
 fitres   = nelder_mead_fit(multi_fit_func, {X, Y}, Z, var0, opt, 'plot', plotting);
-conf_int = standarderror(fitres, 'quick')'; % estimate confidence intervals
+conf_int = standarderror(fitres, 'quick'); % estimate confidence intervals
 
 A     = abs(fitres.coef(:,1));
 B0    = abs(fitres.coef(:,2));
@@ -148,7 +148,7 @@ axis tight;
 %%                      Susceptibility Calculation
 %%=========================================================================
 g_factors     = b2g(B0*1e-4, pars.MWFQ);
-g_factor_errs = dB0 .* b2g(B0*1e-4, pars.MWFQ) ./ B0;
+g_factor_errs = dB0 .* g_factors ./ B0;
 modScaling    = pars.B0MA*1e4 * 1e4/8; % scaling for pseudo-modulation
 
 Chi = zeros(size(A)); dChi = zeros(size(A));
