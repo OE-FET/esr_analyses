@@ -263,7 +263,8 @@ function [par_struct] = param2struct(par_list)
 
     % save all parameters in info structure
     for i = 1:length(ParaMatrix)
-        par_struct.(ParaMatrix{i, 1}) = ParaMatrix{i, 2};
+        name = matlab.lang.makeValidName(ParaMatrix{i, 1});
+        par_struct.(name) = ParaMatrix{i, 2};
     end
 
     % convert string arrays
