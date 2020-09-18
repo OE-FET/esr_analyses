@@ -25,6 +25,25 @@ function [out_struct, out_table] = PowerSatAnalysesMultiVoigtFit(varargin)
 %   N       - number of voigtians to fit
 %   var0    - starting points
 %   plot    - if true, plot data and best fit at each iteration
+%   LB      - lower bound vector or array, must be the same size as x0
+%
+%             If no lower bounds exist for one of the variables, then
+%             supply -inf for that variable.
+%
+%             If no lower bounds at all, then LB may be left empty.
+%
+%             Variables may be fixed in value by setting the corresponding
+%             lower and upper bounds to exactly the same value.
+%
+%   UB      - upper bound vector or array, must be the same size as x0
+%
+%             If no upper bounds exist for one of the variables, then
+%             supply +inf for that variable.
+%
+%             If no upper bounds at all, then LB may be left empty.
+%
+%             Variables may be fixed in value by setting the corresponding
+%             lower and upper bounds to exactly the same value.
 %
 %   OUTPUT(S):
 %	out_struct  - structure containing the measurement data and fit results
@@ -40,6 +59,8 @@ import esr_analyses.utils.*
 [N, varargin] = get_kwarg(varargin, 'N', 2);
 [var0, varargin] = get_kwarg(varargin, 'var0', nan(N, 5));
 [plotting, varargin] = get_kwarg(varargin, 'plot', true);
+[LB, varargin] = get_kwarg(varargin, 'LB', []);
+[UB, varargin] = get_kwarg(varargin, 'UB', []);
 
 if N ~= size(var0, 1)
     error('The number of starting points must match the number of Voigtians to fit.');
@@ -103,8 +124,7 @@ end
 Z       = y;
 
 % create single fit function
-func_single = @(v, x) abs(v(1))*esr_voigt_simulation(x{1}, abs(v(2)), ...
-    abs(v(3)), abs(v(4)), abs(v(5)), x{2}, pars.B0MA*1e4, 1);
+func_single = @(v, x) v(1)*esr_voigt_simulation(x{1}, v(2), v(3), v(4), v(5), x{2}, pars.B0MA*1e4, 1);
 
 % expand to multiple peaks
 multi_fit_func = @(v, x) to_multi(func_single, N, v, x);
@@ -113,14 +133,16 @@ multi_fit_func = @(v, x) to_multi(func_single, N, v, x);
 opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
-fitres   = nelder_mead_fit(multi_fit_func, {X, Y}, Z, var0, opt, 'plot', plotting);
+fitres = nelder_mead_fit(multi_fit_func, ...
+    {X, Y}, Z, var0, opt,...
+    'plot', plotting, 'LB', LB, 'UB', UB);
 conf_int = standarderror(fitres, 'quick'); % estimate confidence intervals
 
-A     = abs(fitres.coef(:,1));
-B0    = abs(fitres.coef(:,2));
-T1    = abs(fitres.coef(:,3));
-T2    = abs(fitres.coef(:,4));
-Brms  = abs(fitres.coef(:,5));
+A     = fitres.coef(:,1);
+B0    = fitres.coef(:,2);
+T1    = fitres.coef(:,3);
+T2    = fitres.coef(:,4);
+Brms  = fitres.coef(:,5);
 
 dA    = full(abs(conf_int(1:N)));
 dB0   = full(abs(conf_int(N+1:2*N)));
@@ -191,6 +213,8 @@ out_table = struct2table(out_struct,'AsArray',true);
 end
 
 function y = to_multi(func_single, N, variables, x)
+
+variables = reshape(variables, [N numel(variables)/N]);
 
 result1 = func_single(variables(1,:), x);
 shape = num2cell(size(result1));
