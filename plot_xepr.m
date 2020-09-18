@@ -1,4 +1,4 @@
-function argout = plot_xepr(varargin)
+function argout = plot_xepr(dset)
 %PLOT_XEPR Plots Xepr data.
 %
 %   In addition to PLOT2D, PLOT2D_XEPR will create axis labels and an
@@ -8,8 +8,6 @@ function argout = plot_xepr(varargin)
 %   PLOT_XEPR(ax, ...)
 %
 %   INPUT(S):
-%   ax    - Axis handle for plot. If not given, the data is plotted in
-%           the current axis, as returned by gca.
 %   dsets - Xepr data set
 %
 % 	OUTPUT(S):
@@ -21,14 +19,6 @@ import esr_analyses.utils.*
 
 
 %% Input Analyses
-
-if ishghandle(varargin{1}, 'axes')
-    ax   = varargin{1};
-    dset = varargin{2};
-else
-    ax   = gca;
-    dset = varargin{1};
-end
 
 x = dset{:,1};
 pars = dset.Properties.UserData;
@@ -47,7 +37,7 @@ for k=1:N
     xlabel(x_label, 'Interpreter', 'none');
     ylabel(y_label, 'Interpreter', 'none');
     title(dset.Properties.VariableNames{k+1})
-    axis square
+    axis square;
     grid on;
 end
 
