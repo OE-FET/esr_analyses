@@ -91,8 +91,7 @@ func_single = @(v, x) abs(v(1))*esr_voigt_simulation(x, abs(v(2)), ...
 multi_fit_func = @(v, x) to_multi(func_single, N, v, x);
 
 % set fit options
-opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
-    @optimplotfval, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
+opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
 fitres   = nelder_mead_fit(multi_fit_func, x, y, var0, opt, 'plot', plotting);
