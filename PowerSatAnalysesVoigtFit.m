@@ -79,7 +79,7 @@ var0 = [A0 B0 T1 T2 FWHM_gauss];                       % starting points
 %%=========================================================================
 
 % grid data for fitting algorithm
-[X, O]  = meshgrid(x, Bmw);
+[X, Y]  = meshgrid(x, Bmw);
 Z       = o;
 
 % create fit function and options
@@ -89,7 +89,7 @@ opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
     @optimplotfval, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
-fitres   = nelder_mead_fit(fitfunc, {X, O}, Z, var0, opt, 'plot', plotting);
+fitres   = nelder_mead_fit(fitfunc, {X, Y}, Z, var0, opt, 'plot', plotting);
 conf_int = standarderror(fitres, 'accurate'); % estimate confidence intervals
 
 A     = abs(fitres.coef(1));
