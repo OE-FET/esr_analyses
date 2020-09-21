@@ -66,13 +66,23 @@ sumofsquares = @(coef) sum(sum( abs(fitfunc(coef, x) - y).^2  ));
 % define our own plot function to call at each iteration
 
 function stop = plot_func(coef, optimValues, ~, varargin)
-    stop = false;
-    x_slice = x{1}(1,:)';
-    [~, yoffsets] = stackplot(x_slice, y, 'style', 'k.');
-    hold on;
-    stackplot(gca, x_slice, fitfunc(coef, x), 'yoffsets', yoffsets, 'style', 'r');
-    set(get(gca,'Title'), 'String', sprintf('Current fit error: %g', optimValues.fval));
-    hold off;
+    try
+        stop = false;
+        if iscell(x)
+            x_slice = x{1}(1,:);
+        else
+            x_slice = x;
+        end
+
+        [~, yoffsets] = stackplot(x_slice, y, 'style', 'k.');
+        hold on;
+        stackplot(gca, x_slice, fitfunc(coef, x), 'yoffsets', yoffsets, 'style', 'r');
+        set(get(gca,'Title'), 'String', sprintf('Current fit error: %g', optimValues.fval));
+        hold off;
+    catch ME
+        warning('Cannot plot data')
+        disp(ME)
+    end
 end
 
 if plotting
