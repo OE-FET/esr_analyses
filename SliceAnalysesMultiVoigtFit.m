@@ -88,14 +88,14 @@ func_single = @(v, x) abs(v(1))*esr_voigt_simulation(x, abs(v(2)), ...
     T1, abs(v(3)), abs(v(4)), Bmw, pars.B0MA*1e4, 1);
 
 % expand to multiple peaks
-multi_fit_func = @(v, x) to_multi(func_single, v, x);
+multi_fit_func = @(v, x) to_multi(func_single, N, v, x);
 
 % set fit options
 opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'PlotFcns', ...
     @optimplotfval, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
-fitres   = nelder_mead_fit(multi_fit_func, x, y', var0, opt, 'plot', plotting);
+fitres   = nelder_mead_fit(multi_fit_func, x, y, var0, opt, 'plot', plotting);
 conf_int = standarderror(fitres, 'quick'); % estimate confidence intervals
 
 A     = abs(fitres.coef(:,1));
@@ -169,9 +169,9 @@ out_table = struct2table(out_struct,'AsArray',true);
 
 end
 
-function y = to_multi(func_single, variables, x)
+function y = to_multi(func_single, N, variables, x)
 
-[N, ~] = size(variables);
+variables = reshape(variables, [N numel(variables)/N]);
 
 result1 = func_single(variables(1,:), x);
 shape = num2cell(size(result1));
@@ -185,5 +185,6 @@ end
 
 y = sum(results, 1);
 y = squeeze(y);
+y = reshape(y, size(x));
 
 end
