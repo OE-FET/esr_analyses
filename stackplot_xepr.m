@@ -51,6 +51,8 @@ else
     end
 end
 
+rescale  = get_kwarg(varargin, 'rescale', 0);
+
 %% Plot
 
 x = dset{:,1};
@@ -59,7 +61,12 @@ pars = dset.Properties.UserData;
 N = width(dset) - 1;
 
 x_label = sprintf('%s [%s]', pars.XNAM, pars.XUNI);
-y_label = sprintf('%s [%s]', pars.IRNAM{1}, pars.IRUNI{1});
+
+if rescale
+    y_label = sprintf('%s [%s]', pars.IRNAM{1}, pars.IRUNI{1});
+else
+    y_label = sprintf('%s [scaled]', pars.IRNAM{1});
+end
 
 phandle = [];
 
