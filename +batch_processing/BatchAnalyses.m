@@ -79,7 +79,7 @@ for i = 1:nFiles
         continue
     end
 
-    out_analyses = rmfield(output{i}, {'x', 'y', 'pars', 'fitres'});
+    out_analyses = rmfield(output{i}, {'x', 'o', 'pars', 'fitres'});
 
     if ~exist('output_table', 'var')
         output_table = struct2table(out_analyses);
