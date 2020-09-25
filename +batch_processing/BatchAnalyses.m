@@ -16,7 +16,7 @@ import esr_analyses.*
 import esr_analyses.utils.*
 
 % Try automatical matching of background signals
-bckgrndStrQ = input('Would you like to subtract background spectra? [y]/n ', 's');
+bckgrndStrQ = input('Would you like to subtract background spectra? y/[n]  ', 's');
 
 global Path
 
@@ -39,7 +39,7 @@ for i = 1:nFiles
     filePath = [Path fileNames{i}];
     filePathBG = [];
 
-    if ~strcmp(bckgrndStrQ, 'n')
+    if strcmp(bckgrndStrQ, 'y')
         filePathBGcandidates = {'Vg_00.', 'Vg_0.'};
 
         for candidate=filePathBGcandidates
