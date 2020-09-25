@@ -46,7 +46,7 @@ if N ~= size(var0, 1)
 end
 
 dset = load_spectrum_dialog(varargin{:});
-[x,y,pars] = dset_to_tuple(dset);
+[x,y,pars] = slice_experiment(dset);
 
 yes = input('Would you like to perform a baseline correction? y/[n] ', 's');
 if strcmp(yes, 'y')
@@ -55,7 +55,7 @@ end
 
 %%                   Assume that we are not in saturation
 %%=========================================================================
-Bmw = 1e-6;
+Bmw = get_mw_fields(pars);
 
 %%                      Get starting points for fit
 %%=========================================================================
