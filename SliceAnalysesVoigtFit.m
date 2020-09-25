@@ -34,11 +34,11 @@ import esr_analyses.utils.*
 [plotting, varargin] = get_kwarg(varargin, 'plot', true);
 
 dset = load_spectrum_dialog(varargin{:});
-[x,y,pars] = slice_experiment(dset);
+[x,o,pars] = slice_experiment(dset);
 
 yes = input('Would you like to perform a baseline correction? y/[n] ','s');
 if strcmp(yes, 'y')
-    y = baseline_corr(x, y);
+    o = baseline_corr(x, o);
 end
 
 %%                   Assume that we are not in saturation
@@ -48,7 +48,7 @@ Bmw = get_mw_fields(pars);
 %%                      Get starting points for fit
 %%=========================================================================
 
-fit = pseudo_voigt_fit(x, y, 'deriv', 1);
+fit = pseudo_voigt_fit(x, o, 'deriv', 1);
 
 FWHM_lorentz  = fit.FWHM_lorentz;       % in Gauss
 FWHM_gauss    = fit.FWHM_gauss;         % in Gauss
@@ -69,7 +69,7 @@ fitfunc = @(var, x) abs(var(1))*esr_voigt_simulation(x, abs(var(2)), T1, ...
 opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
-fitres   = nelder_mead_fit(fitfunc, x, y, var0, opt, 'plot', plotting);
+fitres   = nelder_mead_fit(fitfunc, x, o, var0, opt, 'plot', plotting);
 conf_int = standarderror(fitres); % estimate confidence intervals
 
 A     = abs(fitres.coef(1));
@@ -109,7 +109,7 @@ areaDIerror     = modScaling * Bmw .* dA;
 % create output structure
 
 out_struct = struct(...
-    'x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
+    'x', x, 'o', o, 'pars', pars, 'fitres', fitres, ...
     'B0', B0, 'dB0', dB0, 'g', pars.GFactor, 'dg', pars.GFactorErr, ...
     'T2', T2, 'dT2', dT2, 'Brms', Brms, 'dBrms', dBrms, ...
     'Chi', Chi(1), 'dChi', dChi(1), 'NSpin', NSpin(1), 'dNSpin', dNSpin(1));

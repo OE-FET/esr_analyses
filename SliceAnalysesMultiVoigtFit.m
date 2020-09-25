@@ -46,11 +46,11 @@ if N ~= size(var0, 1)
 end
 
 dset = load_spectrum_dialog(varargin{:});
-[x,y,pars] = slice_experiment(dset);
+[x,o,pars] = slice_experiment(dset);
 
 yes = input('Would you like to perform a baseline correction? y/[n] ', 's');
 if strcmp(yes, 'y')
-    y = baseline_corr(x, y);
+    o = baseline_corr(x, o);
 end
 
 %%                   Assume that we are not in saturation
@@ -62,7 +62,7 @@ Bmw = get_mw_fields(pars);
 
 if any(isnan(var0), 'all')
     % perform slice fit of center spectrum
-    fit = pseudo_voigt_fit(x, y, 'deriv', 1);
+    fit = pseudo_voigt_fit(x, o, 'deriv', 1);
 
     FWHM_lorentz  = fit.FWHM_lorentz;             % in Gauss
     FWHM_gauss    = fit.FWHM_gauss;               % in Gauss
@@ -94,7 +94,7 @@ multi_fit_func = @(v, x) to_multi(func_single, N, v, x);
 opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
-fitres   = nelder_mead_fit(multi_fit_func, x, y, var0, opt, 'plot', plotting);
+fitres   = nelder_mead_fit(multi_fit_func, x, o, var0, opt, 'plot', plotting);
 conf_int = standarderror(fitres, 'quick'); % estimate confidence intervals
 
 A     = abs(fitres.coef(:,1));
@@ -113,7 +113,7 @@ dBrms = full(abs(conf_int(3*N+1:4*N)));
 % use custom stackplot showing individual peaks instead of plot(fitres)
 figure();hold on;
 p = {};
-[p{1}, yoffsets] = stackplot(x, y, 'style', 'k.');
+[p{1}, yoffsets] = stackplot(x, o, 'style', 'k.');
 p{2} = stackplot(x, multi_fit_func(fitres.coef, x), 'style', 'r', 'yoffsets', yoffsets);
 
 legend_texts = {'Data', 'Fit'};
@@ -159,7 +159,7 @@ end
 % create output structure
 
 out_struct = struct(...
-    'x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
+    'x', x, 'o', o, 'pars', pars, 'fitres', fitres, ...
     'B0', B0.', 'dB0', dB0.', 'g', g_factors.', 'dg', g_factor_errs.', ...
     'T2', T2.', 'dT2', dT2.', 'Brms', Brms.', 'dBrms', dBrms.', ...
     'Chi', Chi.', 'dChi', dChi.','NSpin', NSpin.', 'dNSpin', dNSpin.');

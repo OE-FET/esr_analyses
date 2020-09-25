@@ -26,19 +26,19 @@ import esr_analyses.*
 import esr_analyses.utils.*
 
 dset = load_spectrum_dialog(varargin{:});
-[x,y,pars] = slice_experiment(dset);
+[x,o,pars] = slice_experiment(dset);
 
 yes = input('Would you like to perform a baseline correction? y/[n] ', 's');
 if strcmp(yes, 'y')
-    y = baseline_corr(x, y);
+    o = baseline_corr(x, o);
 end
 
 %%                         Perform numercial analyses
 %%=========================================================================
 
-pars.GFactor = gfactor_determination(x, y, pars, 'plot', 'y');
+pars.GFactor = gfactor_determination(x, o, pars, 'plot', 'y');
 
-intArea = double_int_num(x, y);
+intArea = double_int_num(x, o);
 dA = intArea*pars.QValueErr/pars.QValue;
 
 [Chi, dChi]     = susceptibility_calc(intArea, pars, 'dA', dA);
@@ -48,7 +48,7 @@ dA = intArea*pars.QValueErr/pars.QValue;
 %%=========================================================================
 
 argout.x        = x;
-argout.y        = y;
+argout.o        = o;
 argout.pars     = pars;
 
 argout.Chi      = Chi;
