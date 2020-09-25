@@ -1,9 +1,8 @@
-function [output_table] = BatchLoad(slice)
+function [output_table] = BatchLoad(varargin)
 % BATCHLOAD Loads and returns data from multiple ESR data files
 %
-%   INPUTS:
-%   slice   - for 2D data-sets only: return a slice of the data set, e.g.,
-%             at a certain microwave power or goniometer angle
+%   KEYWORD INPUT(S):
+%   yslice    - slice to take from y-axis (integer of boolen array)
 %
 %   OUTPU:
 %   output_table    - table with all data
@@ -12,12 +11,10 @@ function [output_table] = BatchLoad(slice)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-if nargin < 2
-    slice = false;
-end
+yslice = get_kwarg(varargin, 'yslice', false);
 
 % try automatical matching of background signals
-bckgrndStrQ = input('Would you like to subtract background spectra? [y]/n ', 's');
+bckgrndStrQ = input('Would you like to subtract background spectra? y/[n] ', 's');
 
 global Path
 
@@ -37,7 +34,7 @@ for i = 1:nFiles
     filePath = [Path fileNames{i}];
     filePathBG = [];
 
-    if ~strcmp(bckgrndStrQ, 'n')
+    if strcmp(bckgrndStrQ, 'y')
         filePathBGcandidates = {'Vg_00.', 'Vg_0.'};
 
         for candidate=filePathBGcandidates
@@ -67,13 +64,9 @@ for i = 1:nFiles
 
     title = matlab.lang.makeValidName(strcat(fileNames{i}));
 
-    if isfield(pars, 'y_axis')
-        steps = repmat(pars.y_axis, width(dset) - 1);
-    end
-
     output_table.(strcat(title, '_x')) = dset{:,1};
-    if slice && isfield(pars, 'y_axis')
-        output_table.(strcat(title, '_y')) = dset{:,2:end}(:, steps == slice);
+    if yslice && isfield(pars, 'y_axis')
+        output_table.(strcat(title, '_y')) = dset{:,2:end}(:, yslice);
     else
         output_table.(strcat(title, '_y')) = dset{:,2:end};
     end
