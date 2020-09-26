@@ -38,12 +38,7 @@ import esr_analyses.utils.*
 
 dset = load_spectrum_dialog(varargin{:});
 assert_powersat_exp(dset);
-[x,y,pars] = dset_to_tuple(dset);
-
-yes = input('Would you like to perform a baseline correction? y/[n] ', 's');
-if strcmp(yes, 'y')
-    y = baseline_corr(x, y);
-end
+[x,o,pars] = dset_to_tuple(dset);
 
 %%                         Calculate MW fields
 %%=========================================================================
@@ -54,19 +49,19 @@ Bmw = get_mw_fields(pars);
 
 baseline = input('Perform base-line correction individually or as batch? i/[b]?', 's');
 if baseline == 'i'
-    doubleIntAreas = zeros(size(y, 2), 1);
-    for i = 1:size(y, 2)
-        doubleIntAreas(i) = double_int_num(x, y(:,i), 'y');
+    doubleIntAreas = zeros(size(o, 2), 1);
+    for i = 1:size(o, 2)
+        doubleIntAreas(i) = double_int_num(x, o(:,i), 'y');
     end
 else
-    doubleIntAreas = double_int_num(x, y, 'y');
+    doubleIntAreas = double_int_num(x, o, 'y');
 end
 
 %%                      Fit power saturation curve
 %%=========================================================================
 
 try
-    g_factors = gfactor_determination(x, y, pars, 'plot', 'y');
+    g_factors = gfactor_determination(x, o, pars, 'plot', 'y');
 catch
     fprintf('Could not determine g-factor. Using free electron value.\n')
     g_factors = ones(size(Bmw))*gfree;
@@ -145,12 +140,12 @@ areaDIerror = Bmw.*dA;
 %%=========================================================================
 
 out_struct = struct(...
-                'x', x, 'y', y, 'pars', pars, 'fitres', fitres, 'T', pars.Temperature, ...
+                'x', x, 'o', o, 'pars', pars, 'fitres', fitres, 'T', pars.Temperature, ...
                 'T1T2', T1T2, 'dT1T2', dT1T2, ...
                 'Chi', Chi(1), 'dChi', dChi(1), ...
                 'NSpin', NSpin(1), 'dNSpin', dNSpin(1));
 
-out_table = struct2table(rmfield(out_struct, {'x', 'y', 'pars', 'fitres'}));
+out_table = struct2table(rmfield(out_struct, {'x', 'o', 'pars', 'fitres'}));
 
 clc; disp(out_table);
 

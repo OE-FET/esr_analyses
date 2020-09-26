@@ -68,11 +68,11 @@ end
 
 dset = load_spectrum_dialog(varargin{:});
 assert_powersat_exp(dset);
-[x,y,pars] = dset_to_tuple(dset);
+[x,o,pars] = dset_to_tuple(dset);
 
 yes = input('Would you like to perform a baseline correction? y/[n] ', 's');
 if strcmp(yes, 'y')
-    y = baseline_corr(x, y);
+    o = baseline_corr(x, o);
 end
 
 %%                         Calculate MW fields
@@ -85,7 +85,7 @@ Bmw = get_mw_fields(pars);
 if any(isnan(var0), 'all')
 
     % perform numerical double integrtion to estimate T1*T2
-    DI = double_int_num(x, y, 'baseline', false);
+    DI = double_int_num(x, o, 'baseline', false);
     scaling = 1e4;
     ft = fittype(sprintf('A * 1e9 * x /sqrt(1 + %e * gmSquaredT1T2 * x^2)', scaling));
     pwrst_fit = fit(Bmw, DI, ft, 'StartPoint', [1, 1], 'Lower', [0, 0]);
@@ -93,7 +93,7 @@ if any(isnan(var0), 'all')
     % perform slice fit of non-saturated spectrum
     index = sum(Bmw.^2 * scaling*pwrst_fit.gmSquaredT1T2 < 0.5);
     index = max(1, index);
-    slice_fit  = pseudo_voigt_fit(x, y(:,index), 'deriv', 1);
+    slice_fit  = pseudo_voigt_fit(x, o(:,index), 'deriv', 1);
 
     FWHM_lorentz  = slice_fit.FWHM_lorentz;                  % in Gauss
     FWHM_gauss    = slice_fit.FWHM_gauss;                    % in Gauss
@@ -121,7 +121,7 @@ end
 
 % grid data for fitting algorithm
 [X, Y]  = meshgrid(x, Bmw);
-Z       = y;
+Z       = o;
 
 % create single fit function
 func_single = @(v, x) v(1)*esr_voigt_simulation(x{1}, v(2), v(3), v(4), v(5), x{2}, pars.B0MA*1e4, 1);
@@ -156,7 +156,7 @@ dBrms = full(abs(conf_int(4*N+1:5*N)));
 % use custom stackplot showing individual peaks instead of plot(fitres)
 figure();hold on;
 p = {};
-[p{1}, yoffsets] = stackplot(x, y, 'style', 'k.');
+[p{1}, yoffsets] = stackplot(x, o, 'style', 'k.');
 p{2} = stackplot(x, multi_fit_func(fitres.coef, {X, Y}), 'style', 'r', 'yoffsets', yoffsets);
 
 legend_texts = {'Data', 'Fit'};
@@ -202,7 +202,7 @@ end
 % create output structure
 
 out_struct = struct(...
-    'x', x, 'y', y, 'pars', pars, 'fitres', fitres, ...
+    'x', x, 'o', o, 'pars', pars, 'fitres', fitres, ...
     'B0', B0.', 'dB0', dB0.', 'g', g_factors.', 'dg', g_factor_errs.', ...
     'T1', T1.', 'dT1', dT1.', 'T2', T2.', 'dT2', dT2.', ...
     'Brms', Brms.', 'dBrms', dBrms.', 'Chi', Chi.',...
