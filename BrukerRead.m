@@ -15,12 +15,13 @@ function varargout = BrukerRead(varargin)
 %   input1     - a string input to the path of a file
 %
 %   Outputs:
-%   output1    - x axis
-%                Magnetic field / time
-%   output2    - o axis
-%                Intensity
-%   output3    - information
-%                Array of information about the loaded file
+%   x    - x-axis
+%   o    - ordinate: the measured quantity
+%   pars - array of information about the loaded file
+%
+%   Outputs:
+%   dset - a matlab table with the measurement data
+%
 %
 %   Example:
 %   [x, o, pars] = BrukerRead
