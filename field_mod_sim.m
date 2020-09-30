@@ -10,13 +10,13 @@ function yModInPhase = field_mod_sim(x, y, modAmp, harmonic)
 %
 %   Hyde, J. S., et al. Applied Magnetic Resonance 1, 483-496 (1990)
 %
-%   INPUT(S):
+%   INPUT:
 %   x      - x-axis data vector, must be uniformliy spaced
 %   y      - signal vector
 %   modAmp - peak-to-peak modulation amplitude [same units as x]
 %   harmonic - harmonic (0, 1, 2, ...); default is 1
 %
-%   OUTPUT(S):
+%   OUTPUT:
 %   - yModInPhase: in-phase component of pseudo-modulated spectrum
 %
 %   If no output variable is given, field_mod_sim plots the

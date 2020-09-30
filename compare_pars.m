@@ -1,8 +1,8 @@
 function n_diff = compare_pars(pars1, pars2)
 %COMPARE_PARS Compares experimental conditions from two ESR measurements
 %
-%   nDiff = COMPARE_PARS(pars1,pPars2) compares the measurement parameters
-%   Pars1 and Pars2 from two different ESR data sets and outputs the number
+%   nDiff = COMPARE_PARS(pars1,pars2) compares the measurement parameters
+%   pars1 and pars2 from two different ESR data sets and outputs the number
 %   of different parameters.
 %
 

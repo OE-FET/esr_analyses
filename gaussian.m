@@ -14,12 +14,16 @@ function [y] = gaussian(x, x0, FWHM, varargin)
 %   [y] = GAUSSIAN(x, x0, FWHM)
 %   [y] = GAUSSIAN(x, x0, FWHM, 'deriv', n)
 %
-%   INPUT(S):
+%   INPUT:
 %   x - as x-axis values
 %   x0 - position of the line center
 %   FWHM - full-width-at-half-maximum
 %
-% 	OUTPUT(S):
+%   KEYWORD INPUT:
+%   'deriv' - If given and > 0, this function returns the n-th
+%             derivative of a Voigtian.
+%
+% 	OUTPUT:
 %   y - Gaussian profile
 %
 

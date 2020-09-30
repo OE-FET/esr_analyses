@@ -2,11 +2,24 @@ function [fitresult,gof,yfit] = pseudo_voigt_fit(x, y, varargin)
 %PSEUDO_VOIGT_FIT fits a Pseudo-Voigt curve to the given data.
 %
 %   Plots the results and outputs fitting parameters, goodness of fit and
-%   fitted cruves.
+%   fitted curves.
 %
 %   If y is a matrix of spectral data with the same x-axis, all spectra are
 %   fitted independently and fitresult is an array with fitresults.
 %
+%   SYNTAX:
+%   [y] = PSEUDO_VOIGT_FIT(x, y)
+%   [y] = PSEUDO_VOIGT_FIT(x, y, 'deriv', 1)
+%
+%   INPUT:
+%   x - x-axis values
+%   y - intensities
+%
+%   KEYWORD INPUT:
+%	'deriv'  - order of derivative to return, defaults to 0
+%
+% 	OUTPUT:
+%   y - pseudo-voigt profile
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 %   $Date: 2018/07/05 12:58 $    $Revision: 0.1 $

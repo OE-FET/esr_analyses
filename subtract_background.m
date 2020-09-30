@@ -3,12 +3,12 @@ function dset = subtract_background(varargin)
 %
 % 	If desired, the result is written to a new Bruker ESR file. Experimental
 % 	conditions from DSC files are compared and a warning is issued when
-% 	differences are detected. ESR data are normalised for MW power, reciever
+% 	differences are detected. ESR data are normalised for MW power, receiver
 % 	gain, number of scans, time constant, and modulation amplitude (to Hm = 1 G).
 % 	Before subtracting, the background signal is shifted to compensate for an
 % 	offset in MWFQ.
 %
-% 	INPUT(S):
+% 	SYNTAX:
 %   SUBTRACT_BACKGROUND()          - opens GUI to select signal and
 %                                    background data files
 %   ...('signal_data')             - given path to signal data & opens a
@@ -16,7 +16,7 @@ function dset = subtract_background(varargin)
 %   ...('signal_data','bg_data')   - given signal & bg data files
 %   ...(dsetSig, dsetBg)           - given signal and bg data directly
 %
-%   OUTPUT(S):
+%   OUTPUT:
 % 	dset - new dataset
 %
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$

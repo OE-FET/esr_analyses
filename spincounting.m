@@ -5,9 +5,9 @@ function [NSpin, dNSpin] = spincounting(doubleIntArea, pars, varargin)
 %   double-integrated intensity of a 1st harmonic cw-EPR spectrum assuming
 %   a Curie susceptibility. This assumption is valid for independent spins
 %   when T >> E_Zeeman/2. X-Band EPR typically operates around B = 350 mT
-%   while a field of up to 0.5 T corresponds to E_Zeeman/2 = 28.9 µeV. This
+%   while a field of up to 0.5 T corresponds to E_Zeeman/2 = 28.9 ƒÊeV. This
 %   still remains far lower than the corresponding thermal energy of
-%   450 µeV at 5 K.
+%   450 ƒÊeV at 5 K.
 %
 %   If the input argument S is not given, S = 1/2 is used.
 %
@@ -15,7 +15,15 @@ function [NSpin, dNSpin] = spincounting(doubleIntArea, pars, varargin)
 %   NSpin = SPINCOUNTING(doubleIntArea, pars)
 %   [NSpin, dNSpin] = SPINCOUNTING(doubleIntArea, pars, 'S', S, 'dA', dA)
 %
-%   OUTPUT(S):
+%   INPUT:
+%   doubleIntArea - area from double integral of derivative EPR spectrum
+%   pars          - structure with measurement parameters
+%
+%   KEYWORD INPUT:
+%   S       - spin multiplicity, defaults to S = 1/2
+%   dA      - error for doubleIntArea, will be used to calculate dNSpin
+%
+%   OUTPUT:
 %   NSpin  - number of spins
 %   dNSpin - standard error
 
@@ -27,7 +35,7 @@ import esr_analyses.utils.*
 
 %% INPUT PROCESSING
 S = get_kwarg(varargin, 'S', 1/2);
-if nargout > 1; dA = get_kwarg(varargin, 'dA'); end
+dA = get_kwarg(varargin, 'dA', 0);
 
 pars = get_par(pars, 'ConvFact', 9.2710e-09);  % get calibration factor
 pars = get_par(pars, 'QValue'); % get or ask for QValue

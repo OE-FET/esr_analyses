@@ -6,7 +6,7 @@ function yn = esr_voigt_simulation(x, B0, T1, T2, Brms, Bmw, modAmp, n)
 %   If no modulation amplitude and harmonic are given, the ESR absorption
 %   signal without field modulation is returned.
 %
-%   INPUT(S):
+%   INPUT:
 %   x       - vector with external magnetic fields [Gauss]
 %   B0      - resonance center [Gauss]
 %   T1      - spin-lattice relaxation time [sec]
@@ -16,7 +16,7 @@ function yn = esr_voigt_simulation(x, B0, T1, T2, Brms, Bmw, modAmp, n)
 %   modAmp  - field modulation amplitude [Gauss]
 %   n       - n-th harmonic detection
 %
-%   OUTPUT(S):
+%   OUTPUT:
 %   yn - simulated n-th harmonic spectrum
 %
 

@@ -8,10 +8,13 @@ function [xnew, y, pars] = gmarker_calib(x, y, pars, varargin)
 % 	[xnew, y, pars] = GMARKER_CALIB(x, y, pars)
 % 	[xnew, y, pars] = GMARKER_CALIB(x, y, pars, 'gMarker', marker_g_value)
 %
-% 	OUTPUT(S):
-% 	xnew		- magnetic field axis normalized by g-marker
+%	KEYWORD INPUT:
+%   'gMarker'   - g-factor if reference marker. Defaults to 1.979843.
+%
+% 	OUTPUT:
+% 	xnew		- magnetic field axis normalised by g-marker
 %	y			- ESR spectrum
-%	pars		- aquisition parameter structure
+%	pars		- acquisition parameter structure
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$

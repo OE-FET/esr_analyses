@@ -2,26 +2,29 @@ function [out_struct, out_table] = SliceAnalysesVoigtFit(varargin)
 %SLICEANALYSESVOIGTFIT performs normalization and spin-counting of an ESR
 %signal by fitting it to a voigt function.
 %
-%   Performs a 1D fit of a cw-EPR spectrum to determine spin cohrence time
+%   Performs a 1D fit of a cw-EPR spectrum to determine spin coherence time
 %   T2, the magnetic susceptibility and the number of spins in the sample.
 %   This program assumes a Voigtian resonance line which is the convolution
-%   of multiple Lorentzian spin-ensembles with identifical lifetimes T1 and
+%   of multiple Lorentzian spin-ensembles with identical lifetimes T1 and
 %   T2 with a Gaussian distribution of resonance fields.
 %
 %   Field modulation and the 1st harmonic detection of the cw-EPR signal,
-%   together with possible distortions from overmodulation, are explicitly
+%   together with possible distortions from over-modulation, are explicitly
 %   accounted for. The MW field distribution in the cavity is taken from
 %   the Bruker DSC file and is used when calculating the MW field amplitude
 %   over the sample volume.
 %
-%   INPUT SYNTAX:
+%   SYNTAX:
 %	SLICEANALYSESVOIGTFIT()      - opens GUI for file selection
-%	SLICEANALYSESVOIGTFIT(dset)  - uses data given by dset
+%	SLICEANALYSESVOIGTFIT(dset)  - uses data given by Xepr dset
 %	...(x,o,pars)                - uses data given by [x,o,pars]
 %	...('sigPath')               - reads data from file
 %	...('sigPath', 'bgPath')     - reads data and background from file
 %
-%   OUTPUT(S):
+%   KEYWORD INPUT:
+%   'plot' - If false, plotting during the fit process is suppressed. Defaults to true.
+%
+%   OUTPUT:
 %	out_struct  - structure containing the measurement data and fit results
 %   out_table   - fit results in table format
 %

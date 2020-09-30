@@ -1,6 +1,5 @@
 function [res] = is_2d_exp(input)
-%Returns True if the specified Xepr parameters correspond to a
-%2D measurement, False otherwise.
+%IS_2D_EXP Returns true for 2D datasets, false otherwise.
 
 if istable(input)
     pars = input.Properties.UserData;

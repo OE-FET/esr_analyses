@@ -4,23 +4,23 @@ function [out_struct, out_table] = PowerSatAnalysesVoigtFit(varargin)
 %   Performs a 2D fit of a cw-EPR power saturation spectrum to determine
 %   spin lifetimes, the magnetic susceptibility and the number of spins in
 %   the sample. This program assumes a Voigtian resonance line which is the
-%   convolution of multiple Lorentzian spin-ensembles with identifical
+%   convolution of multiple Lorentzian spin-ensembles with identical
 %   lifetimes T1 and T2 with a Gaussian distribution of resonance fields.
 %
 %   The effects of field modulation and the 1st harmonic detection of the
-%   cw-EPR signal, together with possible distortions from overmodulation
+%   cw-EPR signal, together with possible distortions from over-modulation
 %   are explicitly included. The MW field distribution in the cavity is
 %   taken from the Bruker DSC file and is used when calculating the MW
 %   field amplitude over the sample volume.
 %
-%   INPUT SYNTAX:
+%   SYNTAX:
 %	POWERSATANALYSESVOIGTFIT()          - opens GUI for file selection
 %	POWERSATANALYSESVOIGTFIT(dset)      - uses data given by dset
 %	POWERSATANALYSESVOIGTFIT(x,o,pars)  - uses data given by [x,o,pars]
 %	...('sigPath')                      - reads data from file
 %	...('sigPath', 'bgPath')            - reads data and background from file
 %
-%   KEYWORD INPUT(S):
+%   KEYWORD INPUT:
 %   plot        - if true, plot data and best fit at each iteration
 %
 %   OUTPUT(S):

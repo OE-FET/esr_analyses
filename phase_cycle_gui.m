@@ -8,7 +8,7 @@ function phase_cycle_gui(x, sig_x, sig_y)
 %   SYNTAX:
 %   [s0, s90, phase_shift] = phase_cycle_gui(sig_x, sig_y)
 %
-%   INPUT(S):
+%   INPUT:
 %   sig_x - X-channel from lock-in.
 %   sig_y - Y-channel from lock-in.
 %

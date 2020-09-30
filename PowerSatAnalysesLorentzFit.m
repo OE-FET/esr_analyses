@@ -7,23 +7,23 @@ function [out_struct, out_table] = PowerSatAnalysesLorentzFit(varargin)
 %   single spin-ensemble with lifetimes T1 and T2.
 %
 %   Field modulation and the 1st harmonic detection of the cw-EPR signal,
-%   together with possible distortions from overmodulation, are explicitly
+%   together with possible distortions from over-modulation, are explicitly
 %   accounted for. The MW field distribution in the cavity is taken from
 %   the Bruker DSC file and is used when calculating the MW field amplitude
 %   over the sample volume.
 %
 %
-%   INPUT SYNTAX:
+%   SYNTAX:
 %	POWERSATANALYSESLORENTZFIT()      - opens GUI for file selection
 %	POWERSATANALYSESLORENTZFIT(dset)  - uses data given by dset
 %	...(x,o,pars)                     - uses data given by [x,o,pars]
 %	...('sigPath')                    - reads data from file
 %	...('sigPath', 'bgPath')          - reads data and background from file
 %
-%   KEYWORD INPUT(S):
+%   KEYWORD INPUT:
 %   plot        - if true, plot data and best fit at each iteration
 %
-%   OUTPUT(S):
+%   OUTPUT:
 %	out_struct  - structure containing the measurement data and fit results
 %   out_table   - fit results in table format
 %

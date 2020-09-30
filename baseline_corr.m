@@ -1,19 +1,19 @@
 function [ycorr, ybaseline] = baseline_corr(x, y, method)
 %BASELINE_CORR Performs a baseline correction on the input data.
 %
-%   [ycorr, ybaseline] = BASELINE_CORR(x, y) performs a baseline fit on the
-%   input data. The baseline region can be be selected through a GUI, and
-%   the baseline is fitted as a spline or third order polynomial.
+%   [ycorr, ybaseline] = BASELINE_CORR(x, y) performs a baseline fit on the input data.
+%   The baseline region can be be selected through a GUI, and the baseline is fitted as a
+%   spline or third order polynomial.
 %
-%   INPUT(S):
+%   INPUT:
 %   x - x-axis values
 %   y - y-axis values
 %   method - If 'poly', all points in the specified interval will be used
-%   to determine the a polymial baseline of 3rd order. If method == 'spline',
-%   only the endpoints and centre point will be used to fit a spline.
-%   Default: 'poly'.
+%            to determine the a polymial baseline of 3rd order. If method == 'spline',
+%            only the endpoints and centre point will be used to fit a spline. Default:
+%            'poly'.
 %
-%   OUTPUT(S):
+%   OUTPUT:
 %   ycorr - baseline-corrected spectrum
 %   ybaseline - fitted baseline
 %

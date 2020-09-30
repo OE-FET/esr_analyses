@@ -5,23 +5,25 @@ function [Chi, dChi] = susceptibility_calc(doubleIntArea, pars, varargin)
 %   Determines the magnetic susceptibility times unit volume from the
 %   double-integrated intensity of a 1st harmonic cw-EPR spectrum.
 %
-%   The second return argument is the standard error of the susceptiblity,
-%   calculated from error propagration with the error in 'doubleIntArea'
+%   The second return argument is the standard error of the susceptibility,
+%   calculated from error propagation with the error in 'doubleIntArea'
 %   and the QValue error.
 %
 %   SYNTAX:
 %   Chi = SUSCEPTEBILITY_CALC(doubleIntArea, pars)
 %   [Chi, dChi] = SUSCEPTEBILITY_CALC(doubleIntArea, pars, 'dA', areaError)
 %
-%   INPUT(S):
-%   doubleIntArea - Integrated area of absorption EPR spectrum or double
+%   INPUT:
+%   doubleIntArea - integrated area of absorption EPR spectrum or double
 %                   integral from 1st harmonic spectrum
-%   pars - structure containing measurement parameters from EPR experiment
-%   dA   - standard error for doubleIntArea, used for error propagation
+%   pars          - structure containing measurement parameters from EPR experiment
+%
+%   KEYORD INPUT:
+%   'dA'   - standard error for doubleIntArea, used for error propagation
 %
 %   OUTPUT(S):
-%   Chi  - magnetic susceptebility in m^3
-%   dChi - standard error of magnetic susceptebility in m^3
+%   Chi  - magnetic susceptibility in m^3
+%   dChi - standard error of magnetic susceptibility in m^3
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$

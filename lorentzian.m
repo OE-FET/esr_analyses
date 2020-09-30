@@ -1,12 +1,12 @@
 function [y] = lorentzian(x, x0, FWHM, varargin)
 %LORENTZIAN calculates a 1D Gaussian profile or its n-th derivative.
 %
-%   Returns a 1D Lorentzian with an area of 1 or its n-th derviate:
+%   Returns a 1D Lorentzian with an area of 1 or its n-th derivative:
 %
 %   HWHM = FWHM/2
 %   y = HWHM/(pi*(x^2 + HWHM^2))
 %
-%   This function uses an explicit experession for the 1st derivate and
+%   This function uses an explicit expression for the 1st derivate and
 %   analytical differentiation for higher derivatives. It therefore becomes
 %   much slower for n > 1.
 %
@@ -14,12 +14,16 @@ function [y] = lorentzian(x, x0, FWHM, varargin)
 %   [y] = LORENTZIAN(x, x0, FWHM)
 %   [y] = LORENTZIAN(x, x0, FWHM, 'deriv', n)
 %
-%   INPUT(S):
-%   x - as x-axis values
-%   x0 - position of the line center
-%   FWHM - full-width-at-half-maximum
+%   INPUT:
+%   x       - as x-axis values
+%   x0      - position of the line center
+%   FWHM    - full-width-at-half-maximum
 %
-% 	OUTPUT(S):
+%   KEYWORD INPUT:
+%   'deriv' - If given and > 0, this function returns the n-th
+%             derivative of a Voigtian.
+%
+% 	OUTPUT:
 %   y - Lorentzian profile
 %
 

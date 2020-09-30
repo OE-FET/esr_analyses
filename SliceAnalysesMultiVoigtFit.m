@@ -1,7 +1,7 @@
 function [out_struct, out_table] = SliceAnalysesMultiVoigtFit(varargin)
 %SLICEANALYSESMUTLIVOIGTFIT Analyses of CW-ESR measurements
 %
-%   This function is equivelent to SliceAnalysesVoigtFit but fits multiple
+%   This function is equivalent to SliceAnalysesVoigtFit but fits multiple
 %   Voigtians instead of a single one. The number of Voigtians can be given
 %   as a keyword argument 'N' and defaults to two.
 %
@@ -11,22 +11,22 @@ function [out_struct, out_table] = SliceAnalysesMultiVoigtFit(varargin)
 %   starting point, it will be substituted with a reasonable best-guess
 %   value.
 %
-%   Convergance may be bad. Take care to choose good starting points for
+%   Convergence may be bad. Take care to choose good starting points for
 %   the fit!
 %
-%   INPUT SYNTAX:
+%   SYNTAX:
 %	SLICEANALYSESMUTLIVOIGTFIT()      - opens GUI for file selection
 %	SLICEANALYSESMUTLIVOIGTFIT(dset)  - uses data given by dset
 %	...(x,o,pars)                     - uses data given by [x,o,pars]
 %	...('sigPath')                    - reads data from file
 %	...('sigPath', 'bgPath')          - reads data and background from file
 %
-%   KEYWORD INPUT(S):
+%   KEYWORD INPUT:
 %   N       - number of voigtians to fit
 %   var0    - starting points
 %   plot    - if true, plot data and best fit at each iteration
 %
-%   OUTPUT(S):
+%   OUTPUT:
 %	out_struct  - structure containing the measurement data and fit results
 %   out_table   - fit results in table format
 %

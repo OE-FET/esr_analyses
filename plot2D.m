@@ -4,13 +4,13 @@ function argout = plot2D(varargin)
 % 	PLOT2D(x, y, o)
 %   PLOT2D(ax, ...)
 %
-%   INPUT(S):
+%   INPUT:
 %   ax         - Axis handle for plot. If not given, the data is plotted in
 %                the current axis, as returned by gca.
 %   x, y       - x- and y-axis data.
 %   o          - Ordinate data.
 %
-% 	OUTPUT(S):
+% 	OUTPUT:
 %   phandle - plot handle
 %
 

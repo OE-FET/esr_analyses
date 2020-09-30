@@ -2,7 +2,7 @@ function [out_struct, out_table] = PowerSatAnalysesNum(varargin)
 %POWERSATANALYSESNUM Numercial analyses of ESR power saturation curves.
 %
 %   Numerically integrates a series of MW power dependent cw-EPR spectra to
-%   determine the power saturation beheviour and the product of spin
+%   determine the power saturation behaviour and the product of spin
 %   lifetimes T1*T2. Allows for baseline correction and smoothing before
 %   the integration.
 %
@@ -11,7 +11,7 @@ function [out_struct, out_table] = PowerSatAnalysesNum(varargin)
 %
 %   A = A0 * B_mw / sqrt(1 + gmratio^2 * B_mw^2 * T1 * T2)
 %
-%   The magnetic susceptibilty is then determined from A0. Its accuracy
+%   The magnetic susceptibility is then determined from A0. Its accuracy
 %   will therefore depend on the quality of the fit.
 %
 % 	WARNING: Using numerical integration may underestimate the tails of EPR
@@ -19,7 +19,7 @@ function [out_struct, out_table] = PowerSatAnalysesNum(varargin)
 % 	shapes, such as Lorentzians, if the SNR ratio is small or the
 % 	measurement range is less than 5 times the peak-to-peak linewidth.
 %
-%   INPUT SYNTAX:
+%   SYNTAX:
 %	POWERSATANALYSESNUM()      - opens GUI for file selection
 %	POWERSATANALYSESNUM(dset)  - uses data given by dset
 %	...(x,o,pars)              - uses data given by [x,o,pars]

@@ -5,25 +5,27 @@ function varargout = stackplot(varargin)
 % 	phandle = STACKPLOT(x, y)
 % 	phandle = STACKPLOT(x, y, 'OptionName', OptionValue, ...)
 %   phandle = STACKPLOT(ax, ...)
+%   [phandle, offsets] = STACKPLOT(ax, ...)
 %
-%
-%   INPUT(S):
+%   INPUT:
 %   ax         - Axis handle for plot. If not given, the data is plotted in
 %                the current axis, as returned by gca.
 %   x, y       - Data to plot.
-%   'xoffset'  - Horizontal offset between curves, creates a staggered
+%
+%   KEYWORD INPUT:
+%   xoffset  - Horizontal offset between curves, creates a staggered
 %                plot. Defaults to 0.
-%   'yoffsets' - List of vertical offsets between curves. Automatically
+%   yoffsets - List of vertical offsets between curves. Automatically
 %                determined if not given.
-%   'style'    - Line style and color, specified as a character vector or
+%   style    - Line style and color, specified as a character vector or
 %                string scalar containing line style symbols, color
 %                options, or both.
-%   'rescale'  - Rescale all y-data such that max(abs(y)) = 1. Turned off
+%   rescale  - Rescale all y-data such that max(abs(y)) = 1. Turned off
 %                by default.
 %
-% 	OUTPUT(S):
+% 	OUTPUT:
 %   phandle    - plot handles
-%   offsets    - offsets used
+%   offsets    - y-axis offsets used to plot the data
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$

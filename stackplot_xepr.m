@@ -1,7 +1,7 @@
 function varargout = stackplot_xepr(varargin)
 %STACKPLOT_XEPR Plots Xepr data as in stacked plots.
 %
-%   In addition to STACKPLOT, STACKPLOTXEPR will create axis labels and an
+%   In addition to STACKPLOT, STACKPLOT_XEPR will create axis labels and an
 %   appropriate legend automatically from pars.
 %
 % 	SYNTAX:
@@ -10,10 +10,12 @@ function varargout = stackplot_xepr(varargin)
 %   phandle = STACKPLOT_XEPR(ax, ...)
 %
 %
-%   INPUT(S):
+%   INPUT:
 %   ax         - Axis handle for plot. If not given, the data is plotted in
 %                the current axis, as returned by gca.
-%   dset       - Xrpr data to plot.
+%   dset       - Xepr dataset to plot.
+%
+%   KEYWORD INPUT:
 %   'xoffset'  - Horizontal offset between curves, creates a staggered
 %                plot. Defaults to 0.
 %   'yoffsets' - List of vertical offsets between curves. Automatically
@@ -24,7 +26,7 @@ function varargout = stackplot_xepr(varargin)
 %   'rescale'  - Rescale all y-data such that max(abs(y)) = 1. Turned off
 %                by default.
 %
-% 	OUTPUT(S):
+% 	OUTPUT:
 %   phandle    - plot handles
 %
 

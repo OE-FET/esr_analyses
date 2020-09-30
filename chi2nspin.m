@@ -6,12 +6,12 @@ function [n_spin] = chi2nspin(chi, T, S)
 %   [n_spin] = CHI2NSPIN(chi, T)
 %   [n_spin] = CHI2NSPIN(chi, T, S)
 %
-%   INPUT(S):
-%   chi - magnetc susceptibility in SI units (i.e., dimensionless)
+%   INPUT:
+%   chi - magnetic susceptibility in SI units (i.e., dimensionless)
 %   T - temperature in Kelvin (default: T = 298)
 %   S - system spin (default: S = 1/2)
 %
-% 	OUTPUT(S):
+% 	OUTPUT:
 %   n_spin - number of spins per cubic meters
 %
 

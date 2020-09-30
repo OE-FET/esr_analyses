@@ -1,8 +1,8 @@
 function [dset] = normalise_spectrum_all(dset)
-%NORMALISE_SPECTRUM_ALL normlizes an EPR spectrum for all aquisition conditions
+%NORMALISE_SPECTRUM_ALL normalises an EPR spectrum for all acquisition conditions
 %
-% 	ESR data is normalised for reciever gain, number of scans (Ns = 1),
-% 	time constant (Tc = 1 ms). Aditionally, we also normalise for Q-factor,
+% 	ESR data is normalised for receiver gain, number of scans (Ns = 1),
+% 	time constant (Tc = 1 ms). Additionally, we also normalise for Q-factor,
 %   (Q = 10,000), modulation amplitude (ModAmp = 1 Gauss) and microwave
 %   power (Pmw = 1mW) so that we can compare spectra recorded under
 %   different conditions.
@@ -10,11 +10,11 @@ function [dset] = normalise_spectrum_all(dset)
 %   Note: All of the additional parameters can influence both the signal
 %         amplitude and shape. Use the results with caution.
 %
-%   INPUT(S):
-%   dset from BrukerRead
+%   INPUT:
+%   dset - dataset from BrukerRead
 %
-% 	OUTPUT(S):
-% 	normalised dset
+% 	OUTPUT:
+% 	dset - normalised dset
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 

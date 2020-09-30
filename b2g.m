@@ -1,5 +1,5 @@
 function g = b2g(B, MWFQ)
-%B2G Converts B value in Tesla to g-value for given MWFQ (microwave frequency).
+%B2G Converts field value in Tesla to g-value for given MWFQ (microwave frequency).
 %
 %   [g] = B2G(B) converts a field value B in Tesla to a g-value using a
 %   default MWFQ of 9.4e9 Hz.

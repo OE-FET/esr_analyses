@@ -1,5 +1,5 @@
 function [yn] = esr_lorentz_simulation(x, B0, T1, T2, Bmw, modAmp, n)
-%esr_lorentz_simulation simulates the n-th harmonic detection of a Lorentzian
+%ESR_LORENTZ_SIMULATION simulates the n-th harmonic detection of a Lorentzian
 %resonance with x-axis modulation.
 %
 %   Simulates the n-th harmonic detection of a Lorentzian ESR resonance
@@ -9,7 +9,7 @@ function [yn] = esr_lorentz_simulation(x, B0, T1, T2, Bmw, modAmp, n)
 %   L = Bmw / ( 1 + Bmw^2*T1*T2*gmratio^2 + (xpd-B0)^2*T2^2*gmratio^2 )
 %
 %
-%   INPUT(S):
+%   INPUT:
 %   x - vector with external magnetic fields [Gauss]
 %   B0 - resonance center [Gauss]
 %   T1 - spin-lattice relaxation time [sec]
@@ -18,7 +18,7 @@ function [yn] = esr_lorentz_simulation(x, B0, T1, T2, Bmw, modAmp, n)
 %   modAmp - field modulation amplitude [Gauss]
 %   n - n-th harmonic detection
 %
-%   OUTPUT(S):
+%   OUTPUT:
 %   yn - simulated n-th harmonic spectrum
 %
 

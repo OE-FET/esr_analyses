@@ -1,18 +1,19 @@
-function argout = plot3D_xepr(varargin)
+function phandle = plot3D_xepr(varargin)
 %PLOT2D_XEPR Plots 2D Xepr data as 3D line plot.
 %
 %   PLOT2D_XEPR will create axis labels and an appropriate legend
 %   automatically from pars.
 %
-% 	PLOT2D_XEPR(x, y, pars)
-%   PLOT2D_XEPR(ax, ...)
+%   SYNTAX:
+% 	PLOT2D_XEPR(ax, dset)
+%   phandle = PLOT2D_XEPR(ax, ...)
 %
-%   INPUT(S):
-%   ax         - Axis handle for plot. If not given, the data is plotted in
-%                the current axis, as returned by gca.
-%   x, y, pars - Xepr data set
+%   INPUT:
+%   ax    - Axis handle for plot. If not given, the data is plotted in
+%           the current axis, as returned by gca.
+%   dset  - Xepr data set
 %
-% 	OUTPUT(S):
+% 	OUTPUT:
 %   phandle - image handle
 %
 
@@ -65,7 +66,7 @@ sgtitle(pars.TITL, 'Interpreter', 'none');
 
 %% Argout
 if nargout > 0
-    argout = ax;
+    phandle = ax;
 end
 
 end

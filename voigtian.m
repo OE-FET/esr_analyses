@@ -7,13 +7,17 @@ function [y] = voigtian(x, x0, FWHM_gauss, FWHM_lorentz, varargin)
 %   [y] = VOIGTIAN(x, x0, FWHM_gauss, FWHM_lorentz)
 %   [y] = VOIGTIAN(x, x0, FWHM_gauss, FWHM_lorentz, 'deriv', 1)
 %
-%   INPUT(S):
-%   x - as x-axis values
-%   x0 - position of the line center
-%   FWHM_gauss - FWHM of the Gaussian component
-%   FWHM_lorentz - FWHM of the Lorentzian component
+%   INPUT:
+%   x               - as x-axis values
+%   x0              - position of the line center
+%   FWHM_gauss      - FWHM of the Gaussian component
+%   FWHM_lorentz    - FWHM of the Lorentzian component
 %
-% 	OUTPUT(S):
+%   KEYWORD INPUT:
+%   'deriv' - If given and > 0, this function returns the n-th
+%             derivative of a Voigtian.
+%
+% 	OUTPUT:
 %   y - voigt profile
 %
 % 27-December-2013 N. Cherkasov

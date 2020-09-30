@@ -6,13 +6,15 @@ function pars = get_sample_position(pars)
 %   structure. These are necessary for proper determination of the mw field
 %   over the sample.
 %
-%   INPUT(S):
-%   get_sample_position(pars)   - experimental parameters
+%   SYNTAX:
+%   pars = get_sample_position(pars)   - experimental parameters
 %
-% 	OUTPUT(S):
-% 	pars.SampleL  - length of the sample [mm]
-% 	pars.SampleH  - height of the sample inside the cavity [mm]
+% 	OUTPUT:
+%   pars - new parameters with the following fields added:
+% 	       pars.SampleL  - length of the sample [mm]
+% 	       pars.SampleH  - height of the sample inside the cavity [mm]
 %
+
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$
 
 import esr_analyses.*

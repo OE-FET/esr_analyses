@@ -11,30 +11,28 @@ function varargout = BrukerRead(varargin)
 %   an input if the path is put in 'quotes' and the extension (.DTA) is left
 %   off.
 %
-%   Inputs:
-%   input1     - a string input to the path of a file
-%
-%   Outputs:
-%   x    - x-axis
-%   o    - ordinate: the measured quantity
-%   pars - array of information about the loaded file
-%
-%   Outputs:
-%   dset - a matlab table with the measurement data
-%
-%
-%   Example:
+%   SYNTAX:
 %   [x, o, pars] = BrukerRead
 %                  GUI load a file
 %
 %   dset = BrukerRead
 %          GUI load a file, return as a table
 %
-%
 %   [x, o, pars] = BrukerRead('/path/to/file.DTA')
 %                  load x,o and info of file.DTA to the workspace
 %
+%   INPUT:
+%   input1     - a string input to the path of a file
 %
+%   OUTPUT:
+%   x    - x-axis
+%   o    - ordinate: the measured quantity
+%   pars - array of information about the loaded file
+%
+%   OUTPUT:
+%   dset - a matlab table with the measurement data
+%
+
 %%                         Input arguments
 % ========================================================================
 

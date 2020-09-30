@@ -1,19 +1,20 @@
-function argout = plot2D_xepr(varargin)
+function phandle = plot2D_xepr(varargin)
 %PLOT2D_XEPR Plots Xepr data as 2D contour plot.
 %
 %   In addition to PLOT2D, PLOT2D_XEPR will create axis labels and an
 %   appropriate legend automatically from pars.
 %
+%   SYNTAX:
 % 	PLOT2D_XEPR(dset)
 %   PLOT2D_XEPR(ax, ...)
 %
-%   INPUT(S):
+%   INPUT:
 %   ax   - Axis handle for plot. If not given, the data is plotted in
 %          the current axis, as returned by gca.
 %   dset - Xepr data set
 %
-% 	OUTPUT(S):
-%   ax - axes handle
+% 	OUTPUT:
+%   phandle - plot handle
 %
 
 import esr_analyses.*
@@ -58,7 +59,7 @@ sgtitle(pars.TITL, 'Interpreter', 'none');
 
 %% Argout
 if nargout > 0
-    argout = ax;
+    phandle = ax;
 end
 
 end

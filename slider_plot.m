@@ -1,11 +1,13 @@
-function [S] = slider_plot(x, y, varargin)
+function S = slider_plot(x, y, varargin)
 %SLIDER_PLOT plot different slices of y-data according to slider location.
 %
-%   INPUT(S):
+%   INPUT:
 %   x, y - Data to plot. Arrays must have the same length.
+%
+%   KEYWORD INPUT:
 %   'style' - String specifying plot style.
 %
-%   OUTPUT(S):
+%   OUTPUT:
 %   S - Structure holding references to figure and axis handles as well as
 %       the plotted data.
 %

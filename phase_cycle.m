@@ -3,7 +3,7 @@ function [s0, s90, phase_shift] = phase_cycle(schannel_x, channel_y, varargin)
 %
 %   Takes x- and y-channels from a lock-in amplifier and cycles them by the
 %   given phase to retrieve the in-phase and out-of-phase signals. If no
-%   phase is given, the phase which minimizes the out-of-phase signal is
+%   phase is given, the phase which minimises the out-of-phase signal is
 %   determined automatically.
 %
 %   SYNTAX:
@@ -11,15 +11,17 @@ function [s0, s90, phase_shift] = phase_cycle(schannel_x, channel_y, varargin)
 %   [s0, s90, phase_shift] = phase_cycle(schannel_x, channel_y, 'phase', phase)
 %   [s0, s90, phase_shift] = phase_cycle(schannel_x, channel_y, 'plot', true)
 %
-%   INPUT(S):
+%   INPUT:
 %   sig_x - X-channel from lock-in.
 %   sig_y - Y-channel from lock-in.
+%
+%   KEYWORD INPUT:
 %   phase - Phase offset in rad to use. If not given, the appropriate
-%           phase will be determined by minimizing the out-of-phase signal.
+%           phase will be determined by minimising the out-of-phase signal.
 %   plot  - If true, the original and phase-corrected signals will be
 %           plotted. Defaults to true.
 %
-%   OUTPUT(S):
+%   OUTPUT:
 %   s0          - In-phase signal from lock-in.
 %   s90         - Out-of-phase-phase signal from lock-in.
 %   phase_shift - Phase shift in rad used to calculate the above signals.

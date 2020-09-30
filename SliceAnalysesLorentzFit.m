@@ -1,14 +1,14 @@
 function [out_struct, out_table] = SliceAnalysesLorentzFit(varargin)
-%SLICEANALYSESLORENTZFIT performs normalization and spin-counting of an
+%SLICEANALYSESLORENTZFIT performs normalisation and spin-counting of an
 %ESR signal by fitting it to a Lorentz function.
 %
-%   Performs a 1D fit of a cw-EPR spectrum to determine spin cohrence time
+%   Performs a 1D fit of a cw-EPR spectrum to determine spin coherence time
 %   T2, the magnetic susceptibility and the number of spins in the sample.
 %   This program assumes a Lorentzian resonance line from a single
 %   spin-ensemble.
 %
 %   Field modulation and the 1st harmonic detection of the cw-EPR signal,
-%   together with possible distortions from overmodulation, are explicitly
+%   together with possible distortions from over-modulation, are explicitly
 %   accounted for. The MW field distribution in the cavity is taken from
 %   the Bruker DSC file and is used when calculating the MW field amplitude
 %   over the sample volume.
@@ -20,7 +20,7 @@ function [out_struct, out_table] = SliceAnalysesLorentzFit(varargin)
 %	...('sigPath')                 - reads data from file
 %	...('sigPath', 'bgPath')       - reads data and background from file
 %
-%   KEYWORD INPUT(S):
+%   KEYWORD INPUT:
 %   plot        - if true, plot data and best fit at each iteration
 %
 %   OUTPUT(S):

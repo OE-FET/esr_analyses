@@ -10,12 +10,14 @@ function Bmw = get_mw_fields(pars, varargin)
 % 	Bmw = GET_MW_FIELDS(pars)
 % 	Bmw = GET_MW_FIELDS(pars, 'cal', 2.2)
 %
-%   INPUT(S):
+%   INPUT:
 %   pars  - structure containing measurement conditions, sample dimensions, etc.
+%
+%	KEYWORD INPUT:
 %   'cal' - calibration factor for cavity, defaults to 2.86 to Bruker SHQE cavity
 %           Oxford Instruments ESR900 cryostat under vacuum
 %
-%   OUTPUT(S):
+%   OUTPUT:
 %   Bmw  - Microwave magnetic field amplitude(s) in Tesla
 %
 

@@ -8,14 +8,17 @@ function [y] = pseudo_voigt(x, x0, FWHM_gauss, FWHM_lorentz, varargin)
 %   [y] = PSEUDO_VOIGT(x, x0, FWHM_gauss, FWHM_lorentz)
 %   [y] = PSEUDO_VOIGT(x, x0, FWHM_gauss, FWHM_lorentz, 'deriv', 1)
 %
-%   INPUT(S):
-%   x - as x-axis values
-%   x0 - position of the line center
-%   FWHM_gauss - FWHM of the Gaussian component
-%   FWHM_lorentz - FWHM of the Lorentzian component
+%   INPUT:
+%   x  				- as x-axis values
+%   x0 				- position of the line center
+%   FWHM_gauss 		- FWHM of the Gaussian component
+%   FWHM_lorentz 	- FWHM of the Lorentzian component
 %
-% 	OUTPUT(S):
-%   y - pseudo-voigt profile
+%   KEYWORD INPUT:
+%	'deriv'  - order of derivative to return, defaults to 0
+%
+% 	OUTPUT:
+%   y - voigt profile
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$

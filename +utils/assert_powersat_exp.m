@@ -1,6 +1,6 @@
 function [] = assert_powersat_exp(pars)
-%Raises an error if the specified Xepr parameters do not correspond to a
-%powersaturation measurement.
+%ASSERT_POWERSAT_EXP Raises an error if the specified Xepr parameters do
+%	not correspond to a power saturation measurement.
 
 import esr_analyses.utils.*
 

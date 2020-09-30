@@ -1,17 +1,18 @@
-function argout = plot_xepr(dset)
+function phandle = plot_xepr(dset)
 %PLOT_XEPR Plots Xepr data.
 %
 %   In addition to PLOT2D, PLOT2D_XEPR will create axis labels and an
 %   appropriate legend automatically from pars.
 %
+%   SYNTAX:
 % 	PLOT_XEPR(dset)
-%   PLOT_XEPR(ax, ...)
+%   phandle = PLOT_XEPR(ax, ...)
 %
-%   INPUT(S):
+%   INPUT:
 %   dsets - Xepr data set
 %
-% 	OUTPUT(S):
-%   phandle - image handle
+% 	OUTPUT:
+%   phandle - plot handle
 %
 
 import esr_analyses.*
@@ -46,7 +47,7 @@ sgtitle(pars.TITL, 'Interpreter', 'none');
 
 %% Argout
 if nargout > 0
-    argout = gca;
+    phandle = gca;
 end
 
 end

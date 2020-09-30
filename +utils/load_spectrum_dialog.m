@@ -6,7 +6,7 @@ function dset = load_spectrum_dialog(varargin)
 %   subtract a background spectrum, if desired. Normalises the dataset and
 %   determines other experimental parameters not imported by BrukerRead.
 %
-%   INPUT(S):
+%   INPUT:
 %   LOAD_SPECTRUM_DIALOG()         - opens gui to select data file and
 %                                    background file, if desired
 %   ...('signal_path')             - path to signal data with the option to
@@ -16,7 +16,7 @@ function dset = load_spectrum_dialog(varargin)
 %   ...(x, y, pars)                - uses x and y data with parameter
 %                                    structure
 %
-%   OUTPUT(S):
+%   OUTPUT:
 %	dset
 %
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$

@@ -3,19 +3,19 @@ function [dset] = normalise_spectrum(dset)
 %
 % 	ESR data is normalised for receiver gain, number of scans (Ns = 1),
 % 	time constant (Tc = 1 ms). The normalised conditions correspond to the
-% 	Xepr "normalised aquisition" option. The resulting spectrum is then
-% 	flagged as normlised by setting Pars.Norm = 'True'.
+% 	Xepr "normalised acquisition" option. The resulting spectrum is then
+% 	flagged as normalised by setting Pars.Norm = 'True'.
 %
 %   Note: The actual normalisation performed by Xepr and the signal channel
 %         depends on the signal channel / signal processing unit version.
 %         This function DOES NOT check for the signal channel version but
 %         assumes a SPU which ALWAYS scales for the time constant.
 %
-%   INPUT(S):
-%   dset from BrukerRead
+%   INPUT:
+%   dset - dataset from BrukerRead
 %
-% 	OUTPUT(S):
-% 	normalised dset
+% 	OUTPUT:
+% 	dset - normalised dset
 %
 
 %   $Author: Sam Schott, University of Cambridge <ss2151@cam.ac.uk>$

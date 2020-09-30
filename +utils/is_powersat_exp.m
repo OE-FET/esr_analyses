@@ -1,6 +1,6 @@
 function [res] = is_powersat_exp(input)
-%Returns True if the given parameters belong to a powersat experiment,
-%False otherwise.
+%IS_POWERSAT_EXP Returns true for a powersat experiment, false otherwise.
+
 
 if istable(input)
     pars = input.Properties.UserData;

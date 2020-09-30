@@ -2,12 +2,12 @@ function [g_sample, B_res]= gfactor_determination(x, y, pars, varargin)
 %GFACTOR_DETERMINATION determines the g-factor of an ESR spectrum
 %
 %   [g_sample, B_res]= GFACTOR_DETERMINATION(x, y, pars)
-%   determines the g-factor of derivative ESR spectra given by (x,y) with
-%   the microwave frequency in the paramater structure PARS. G_SAMPLE is
+%   determines the g-factor of derivative ESR spectra given by (x, y) with
+%   the microwave frequency in the parameter structure PARS. G_SAMPLE is
 %   the g-factor, B_RES is the resonance field.
 %
-%   The resonance center is detrmined intially by finding the maximum of the
-%   integrated spectrum and is refinded by finding the closest zero-crossing
+%   The resonance center is determined initially by finding the maximum of the
+%   integrated spectrum and is refined by finding the closest zero-crossing
 %   of the derivative spectrum. The location of B_RES is interpolated
 %   from the two closest data-points with x > 0 and x < 0. The resonance
 %   center field is converted to a g-factor with the function B2B.
@@ -19,14 +19,16 @@ function [g_sample, B_res]= gfactor_determination(x, y, pars, varargin)
 %   [g_sample, B_res] = GFACTOR_DETERMINATION(x, y, pars)
 %   [g_sample, B_res] = GFACTOR_DETERMINATION(x, y, pars, 'plot', true)
 %
-%   INPUT(S):
+%   INPUT:
 %   x        - Magnetic field in Gauss
-%   y        - Derivative ESR spetrum
+%   y        - Derivative ESR spectrum
 %   pars     - Structure containing measurement parameters
-%   plot     - If plot == 'y', the spectrum is plotted with the resonance
-%              centre marked prominently.
 %
-%   OUTPUT(S):
+%   KEYWORD INPUT:
+%   plot     - If true, the spectrum is plotted with the resonance
+%              centre marked prominently. Defaults to false.
+%
+%   OUTPUT:
 %   g_sample - Sample g-factor
 %   B_res    - Resonance center used to determine g-factor
 %

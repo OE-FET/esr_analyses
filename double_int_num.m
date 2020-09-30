@@ -9,14 +9,14 @@ function [IArea, yInt1, yCorr, yInt2] = double_int_num(x, y, varargin)
 %   [IArea, Int1, yCorr, Int2] = DOUBLE_INT_NUM(x, y)
 %   [IArea, Int1, yCorr, Int2] = DOUBLE_INT_NUM(x, y, 'baseline', false)
 %
-%   INPUT(S):
+%   INPUT:
 %   x - vector with magnetic field
 %   y - vector with ESR signal intensity
 %
-%   OPTIONAL:
+%   KEYWORD INPUT:
 %   'baseline' - Perform a base-line correction? true (default) or false
 %
-%   OUTPUT(S):
+%   OUTPUT:
 %   IArea - double-integrated signal
 %   yInt1 - single-integrated signal
 %   yCorr - polynomial baseline-corrected ESR signal intensity
