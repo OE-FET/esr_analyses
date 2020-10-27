@@ -114,7 +114,7 @@ out_struct = struct(...
     'NSpin', NSpin(1), 'dNSpin', dNSpin(1));
 
 
-out_table = struct2table(rmfield(out_struct, {'x', 'y', 'pars', 'fitres'}));
+out_table = struct2table(rmfield(out_struct, {'x', 'o', 'pars', 'fitres'}));
 
 disp(out_table);
 
