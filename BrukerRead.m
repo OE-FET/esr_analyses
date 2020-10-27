@@ -30,7 +30,7 @@ function varargout = BrukerRead(varargin)
 %   pars - array of information about the loaded file
 %
 %   OUTPUT:
-%   dset - a matlab table with the measurement data
+%   dset - a Matlab table with the measurement data
 %
 
 %%                         Input arguments
@@ -243,8 +243,8 @@ function [par_struct] = param2struct(par_list)
             ParaMatrix{i, 2} = str2double(value);
         end
 
-        % Mark rows that do not contain aquisition parameters.
-        % We recognize them because they start with non-letter characters
+        % Mark rows that do not contain acquisition parameters.
+        % We recognise them because they start with non-letter characters
         % or are empty
         if isempty(parameter)
             Keep(i) = 0;
@@ -254,7 +254,7 @@ function [par_struct] = param2struct(par_list)
         end
     end
 
-    % delete rows that do not contain aquisition parameters
+    % delete rows that do not contain acquisition parameters
     ParaMatrix = ParaMatrix(Keep==1, :);
 
     % save all parameters in info structure
