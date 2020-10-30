@@ -127,21 +127,33 @@ dset{1:n,:} = [x, y];
 
 dsetBG{:,1} = dsetBG{:,1} - B_offset;  % overwrite for plotting
 
+n_components = width(dset)-1;
 
-for k=1:width(dset)-1
-    figure('Name','Background subtraction');
+for k=1:n_components
+    figure('Name', 'Background subtraction');
 
-    subplot(1, k, k)
+    ax = subplot(2, n_components, k);
 
     yoffset = max(dsetSig{:,k+1});
     % plot background
-    sp1 = stackplot_xepr(dsetBG(:,[1, k+1]), 'yoffsets', yoffset, 'style', 'r');
+    sp1 = stackplot_xepr(ax, dsetBG(:,[1, k+1]), 'yoffsets', yoffset, 'style', 'r');
     hold on;
     % plot signal
-    sp2 = stackplot_xepr(gca, dsetSig(:,[1, k+1]), 'yoffsets', yoffset, 'style', 'b');
+    sp2 = stackplot_xepr(ax, dsetSig(:,[1, k+1]), 'yoffsets', yoffset, 'style', 'b');
     hold off;
     legend([sp1(1,1) sp2(1,1)], {'background', 'signal'})
+    
+    set(ax, 'XLimSpec', 'Tight');
+    ylim_1 = ylim();
 
+    ax = subplot(2, n_components, k + n_components);
+
+    % plot diff
+    stackplot_xepr(ax, dset(:,[1, k+1]), 'yoffsets', yoffset, 'style', 'b');
+    legend('difference')
+    
+    set(ax, 'XLimSpec', 'Tight');
+    ylim(ylim_1);
 end
 
 end
