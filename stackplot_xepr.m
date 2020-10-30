@@ -44,7 +44,7 @@ if ishghandle(varargin{1}, 'axes')
         opts = {};
     end
 else
-    ax = gca;
+    ax = [];
     dset = varargin{1};
     if nargin > 1
         opts = varargin(2:end);
@@ -74,9 +74,11 @@ phandle = [];
 
 for k = 1:N
     y = dset{:,k+1};
-
-    subplot(1,N,k)
-    ph_k = stackplot(x, y, opts{:});
+       
+    if isempty(ax)
+        ax = subplot(1,N,k);
+    end
+    ph_k = stackplot(ax, x, y, opts{:});
 
     xlabel(x_label);
     ylabel(y_label);
