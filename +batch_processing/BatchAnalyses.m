@@ -15,9 +15,6 @@ function [output, output_table, errors] = BatchAnalyses(analysesFunc, col_names)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-% Try automatical matching of background signals
-bckgrndStrQ = input('Would you like to subtract background spectra? y/[n]  ', 's');
-
 global Path
 
 [fileNames, Path] = uigetfile([Path, '*.DSC'], ...
@@ -31,40 +28,39 @@ nFiles = numel(fileNames);
 output = cell(1, nFiles);
 errors = cell(1, nFiles);
 
+bckgrndStrQ = input('Would you like to subtract background spectra? y/[n]  ', 's');
+
+if strcmp(bckgrndStrQ, 'y')
+
+    [fileNamesBG, PathBG] = uigetfile([Path, '*.DSC'], ...
+        'Please select background data files.', 'MultiSelect', 'on');
+
+    if ~iscell(fileNamesBG)
+        fileNamesBG = {fileNamesBG};
+    end
+
+    nFilesBG = numel(fileNamesBG);
+
+    if nFiles ~= nFilesBG
+        error('Got %d data files but %d background files', nFiles, nFilesBG);
+    end
+end
+
 % get sample height and position
 global_pars = get_sample_position(struct());
 
 for i = 1:nFiles
 
     filePath = [Path fileNames{i}];
-    filePathBG = [];
 
     if strcmp(bckgrndStrQ, 'y')
-        filePathBGcandidates = {'Vg_00.', 'Vg_0.'};
-
-        for candidate=filePathBGcandidates
-            filePathBGcandidate = regexprep(filePath, 'Vg_(\S+)(\.)', ...
-                candidate{1});
-            if exist(filePathBGcandidate, 'file') == 2
-                filePathBG = filePathBGcandidate;
-                break
-            end
-        end
-
-        if filePathBG
-            disp('Background file for:');
-            disp(filePath);
-            disp(filePathBG);
-        else
-            disp('Error: no background file found for');
-            disp(filePath);
-        end
+        filePathBG = [PathBG fileNamesBG{i}];
     end
 
-    if isempty(filePathBG)
-        dset = BrukerRead(filePath);
-    else
+    if strcmp(bckgrndStrQ, 'y')
         dset = subtract_background(filePath, filePathBG);
+    else
+        dset = BrukerRead(filePath);
     end
 
     dset.Properties.UserData.SampleL = global_pars.SampleL;
@@ -80,7 +76,7 @@ for i = 1:nFiles
     end
 
     out_analyses = rmfield(output{i}, {'x', 'o', 'pars'});
-    
+
     try
         out_analyses = rmfield(out_analyses, {'fitres'});
     end
