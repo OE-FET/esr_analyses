@@ -11,6 +11,10 @@ function [output, output_table, errors] = BatchAnalyses(analysesFunc, col_names)
 %   output          - cell array with all analyses results
 %   output_table    - table with all fitting results
 %
+%   EXAMPLE USGAE:
+%   [output, output_table, errors] = BatchAnalyses(@SliceAnalysesLorentzFit, {'Temperature'})
+%
+%
 
 import esr_analyses.*
 import esr_analyses.utils.*
