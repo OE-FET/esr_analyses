@@ -27,7 +27,7 @@ end
 
 ParCheckIgnore = {'TITL', 'TIME', 'DATE', 'MWFQ', 'FrequencyMon', ...
          'Flyback', 'XMIN', 'XWID', 'XMAX', 'StaticFieldMon', ...
-         'NbScansAcc', 'NbScansToDo', 'OPER', 'Stability'};
+         'NbScansAcc', 'NbScansToDo', 'OPER', 'Stability', 'x_axis'};
 
 if strcmp(dset1.YTYP, 'IGD') == 1
     ParCheckIgnore = [ParCheckIgnore, {'Power', 'PowerAtten', 'MWPW'}];
@@ -54,7 +54,8 @@ if n_diff > 0
     fprintf(2, 'The following parameters are different:\n');
 end
 for i = diff_indices'
-    fprintf('%s:\t%s vs %s\n', ParsNames{i}, dset1.(ParsNames{i}), dset2.(ParsNames{i}));
+    fprintf('%s:\t%s vs %s\n', ParsNames{i}, ...
+        string(dset1.(ParsNames{i})), string(dset2.(ParsNames{i})));
 end
 
 end
