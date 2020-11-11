@@ -4,7 +4,7 @@ function [dset] = normalise_spectrum_all(dset)
 % 	ESR data is normalised for receiver gain, number of scans (Ns = 1),
 % 	time constant (Tc = 1 ms). Additionally, we also normalise for Q-factor,
 %   (Q = 10,000), modulation amplitude (ModAmp = 1 Gauss) and microwave
-%   power (Pmw = 1mW) so that we can compare spectra recorded under
+%   power (Pmw = 2 mW) so that we can compare spectra recorded under
 %   different conditions.
 %
 %   Note: All of the additional parameters can influence both the signal
@@ -25,18 +25,16 @@ import esr_analyses.utils.*
 [dset] = normalise_spectrum(dset);
 
 %% Normalise for other parameters next
-pars_norm = pars;
-pars_norm.QValue = 1;
-pars_norm.B0MA = 1;
+pars = dset.Properties.UserData;
 
-dset.Properties.UserData.QValue = 10000;
-dset.Properties.UserData.B0MA = 1;
+QValue_norm = 10000;
+B0MA_norm   = 1e-4;  % 1 Gauss
+MWPW_norm   = 2e-3;  % 2 mW
 
 if is_powersat_exp(pars) % don't normalise for MWPW in power saturation measurement
-    dset{:, 2:end} = dset{:, 2:end} / (pars.QValue * pars.B0MA);
+    dset{:, 2:end} = dset{:, 2:end} * QValue_norm/pars.QValue * B0MA_norm/pars.B0MA;
 else
-    pars_norm.MWPW = 1;
-    dset{:, 2:end} = dset{:, 2:end} / (pars.QValue * sqrt(pars.MWPW) * pars.B0MA);
+    dset{:, 2:end} = dset{:, 2:end} * QValue_norm/pars.QValue * B0MA_norm/pars.B0MA * sqrt(MWPW_norm)/sqrt(pars.MWPW);
 end
 
 
