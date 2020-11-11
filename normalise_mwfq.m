@@ -1,12 +1,12 @@
-function [x, y, pars] = normalize_mwfq(x, y, pars, varargin)
-%NORMALIZE_MWFQ Normalises magnetic field axis to given microwave frequency
+function [x, y, pars] = normalise_mwfq(x, y, pars, varargin)
+%NORMALISE_MWFQ Normalises magnetic field axis to given microwave frequency
 %
 %	SYNTAX:
-% 	[x, y, pars] = NORMALIZE_MWFQ(x, y, pars, 'MWFQ', freq) normalises the
+% 	[x, y, pars] = NORMALISE_MWFQ(x, y, pars, 'MWFQ', freq) normalises the
 % 	data given by (x,y,pars) to a microwave frequency given by freq in Hz.
 %	The new data and parameters are output again as tuple (x y, pars).
 %
-%	[x, y, pars] = NORMALIZE_MWFQ(x, y, pars) normalises the data given by
+%	[x, y, pars] = NORMALISE_MWFQ(x, y, pars) normalises the data given by
 % 	(x, y, pars) to a microwave frequency of 9.4 GHz.
 %
 %   KEYWORD INPUT:
