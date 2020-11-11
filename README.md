@@ -1,5 +1,5 @@
 # ESR-Analyses
-MATLAB scripts to analyze cw-ESR data. ESR-Analyses requires the
+MATLAB scripts to analyse cw-ESR data. ESR-Analyses requires the
 [natural constants](https://github.com/OE-FET/Natural-constants) package.
 
 If you publish any data processed with the ESR-Analyses routines, please cite Schott, S.
@@ -28,7 +28,7 @@ ESR-Analyses is composed of:
 
     - `BrukerRead` to read Xepr data files and return the measurement data as well all
        measurement parameters.
-    - Functions to process the data: `normalize_spectrum`, `subtract_background`,
+    - Functions to process the data: `normalise_spectrum`, `subtract_background`,
       `baseline_corr`, etc.
 
 3. Functions to analyse cw-ESR data:
@@ -39,3 +39,10 @@ ESR-Analyses is composed of:
 
 All functions do exactly what you would expect from their name, and most of them are well
 documented. Therefore, please refer to the individual doc-strings for more information.
+
+## Requirements:
+
+- The latest version of Matlab is recommended (Matlab 2020b as of writing)
+- Image Processing Toolbox
+- Curve Fitting Toolbox
+- Statistics and Machine Learning Toolbox
