@@ -18,8 +18,8 @@ function varargout = BrukerRead(varargin)
 %   dset = BrukerRead
 %          GUI load a file, return as a table
 %
-%   [x, o, pars] = BrukerRead('/path/to/file.DTA')
-%                  load x,o and info of file.DTA to the workspace
+%   [x, o, pars] = BrukerRead('/path/to/file.DSC')
+%                  load x,o and info of file.DSC to the workspace
 %
 %   INPUT:
 %   input1     - a string input to the path of a file
@@ -42,7 +42,7 @@ global Path
 switch nargin
     case 0
         if Path==0; Path=[]; end
-        [file, directory] = uigetfile({'*.DTA;', 'Bruker File (*.DTA)'; '*.*', 'All Files (*.*)'}, 'Load Bruker file', Path);
+        [file, directory] = uigetfile({'*.DSC;', 'Bruker File (*.DSC)'; '*.*', 'All Files (*.*)'}, 'Load Bruker file', Path);
         Path = directory;
         % if user cancels command nothing happens
         if isequal(file, 0) || isequal(directory, 0)
@@ -60,12 +60,12 @@ switch nargin
 
 end
 
-
 %%                         Parameter file
 % ========================================================================
 
 % Load .dsc file
-file_dsc = [directory '/' name '.DSC'];
+
+file_dsc = fullfile(directory, [name '.DSC']);
 fid = fopen(file_dsc, 'r');
 
 if fid < 0
@@ -90,7 +90,8 @@ pars = param2struct(parameter_list);
 % ========================================================================
 
 % Load .dta file
-fid = fopen( [directory '/' name '.DTA'], 'r', 'ieee-be.l64');
+file_dta = fullfile(directory, [name '.DTA']);
+fid = fopen(file_dta, 'r', 'ieee-be.l64');
 
 if fid < 0
     error(['File ''', name, '.DTA'' could not be opened, both *.DTA and *.DSC files are required to open the file.'])
@@ -118,7 +119,8 @@ if strcmp(pars.XTYP, 'IDX')  % indexed data
     x = linspace(pars.XMIN, pars.XMIN + pars.XWID, pars.XPTS)';
 elseif strcmp(pars.XTYP, 'IGD')  % data points saved in file
     % if exist, load .YGF , convert to usable matrix
-    fid = fopen( [directory '/' name '.XGF'], 'r', 'ieee-be.l64');
+    file_xgf = fullfile(directory, [name '.XGF']);
+    fid = fopen(file_xgf, 'r', 'ieee-be.l64');
 
     if fid < 0
         error('*.XGF file expected but not found.')
@@ -136,7 +138,8 @@ if strcmp(pars.YTYP, 'IDX')  % indexed data
     y = linspace(pars.YMIN, pars.YMIN + pars.YWID, pars.YPTS)';
 elseif strcmp(pars.YTYP, 'IGD')  % data points saved in file
     % if exist, load .YGF , convert to usable matrix
-    fid = fopen( [directory '/' name '.YGF'], 'r', 'ieee-be.l64');
+    file_ygf = fullfile(directory, [name '.YGF']);
+    fid = fopen(file_ygf, 'r', 'ieee-be.l64');
 
     if fid < 0
         error('*.YGF file expected but not found.')
@@ -154,7 +157,8 @@ if strcmp(pars.ZTYP, 'IDX')  % indexed data
     z = linspace(pars.ZMIN, pars.ZMIN + pars.ZWID, pars.ZPTS)';
 elseif strcmp(pars.ZTYP, 'IGD')  % data points saved in file
     % if exist, load .ZGF , convert to usable matrix
-    fid = fopen( [directory '/' name '.ZGF'], 'r', 'ieee-be.l64');
+    file_zgf = fullfile(directory, [name '.ZGF']);
+    fid = fopen(file_zgf, 'r', 'ieee-be.l64');
 
     if fid < 0
         error('*.ZGF file expected but not found.')
@@ -200,6 +204,7 @@ end
 pars.x_axis = x;
 pars.y_axis = y;
 pars.z_axis = z;
+pars.path = file_dsc;
 
 dset.Properties.VariableUnits = [{pars.XUNI} yUnits];
 dset.Properties.UserData = pars;
