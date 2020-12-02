@@ -68,7 +68,7 @@ k = 200/(pars.BridgeCalib * pars.ConvFact);
 norm = (pars.QValue * sqrt(Pmw) * pars.B0MA * position_correction);
 
 % -------------------------------------------------------------------------
-Chi = mu0* k * doubleIntArea .* pars.GFactor.^2 .* bmagn^2 ./ (3 * ...
+Chi = mu0 * k * doubleIntArea .* pars.GFactor.^2 .* bmagn^2 ./ (3 * ...
     planck * pars.MWFQ  * norm);
 % -------------------------------------------------------------------------
 
