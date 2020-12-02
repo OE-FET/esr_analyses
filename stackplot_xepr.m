@@ -76,9 +76,11 @@ for k = 1:N
     y = dset{:,k+1};
        
     if isempty(ax)
-        ax = subplot(1,N,k);
+        ax_target = subplot(1,N,k);
+    else
+        ax_target = ax;
     end
-    ph_k = stackplot(ax, x, y, opts{:});
+    ph_k = stackplot(ax_target, x, y, opts{:});
 
     xlabel(x_label);
     ylabel(y_label);
