@@ -48,10 +48,12 @@ y = y./scaling;
 
 % re-promt for user input until user confirms good baseline correction
 ok = false;
+
+fig = figure('Name', 'Baseline fit');
+ax = gca;
+
 while ~ok
     % plot spectrum
-    fig = figure('Name', 'Baseline fit');
-    ax = gca;
     [~, offsets] = stackplot(ax, x, real(y)); hold on;
 
     % set title of plot
