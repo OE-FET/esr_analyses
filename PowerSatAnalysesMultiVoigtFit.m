@@ -208,7 +208,7 @@ out_struct = struct(...
     'Brms', Brms.', 'dBrms', dBrms.', 'Chi', Chi.',...
     'dChi', dChi.','NSpin', NSpin.', 'dNSpin', dNSpin.');
 
-out_table = struct2table(out_struct,'AsArray',true);
+out_table = struct2table(rmfield(out_struct, {'x', 'o', 'pars', 'fitres'}),'AsArray',true);
 
 end
 
