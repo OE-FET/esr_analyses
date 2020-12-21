@@ -239,13 +239,27 @@ function [par_struct] = param2struct(par_list)
 
         value = strtrim(value);
         ParaMatrix{i, 1} = parameter;
+        
+        REGEX = '{(?<ndmin>\d*);(?<shape>[\d,]*);(?<default>[0-9\.e+-]*)\[?(?<unit>\w*)\]?}\s(?<value>.*)';
+        matrix_match = regexp(value, REGEX, 'names');
 
-        % if value not numeric, paste as string, else convert to double
-        if isnan(str2double(value))
+         % if value is a matrix, convert
+        if ~isempty(matrix_match)
+            value = str2num(matrix_match.value);
+            shape = str2num(matrix_match.shape);
+            if length(shape) > 1
+                ParaMatrix{i, 2} = reshape(value, shape);
+            else
+                ParaMatrix{i, 2} = value;
+            end
+
+        % convert numeric values to double
+        elseif ~isnan(str2double(value))
+            ParaMatrix{i, 2} = str2double(value);
+        % keep everything else as string
+        else
             value = strip(value, 'both', "'"); % strip single quotes
             ParaMatrix{i, 2} = value;
-        else
-            ParaMatrix{i, 2} = str2double(value);
         end
 
         % Mark rows that do not contain acquisition parameters.
