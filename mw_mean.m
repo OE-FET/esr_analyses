@@ -10,22 +10,10 @@ function [position_correction] = mw_mean(pars)
 import esr_analyses.*
 import esr_analyses.utils.*
 
-%%
-% read string with polymer coefficients for Bmw distribution
-[info, coef] = strtok(pars.PolyCof);
-% coef contains the coefficient vector
-coef = str2double(strsplit(strtrim(coef), ','));
-% info contains information about how to read coef
-info = str2double(strsplit(regexprep(info, {'{', '}'}, ''), {',', ';'}));
-
-% reshape coef vector into matrix
-coefMatrix = reshape(coef, info(2:3));
-coefVector = coefMatrix(info(1), :);
-
-% coefVector now contains the polynomial coefficients from lowest to
+% PolyCof contains the polynomial coefficients from lowest to
 % higherst order. However, Matlab convention goes from highest to lowest.
-% we need to flip coefVector.
-coefVector=fliplr(coefVector);
+% we need to flip PolyCof.
+coefVector = fliplr(pars.PolyCof(2,:));
 
 % read out cavity dimensions
 ResCenter = str2double(strtrim(regexprep(pars.ResCenter, 'mm', '')));
@@ -40,7 +28,7 @@ count = 0;
 while pars.SampleL > ResLength
     disp('Sample length is larger than the cavity height. Please enter a valid sample length.');
     pars.SampleL = input('Please give sample length in mm:\n[default = 20 mm]\n');
-    if isempty(pars.SampleL);pars.SampleL=25;end
+    if isempty(pars.SampleL); pars.SampleL=25; end
     count = count+1;
     if count > 3; error('Invalid sample length.'); end
 end
