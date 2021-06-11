@@ -122,7 +122,7 @@ classdef nelder_mead_fitobject < handle
 
                 figure('Name', 'Least-squares fit');
                 hold on;
-                h1 = plot(obj.xData, obj.yData);
+                h1 = plot(obj.xData, obj.yData, 'o');
                 h2 = plot(x_interp, yFit_interp);
                 legend([h1, h2], {'Data', 'Fit'});
                 set(gca, 'XLimSpec', 'Tight'); grid on;
