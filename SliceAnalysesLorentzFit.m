@@ -65,8 +65,8 @@ var0  = [A0 B0 T2];              % starting points
 %%=========================================================================
 
 % create fit function and options
-fitfunc = @(var, x) abs(var(1))*esr_lorentz_simulation(x, abs(var(2)), T1, ...
-    abs(var(3)), Bmw, pars.B0MA*1e4, 1);
+fitfunc = @(var, x) abs(var(1)) * esr_lorentz_simulation(x, abs(var(2)), T1, ...
+    abs(var(3)), Bmw, pars.B0MA * 1e4, 1);
 opt = optimset('TolFun', 1e-9, 'TolX', 1e-9, 'MaxFunEvals', 1e10, 'MaxIter', 1e10);
 
 % fit model to data with Nelder Mead algorithm
