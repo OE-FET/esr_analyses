@@ -39,6 +39,5 @@ sampleDim = ((pars.SampleH-pars.SampleL/2):0.01:(pars.SampleH+pars.SampleL/2));
 B1 = polyval(coefVector, sampleDim - ResCenter);
 position_correction = mean(B1);
 
-
 end
 
