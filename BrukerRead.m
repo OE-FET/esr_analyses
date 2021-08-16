@@ -65,7 +65,7 @@ end
 
 % Load .dsc file
 
-file_dsc = fullfile(directory, [name '.DSC']);
+file_dsc = fullfile(directory, strcat(name, ".DSC"));
 fid = fopen(file_dsc, 'r');
 
 if fid < 0
@@ -90,7 +90,7 @@ pars = param2struct(parameter_list);
 % ========================================================================
 
 % Load .dta file
-file_dta = fullfile(directory, [name '.DTA']);
+file_dta = fullfile(directory, strcat(name, ".DTA"));
 fid = fopen(file_dta, 'r', 'ieee-be.l64');
 
 if fid < 0
@@ -138,7 +138,7 @@ if strcmp(pars.YTYP, 'IDX')  % indexed data
     y = linspace(pars.YMIN, pars.YMIN + pars.YWID, pars.YPTS)';
 elseif strcmp(pars.YTYP, 'IGD')  % data points saved in file
     % if exist, load .YGF , convert to usable matrix
-    file_ygf = fullfile(directory, [name '.YGF']);
+    file_ygf = fullfile(directory, strcat(name, ".YGF"));
     fid = fopen(file_ygf, 'r', 'ieee-be.l64');
 
     if fid < 0
