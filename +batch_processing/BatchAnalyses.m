@@ -110,9 +110,9 @@ if nargin==2
     end
     cols = rmmissing(cols);
     prepend_table = array2table(cols, 'VariableNames', names);
-end
+    output_table = [prepend_table, output_table];
 
-output_table = [prepend_table, output_table];
+end
 
 clc; disp(output_table);
 
